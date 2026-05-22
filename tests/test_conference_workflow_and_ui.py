@@ -53,6 +53,7 @@ class ConferenceWorkflowAndUiTest(unittest.TestCase):
         self.assertIn("runConferenceRetrieval", runner)
         self.assertIn("/api/local/workflows/dispatch", runner)
         self.assertIn("DPR_LOCAL_API_BASE", runner)
+        self.assertIn("192\\.168", runner)
         self.assertTrue((root / "src" / "local_debug_server.py").exists())
         self.assertTrue((root / "scripts" / "local_debug.sh").exists())
         self.assertTrue((root / "scripts" / "bootstrap_local.sh").exists())
