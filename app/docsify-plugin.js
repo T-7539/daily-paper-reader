@@ -2651,12 +2651,10 @@ window.$docsify = {
                 ghost.style.top = (e.clientY - rect.height / 2) + 'px';
                 document.body.appendChild(ghost);
 
-                // 用 opacity:0 而非 visibility:hidden —— opacity:0 仍可被点击命中，
-                // 这样 pointerup 后浏览器触发的 click 事件 target 仍是 badge，
-                // wrapper 的 click handler 走 .closest('.dpr-unread-badge') 分支
-                // 直接 return，不会误触展开/折叠。
+                // 用 opacity:0 隐藏原始 badge（视觉消失，但保留 hit-test）
+                // 注意：不能设 pointer-events:none，否则 setPointerCapture 失效，
+                // pointermove/pointerup 永远不会触发，拖拽就完全断掉了。
                 badge.style.opacity = '0';
-                badge.style.pointerEvents = 'none';
                 badge.setPointerCapture(e.pointerId);
 
                 // 延迟清除拖拽标志：pointerup → click 之间有微小延迟，
@@ -2697,7 +2695,6 @@ window.$docsify = {
                         });
                       }
                       badge.style.opacity = '';
-                      badge.style.pointerEvents = '';
                       updateSidebarUnreadBadges();
                       clearDragFlag();
                     };
@@ -2713,7 +2710,6 @@ window.$docsify = {
                       returnDone = true;
                       if (ghost.parentNode) ghost.remove();
                       badge.style.opacity = '';
-                      badge.style.pointerEvents = '';
                       clearDragFlag();
                     };
                     ghost.classList.add('returning');
