@@ -213,6 +213,15 @@ function testConferenceYearChoicesShowTwoDigitYearAndStoredTotalOnly() {
         stored_accepted_count: 6341,
         stored_rejected_count: 214,
       },
+      {
+        conference_key: 'acl',
+        conference_label: 'ACL',
+        year: 2026,
+        official_accepted_count: 4459,
+        stored_total_count: 4459,
+        stored_accepted_count: 4459,
+        stored_rejected_count: 0,
+      },
     ],
   });
 
@@ -225,8 +234,8 @@ function testConferenceYearChoicesShowTwoDigitYearAndStoredTotalOnly() {
   assert.equal(html.includes('拒稿'), false);
   assert.equal(html.includes('379'), false);
   assert.ok(html.includes('aria-pressed="true"'));
-  assert.ok(html.includes('is-featured-conference-year'));
-  assert.ok(html.includes('dpr-choice-feature-star'));
+  assert.equal((html.match(/is-featured-conference-year/g) || []).length, 2);
+  assert.equal((html.match(/dpr-choice-feature-star/g) || []).length, 2);
 }
 
 async function testConferenceStatsLoadReusesBootstrappedJsonPromise() {

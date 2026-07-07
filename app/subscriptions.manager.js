@@ -115,7 +115,7 @@ window.SubscriptionsManager = (function () {
   // 有数据: ICLR 2026, ICML 2026, AAAI 2026, ACL 2026, OSDI 2026, IEEE S&P 2026, NDSS 2026
   // 无数据: CVPR/SOSP 2026（论文 PDF 尚未全量公开或未上传）
   const CONFERENCE_2026_AVAILABLE = new Set(['ICLR', 'ICML', 'AAAI', 'ACL', 'OSDI', 'IEEE S&P', 'NDSS']);
-  const FEATURED_CONFERENCE_YEAR_PAIRS = new Set(['icml:2026']);
+  const FEATURED_CONFERENCE_YEAR_PAIRS = new Set(['acl:2026', 'icml:2026']);
   // ECCV 是双年会议（偶数年）
   const BIENNIAL_EVEN_CONFERENCES = new Set(['ECCV']);
   const CONFERENCES_WITH_PENDING_CURRENT_YEAR = new Set([
