@@ -25,3 +25,81 @@ subscriptions:
     stage: A
     diff_threshold_pct: 15
   keyword_recall_mode: or
+  intent_profiles:
+    - tag: sketch-to-D
+      description: >-
+        检索以绘画类二维内容为输入，生成或重建三维内容的学术论文，重点关注：从草图、线稿、插画、角色原画、概念设定图、漫画或动漫场景帧生成三维内容；输出包括 Mesh、点云、NeRF、3D
+        Gaussian、三维角色、三维物体、三维场景、多视角图像、三维动画或可进行新视角渲染的表示；重点收录专门针对非真实感绘画输入设计的方法；同时收录能够应用于绘画输入的通用单图生成三维方法；关注几何质量、纹理质量、多视角一致性、语义或部件分解、可编辑性、风格保持和生成效率；优先检索
+        CVPR、ICCV、ECCV、SIGGRAPH、SIGGRAPH Asia、NeurIPS、ICLR、AAAI、ACM MM 等重要会议及 arXiv 最新论文；时间范围以 2017 年至今为主。
+      enabled: true
+      paper_sources:
+        - arxiv
+        - biorxiv
+      keywords:
+        - keyword: sketch-based 3D reconstruction
+          keyword_cn: 基于草图的3D重建
+          query: reconstructing 3D models from hand-drawn sketches
+        - keyword: illustration to 3D generation
+          keyword_cn: 插画转3D生成
+          query: converting 2D illustrations into 3D assets
+        - keyword: concept art 3D reconstruction
+          keyword_cn: 概念设计图3D重建
+          query: reconstructing 3D models from concept art drawings
+        - keyword: single image 3D painting
+          keyword_cn: 单图绘画3D
+          query: single-image 3D reconstruction for artistic paintings
+        - keyword: 3D Gaussian splatting drawing
+          keyword_cn: 从绘画进行3D高斯泼溅
+          query: 3D Gaussian splatting reconstruction from drawing
+        - keyword: multi-view consistency painting
+          keyword_cn: 多视角一致性绘画
+          query: maintaining multi-view consistency in artistic 3D generation
+      intent_queries:
+        - query: methods for generating 3D models from hand drawn sketches and line art
+          query_cn: 从手绘草图和线稿生成三维模型的方法
+          enabled: true
+          source: manual
+          note: ''
+        - query: papers on 3D reconstruction from anime illustrations and concept art
+          query_cn: 从动漫插画和概念设计图进行三维重建的论文
+          enabled: true
+          source: manual
+          note: ''
+        - query: single image 3D generation techniques applicable to paintings
+          query_cn: 适用于绘画的单图像三维生成技术
+          enabled: true
+          source: manual
+          note: ''
+        - query: non photorealistic sketch based 3D modeling with neural radiance fields
+          query_cn: 使用神经辐射场的非真实感草图三维建模
+          enabled: true
+          source: manual
+          note: ''
+      updated_at: '2026-07-21T07:43:38.441Z'
+source_backends:
+  arxiv:
+    papers_table: arxiv_papers
+    use_vector_rpc: true
+    vector_rpc: match_arxiv_papers
+    vector_rpc_exact: match_arxiv_papers_exact
+    use_bm25_rpc: true
+    bm25_rpc: match_arxiv_papers_bm25
+    sync_table: arxiv_sync_status
+    sync_success_value: success
+    schema: public
+    kind: supabase
+    enabled: true
+    url: https://lyucdwgefyfbmaiopjbk.supabase.co
+    anon_key: sb_publishable_lX-oi64Uxyd7SIVv3_w2Uw_MTOojeKq
+  biorxiv:
+    papers_table: biorxiv_papers
+    use_vector_rpc: true
+    vector_rpc: match_biorxiv_papers_exact
+    vector_rpc_exact: match_biorxiv_papers_exact
+    use_bm25_rpc: true
+    bm25_rpc: match_biorxiv_papers_bm25
+    schema: public
+    kind: supabase
+    enabled: true
+    url: https://lyucdwgefyfbmaiopjbk.supabase.co
+    anon_key: sb_publishable_lX-oi64Uxyd7SIVv3_w2Uw_MTOojeKq
