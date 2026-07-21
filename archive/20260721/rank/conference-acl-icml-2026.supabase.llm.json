@@ -1,0 +1,927 @@
+{
+  "top_k": 200,
+  "generated_at": "2026-07-21T07:48:43.973035+00:00",
+  "papers": [
+    {
+      "id": "anthology-2026.findings-acl.2116",
+      "source": "ACL-2026-Findings",
+      "title": "SceneLM: 3D-Aware Language Models for Editable 3D Scene Synthesis",
+      "abstract": "Synthesizing an editable 3D scene from a single RGB image is central to content creation, embodied-agent data generation, and AR/VR, yet remains challenging to achieve both high-fidelity reconstruction and convenient interactive editing. Existing geometry-based pipelines produce high-quality 3D results but are typically hard to refine without rerunning the full process, while LLM-driven procedural systems enable interactive tool use but are mostly text-driven and lack precise metric 3D understanding from images. We present SceneLM, a language-model-based framework that grounds 3D scene synthesis in visual evidence by recovering an executable metric 3D layout directly from a single image. Given an RGB image (and camera intrinsics when available), SceneLM outputs a JSON-form layout specifying each object’s category, 3D center, size, and discretized yaw, and then deterministically executes this layout with a tool suite to instantiate, place, and edit objects for iterative refinement. To train metric layout recovery at scale, we curate five datasets covering diverse indoor, outdoor, and tabletop scenes and convert heterogeneous 3D annotations into a unified instruction-tuning format. To improve numerical stability and metric accuracy while preserving the text interface, we augment autoregressive JSON generation with a lightweight geometry prediction branch and dual supervision. Experiments show that SceneLM substantially improves single-image 3D layout estimation over strong open and proprietary MLLM baselines, and yields higher-quality end-to-end scene generation in geometric consistency, physical plausibility, semantic alignment, and realism.",
+      "authors": [
+        "Xingbo Yao",
+        "Xiaoyu Chen",
+        "Doudou Zhang",
+        "Mingzhi Sheng",
+        "Boyuan Cao",
+        "Ying-Cong Chen",
+        "Hui Xiong"
+      ],
+      "primary_category": "ACL-2026-Findings",
+      "categories": [
+        "ACL-2026-Findings"
+      ],
+      "published": "2026-07-01T00:00:00+00:00",
+      "link": "https://aclanthology.org/2026.findings-acl.2116/",
+      "pdf_url": "https://aclanthology.org/2026.findings-acl.2116.pdf",
+      "tags": [
+        "keyword:sketch-to-D",
+        "query:sketch-to-D"
+      ]
+    },
+    {
+      "id": "openreview-icml-2026-iae4cvykfu",
+      "source": "ICML-2026-Accepted",
+      "title": "Geometry-Guided Modeling of Foundation Features Enables Generalizable Object Shape Deformation Learning",
+      "abstract": "Monocular 3D shape recovery is fundamental to geometric understanding, yet achieving robust generalization across arbitrary viewpoints and unseen object categories remains a significant challenge. In this paper, we present a generalizable deformation learning framework that reconstructs 3D objects by explicitly deforming a category-level shape template to match the target observation. To address complex shape variations between the template and the target, we introduce a geometry-guided feature modeling mechanism. This process first enriches foundation features with template topology to yield a geometry-aware representation, which is then explicitly correlated with the target observation to guide precise deformation. Furthermore, to bridge the disparity between the fixed template and arbitrary target views, we propose a view-adaptive feature aggregation module. This module leverages multi-view template features and their corresponding camera poses to enrich the canonical template representation, ensuring robust feature alignment regardless of the target's perspective.  Extensive experiments demonstrate that our approach significantly outperforms state-of-the-art methods in handling large shape variations and diverse viewpoints, exhibiting strong generalization to novel categories and effectively supporting downstream real-world dexterous robotic manipulation tasks. Project homepage: https://GODeform.github.io/",
+      "authors": [
+        "Yiyao Ma",
+        "Kai Chen",
+        "Zhongxiang Zhou",
+        "Zhuheng Song",
+        "Dongsheng Xie",
+        "Zelong Tan",
+        "Rong Xiong",
+        "Qi Dou"
+      ],
+      "primary_category": "Shape deformation learning",
+      "categories": [
+        "Shape deformation learning",
+        "foundation model",
+        "robot manipulation"
+      ],
+      "published": "2026-04-30T19:13:41.843+00:00",
+      "link": "https://openreview.net/forum?id=iae4cvYkfU",
+      "pdf_url": "https://openreview.net/pdf/9c791ecefd83b8b7253f7da2da46302004d01409.pdf",
+      "tags": [
+        "keyword:sketch-to-D",
+        "query:sketch-to-D"
+      ]
+    },
+    {
+      "id": "openreview-icml-2026-q1xtvvwjz9",
+      "source": "ICML-2026-Accepted",
+      "title": "Continuous Viewpoint Adaptation for Single View 3D Object Reconstruction",
+      "abstract": "Single-view 3D object reconstruction presents a formidable challenge in computer vision due to the inherent limitations of information obtainable from a solitary viewpoint. Recent 3D Gaussian Splatting (3DGS) inspired approaches perform a feed-forward way of learning a neural network that predicts 3D Gaussians which compose the 3D object, given a single image. However, they often struggle with occlusions and exhibit high sensitivity to small changes in input viewpoint, leading to inconsistencies and blurry artifacts in novel view renderings. Our method leverages 3DGS and introduces a new learning scheme that continuously adapts to input viewpoints. \nTo address inherent continuity of camera viewpoints that are represented by polar and azimuthal angles, we use Neural Ordinary Differential Equations to continuously model filter subspace of neural network, thus seamlessly embedding inductive bias of perspective distortions into its structure. By continuously adapting to view-specific features, our approach fosters view consistency in 3D reconstruction, allowing better coherency and accuracy across different angles. Experiments demonstrate that our model outperforms previous methods on multiple single-view 3D reconstruction benchmark datasets and excels in extrapolating to unseen camera angles and categories.",
+      "authors": [
+        "Seunghyun Hwang",
+        "Qiang Qiu"
+      ],
+      "primary_category": "3D Reconstruction",
+      "categories": [
+        "3D Reconstruction",
+        "Gaussian Splatting"
+      ],
+      "published": "2026-04-30T19:16:35.802+00:00",
+      "link": "https://openreview.net/forum?id=Q1XTVVwJZ9",
+      "pdf_url": "https://openreview.net/pdf/f5462cea175bfb03538937d7543cb93387630921.pdf",
+      "tags": [
+        "keyword:sketch-to-D",
+        "query:sketch-to-D"
+      ]
+    },
+    {
+      "id": "openreview-icml-2026-yqd2yrftir",
+      "source": "ICML-2026-Accepted",
+      "title": "LaRI: Layered Ray Intersections for Single-view 3D Geometric Reasoning",
+      "abstract": "We present Layered Ray Intersections (LaRI), a fully supervised method for occluded geometry reasoning from a single image. Unlike conventional depth estimation, which is limited to visible surfaces, LaRI predicts multiple surfaces intersected by the camera rays using layered point maps. Compared to the existing approaches that leverage neural implicit representations or iterative refinement, LaRI achieves complete scene reconstruction in one feed-forward pass, enabling efficient and view-aligned geometric reasoning to underpin both object-level and scene-level tasks. We further propose to predict the ray stopping index, which identifies valid intersecting pixels and layers from LaRI's output. To better underpin and evaluate this task, we build an annotation pipeline using rendering engines, construct annotations for five public datasets, including synthetic and real-world data covering 3D objects and scenes. As a generic method, LaRI's performance is validated in object-level and scene-level reconstruction tasks.",
+      "authors": [
+        "Rui Li",
+        "Biao Zhang",
+        "Zhenyu Li",
+        "Federico Tombari",
+        "Peter Wonka"
+      ],
+      "primary_category": "3D Reconstruction",
+      "categories": [
+        "3D Reconstruction",
+        "Depth Estimation",
+        "Scene Reasoning"
+      ],
+      "published": "2026-04-30T19:12:41.657+00:00",
+      "link": "https://openreview.net/forum?id=YqD2yRftiR",
+      "pdf_url": "https://openreview.net/pdf/81e4c1ee701d165b0e030660757cf3a56b5dcd34.pdf",
+      "tags": [
+        "keyword:sketch-to-D",
+        "query:sketch-to-D"
+      ]
+    },
+    {
+      "id": "openreview-icml-2026-2kkk6w6oof",
+      "source": "ICML-2026-Accepted",
+      "title": "Fast-SAM3D: 3Dfy Anything in Images but Faster",
+      "abstract": "SAM3D enables scalable, open-world 3D reconstruction from complex scenes, yet its deployment is hindered by prohibitive inference latency. In this work, we conduct the **first systematic investigation** into its inference dynamics, revealing that generic acceleration strategies are brittle in this context. We demonstrate that these failures stem from neglecting the pipeline's inherent multi-level **heterogeneity**: the kinematic distinctiveness between shape and layout, the intrinsic sparsity of texture refinement, and the spectral variance across geometries. To address this, we present **Fast-SAM3D**, a training-free framework that dynamically aligns computation with instantaneous generation complexity. Our approach integrates three heterogeneity-aware mechanisms: (1) *Modality-Aware Step Caching* to decouple structural evolution from sensitive layout updates; (2) *Joint Spatiotemporal Token Carving* to concentrate refinement on high-entropy regions; and (3) *Spectral-Aware Token Aggregation* to adapt decoding resolution. Extensive experiments demonstrate that Fast-SAM3D delivers up to **2.67$\\times$** end-to-end speedup with negligible fidelity loss, establishing a new Pareto frontier for efficient single-view 3D generation.",
+      "authors": [
+        "Weilun Feng",
+        "Mingqiang Wu",
+        "zhiliang chen",
+        "Chuanguang Yang",
+        "Haotong Qin",
+        "Yuqi Li",
+        "Xiaokun Liu",
+        "Guoxin Fan",
+        "Libo Huang",
+        "Yulun Zhang",
+        "Michele Magno",
+        "Yongjun Xu",
+        "Zhulin An"
+      ],
+      "primary_category": "3D Reconstruction",
+      "categories": [
+        "3D Reconstruction",
+        "Inference Acceleration"
+      ],
+      "published": "2026-04-30T19:21:26.38+00:00",
+      "link": "https://openreview.net/forum?id=2kKk6W6oOF",
+      "pdf_url": "https://openreview.net/pdf/72f1291d8e1c72bd7016a5d5078494c0c84d5e34.pdf",
+      "tags": [
+        "keyword:sketch-to-D",
+        "query:sketch-to-D"
+      ]
+    },
+    {
+      "id": "openreview-icml-2026-tfizpwa6s0",
+      "source": "ICML-2026-Accepted",
+      "title": "SAMT: Generating Structured Avatar Meshes and Textures from a Single Image",
+      "abstract": "Despite rapid progress in generative 3D creation, producing high-fidelity 3D face assets from a single image remains challenging, as it requires both identity-critical facial micro-structures and fine-grained view-consistent textures. To address this, we present a two-stage framework named **SAMT** for monocular 3D avatar generation and texture synthesis. Specifically, a latent 3D diffusion model for facial mesh generation is pretrained and then further adapted to generate high-quality facial geometry through large-scale domain-specific finetuning on 35K curated 3D avatar models. Subsequently, the generated facial mesh is textured through a multi-view-aware texturing strategy. It incorporates multi-view facial priors along with the mesh geometry to guide a 2D texturing diffusion, enabling cross-view consistent and mesh-aligned texture synthesis. Extensive experiments demonstrate that SAMT improves over existing baselines by producing more coherent facial geometry together with more fine-grained and view-consistent textures. Project page is available at https://github.com/muyuWang/SAMT.",
+      "authors": [
+        "Muyu Wang",
+        "Jianzhe Gao",
+        "Xingping Dong",
+        "Yujia Wang",
+        "Wenguan Wang"
+      ],
+      "primary_category": "Avatar Generation",
+      "categories": [
+        "Avatar Generation",
+        "3D Generation",
+        "Texture Synthesis"
+      ],
+      "published": "2026-04-30T19:09:56.429+00:00",
+      "link": "https://openreview.net/forum?id=tfIZPwA6s0",
+      "pdf_url": "https://openreview.net/pdf/0c354edf4bdb07276a70786a2459e2f8ef75d03f.pdf",
+      "tags": [
+        "keyword:sketch-to-D",
+        "query:sketch-to-D"
+      ]
+    },
+    {
+      "id": "openreview-icml-2026-2ai08vgfp0",
+      "source": "ICML-2026-Accepted",
+      "title": "Rethinking Human Intent-to-CAD: Parametric CAD Model Generation via Cooperative Multi-Task Alignment and Spatial-Aware Reinforcement Learning",
+      "abstract": "Parametric Computer-Aided-Design (CAD) modeling from human intent remains challenging, particularly during the conceptual design stage, where design goals are expressed through incomplete and unstructured modalities (e.g., hand-drawn sketches and textual descriptions). In this work, we rethink the human intent-to-CAD pipeline and propose a unified method that directly maps multi-level human intents to executable codes, without assuming the prior existence of target CAD models. To support our study, we construct HiCAD, the first large-scale dataset aligning hand-drawn sketches, textual descriptions, and parametric CAD codes. Based on this, we introduce HiCAD, a two-stage framework comprising Cooperative Multi-Task Alignment to bridge the representational gap between heterogeneous inputs, and Spatial-Aware Reinforcement Learning to enforce geometric and topological consistency. Extensive experiments demonstrate that our method significantly outperforms existing baselines across multiple tasks, validating its effectiveness and robustness in transforming heterogeneous human intents into high-fidelity parametric CAD models. Our project page: https://zqwlearning.github.io/HiCAD.",
+      "authors": [
+        "Qingwang Zhang",
+        "Jiahao Li",
+        "Xiangdong Zhou"
+      ],
+      "primary_category": "Human Intent",
+      "categories": [
+        "Human Intent",
+        "Computer-Aided Design",
+        "Hand-Drawn Sketch",
+        "Vision Language Model",
+        "Reinforcement Learning"
+      ],
+      "published": "2026-04-30T19:18:22.932+00:00",
+      "link": "https://openreview.net/forum?id=2Ai08VgFp0",
+      "pdf_url": "https://openreview.net/pdf/909e8f5e48966755d9d647c6a5f1e38309ba3ada.pdf",
+      "tags": [
+        "keyword:sketch-to-D",
+        "query:sketch-to-D"
+      ]
+    },
+    {
+      "id": "openreview-icml-2026-hqwwtwgayu",
+      "source": "ICML-2026-Accepted",
+      "title": "PointDiT: Pixel-Space Diffusion for Monocular Geometry Estimation",
+      "abstract": "State-of-the-art single-image 3D reconstruction methods often rely on complex hybrid architectures and loss functions (e.g., MoGe), or necessitate compressing geometry into latent spaces (e.g., GeometryCrafter) to leverage pre-trained latent diffusion models. In this work, we demonstrate that such architectural overhead and intricate loss formulations are unnecessary. We introduce a minimalist pixel-space Diffusion Transformer built on a plain ViT, which operates directly on raw 3D point map patches and is conditioned on image tokens from a pre-trained DINOv3. Unlike existing latent diffusion-based approaches, we train our diffusion backbone entirely from scratch, eliminating the need for point map tokenizers. We show that this streamlined approach yields results superior to complex latent-based diffusion models while remaining significantly simpler than hybrid alternatives. Notably, our model produces sharper geometric structures and achieves significantly better results on highly ambiguous regions, such as transparent objects.",
+      "authors": [
+        "Haofei Xu",
+        "Rundi Wu",
+        "Philipp Henzler",
+        "Nikolai Kalischek",
+        "Michael Oechsle",
+        "Fabian Manhardt",
+        "Marc Pollefeys",
+        "Andreas Geiger",
+        "Federico Tombari",
+        "Michael Niemeyer"
+      ],
+      "primary_category": "Pixel Space Diffusion",
+      "categories": [
+        "Pixel Space Diffusion",
+        "Point Map",
+        "3D Reconstruction",
+        "3D Generation"
+      ],
+      "published": "2026-04-30T19:09:07.784+00:00",
+      "link": "https://openreview.net/forum?id=hQWwTWGAyu",
+      "pdf_url": "https://openreview.net/pdf/859969c4505c940b506d06cb01ee1bce1e5d07d0.pdf",
+      "tags": [
+        "keyword:sketch-to-D",
+        "query:sketch-to-D"
+      ]
+    }
+  ],
+  "queries": [
+    {
+      "type": "intent_query",
+      "tag": "sketch-to-D",
+      "paper_tag": "query:sketch-to-D",
+      "query_text": "methods for generating 3D models from hand drawn sketches and line art",
+      "sim_scores": {
+        "anthology-2026.findings-acl.2116": {
+          "score": 0.01639344262295082,
+          "rank": 1
+        },
+        "openreview-icml-2026-tfizpwa6s0": {
+          "score": 0.014492753623188406,
+          "rank": 9
+        },
+        "openreview-icml-2026-iae4cvykfu": {
+          "score": 0.011363636363636364,
+          "rank": 28
+        },
+        "openreview-icml-2026-2ai08vgfp0": {
+          "score": 0.010101010101010102,
+          "rank": 39
+        }
+      },
+      "ranked": [
+        {
+          "paper_id": "openreview-icml-2026-2ai08vgfp0",
+          "score": 1.0,
+          "star_rating": 5
+        },
+        {
+          "paper_id": "openreview-icml-2026-tfizpwa6s0",
+          "score": 0.8798076923076922,
+          "star_rating": 4
+        },
+        {
+          "paper_id": "openreview-icml-2026-2kkk6w6oof",
+          "score": 0.8422090729783037,
+          "star_rating": 4
+        },
+        {
+          "paper_id": "openreview-icml-2026-iae4cvykfu",
+          "score": 0.8057498057498057,
+          "star_rating": 4
+        },
+        {
+          "paper_id": "openreview-icml-2026-hqwwtwgayu",
+          "score": 0.6703296703296702,
+          "star_rating": 4
+        },
+        {
+          "paper_id": "anthology-2026.findings-acl.2116",
+          "score": 0.5495495495495496,
+          "star_rating": 4
+        },
+        {
+          "paper_id": "openreview-icml-2026-yqd2yrftir",
+          "score": 0.49392712550607265,
+          "star_rating": 3
+        },
+        {
+          "paper_id": "openreview-icml-2026-q1xtvvwjz9",
+          "score": 0.49392712550607265,
+          "star_rating": 3
+        }
+      ]
+    },
+    {
+      "type": "intent_query",
+      "tag": "sketch-to-D",
+      "paper_tag": "query:sketch-to-D",
+      "query_text": "non photorealistic sketch based 3D modeling with neural radiance fields",
+      "sim_scores": {
+        "anthology-2026.findings-acl.2116": {
+          "score": 0.01639344262295082,
+          "rank": 1
+        },
+        "openreview-icml-2026-q1xtvvwjz9": {
+          "score": 0.014492753623188406,
+          "rank": 9
+        },
+        "openreview-icml-2026-yqd2yrftir": {
+          "score": 0.012345679012345678,
+          "rank": 21
+        },
+        "openreview-icml-2026-iae4cvykfu": {
+          "score": 0.010416666666666666,
+          "rank": 36
+        },
+        "openreview-icml-2026-tfizpwa6s0": {
+          "score": 0.01020408163265306,
+          "rank": 38
+        }
+      },
+      "ranked": [
+        {
+          "paper_id": "openreview-icml-2026-yqd2yrftir",
+          "score": 0.9586435070306036,
+          "star_rating": 5
+        },
+        {
+          "paper_id": "openreview-icml-2026-2ai08vgfp0",
+          "score": 0.7703788748564866,
+          "star_rating": 4
+        },
+        {
+          "paper_id": "openreview-icml-2026-q1xtvvwjz9",
+          "score": 0.73604826546003,
+          "star_rating": 4
+        },
+        {
+          "paper_id": "anthology-2026.findings-acl.2116",
+          "score": 0.608262108262108,
+          "star_rating": 4
+        },
+        {
+          "paper_id": "openreview-icml-2026-hqwwtwgayu",
+          "score": 0.578503688092729,
+          "star_rating": 4
+        },
+        {
+          "paper_id": "openreview-icml-2026-tfizpwa6s0",
+          "score": 0.5213675213675214,
+          "star_rating": 4
+        },
+        {
+          "paper_id": "openreview-icml-2026-2kkk6w6oof",
+          "score": 0.4411571334648256,
+          "star_rating": 3
+        },
+        {
+          "paper_id": "openreview-icml-2026-iae4cvykfu",
+          "score": 0.3910256410256411,
+          "star_rating": 3
+        }
+      ]
+    },
+    {
+      "type": "intent_query",
+      "tag": "sketch-to-D",
+      "paper_tag": "query:sketch-to-D",
+      "query_text": "papers on 3D reconstruction from anime illustrations and concept art",
+      "sim_scores": {
+        "anthology-2026.findings-acl.2116": {
+          "score": 0.01639344262295082,
+          "rank": 1
+        },
+        "openreview-icml-2026-tfizpwa6s0": {
+          "score": 0.015873015873015872,
+          "rank": 3
+        },
+        "openreview-icml-2026-2kkk6w6oof": {
+          "score": 0.014084507042253521,
+          "rank": 11
+        },
+        "openreview-icml-2026-q1xtvvwjz9": {
+          "score": 0.009433962264150943,
+          "rank": 46
+        }
+      },
+      "ranked": [
+        {
+          "paper_id": "openreview-icml-2026-2kkk6w6oof",
+          "score": 0.9185999185999183,
+          "star_rating": 5
+        },
+        {
+          "paper_id": "openreview-icml-2026-iae4cvykfu",
+          "score": 0.9185999185999183,
+          "star_rating": 5
+        },
+        {
+          "paper_id": "openreview-icml-2026-tfizpwa6s0",
+          "score": 0.8798076923076922,
+          "star_rating": 4
+        },
+        {
+          "paper_id": "openreview-icml-2026-hqwwtwgayu",
+          "score": 0.8422090729783037,
+          "star_rating": 4
+        },
+        {
+          "paper_id": "openreview-icml-2026-q1xtvvwjz9",
+          "score": 0.8057498057498057,
+          "star_rating": 4
+        },
+        {
+          "paper_id": "anthology-2026.findings-acl.2116",
+          "score": 0.7703788748564866,
+          "star_rating": 4
+        },
+        {
+          "paper_id": "openreview-icml-2026-2ai08vgfp0",
+          "score": 0.702712746191007,
+          "star_rating": 4
+        },
+        {
+          "paper_id": "openreview-icml-2026-yqd2yrftir",
+          "score": 0.702712746191007,
+          "star_rating": 4
+        }
+      ]
+    },
+    {
+      "type": "intent_query",
+      "tag": "sketch-to-D",
+      "paper_tag": "query:sketch-to-D",
+      "query_text": "single image 3D generation techniques applicable to paintings",
+      "sim_scores": {
+        "anthology-2026.findings-acl.2116": {
+          "score": 0.015873015873015872,
+          "rank": 3
+        },
+        "openreview-icml-2026-hqwwtwgayu": {
+          "score": 0.015625,
+          "rank": 4
+        },
+        "openreview-icml-2026-2kkk6w6oof": {
+          "score": 0.014084507042253521,
+          "rank": 11
+        },
+        "openreview-icml-2026-q1xtvvwjz9": {
+          "score": 0.013888888888888888,
+          "rank": 12
+        },
+        "openreview-icml-2026-tfizpwa6s0": {
+          "score": 0.01098901098901099,
+          "rank": 31
+        },
+        "openreview-icml-2026-yqd2yrftir": {
+          "score": 0.010101010101010102,
+          "rank": 39
+        }
+      },
+      "ranked": [
+        {
+          "paper_id": "openreview-icml-2026-tfizpwa6s0",
+          "score": 0.9586435070306036,
+          "star_rating": 5
+        },
+        {
+          "paper_id": "openreview-icml-2026-hqwwtwgayu",
+          "score": 0.9586435070306036,
+          "star_rating": 5
+        },
+        {
+          "paper_id": "openreview-icml-2026-q1xtvvwjz9",
+          "score": 0.9185999185999183,
+          "star_rating": 5
+        },
+        {
+          "paper_id": "anthology-2026.findings-acl.2116",
+          "score": 0.9185999185999183,
+          "star_rating": 5
+        },
+        {
+          "paper_id": "openreview-icml-2026-yqd2yrftir",
+          "score": 0.8798076923076922,
+          "star_rating": 4
+        },
+        {
+          "paper_id": "openreview-icml-2026-2kkk6w6oof",
+          "score": 0.8057498057498057,
+          "star_rating": 4
+        },
+        {
+          "paper_id": "openreview-icml-2026-iae4cvykfu",
+          "score": 0.46719946719946726,
+          "star_rating": 3
+        }
+      ]
+    },
+    {
+      "type": "keyword",
+      "tag": "sketch-to-D",
+      "paper_tag": "keyword:sketch-to-D",
+      "query_text": "3D Gaussian splatting reconstruction from drawing",
+      "sim_scores": {
+        "openreview-icml-2026-q1xtvvwjz9": {
+          "score": 0.014925373134328358,
+          "rank": 7
+        },
+        "openreview-icml-2026-2kkk6w6oof": {
+          "score": 0.011904761904761904,
+          "rank": 24
+        },
+        "openreview-icml-2026-hqwwtwgayu": {
+          "score": 0.011627906976744186,
+          "rank": 26
+        },
+        "anthology-2026.findings-acl.2116": {
+          "score": 0.010526315789473684,
+          "rank": 35
+        },
+        "openreview-icml-2026-yqd2yrftir": {
+          "score": 0.009708737864077669,
+          "rank": 43
+        }
+      }
+    },
+    {
+      "type": "keyword",
+      "tag": "sketch-to-D",
+      "paper_tag": "keyword:sketch-to-D",
+      "query_text": "converting 2D illustrations into 3D assets",
+      "sim_scores": {
+        "anthology-2026.findings-acl.2116": {
+          "score": 0.016129032258064516,
+          "rank": 2
+        },
+        "openreview-icml-2026-tfizpwa6s0": {
+          "score": 0.015873015873015872,
+          "rank": 3
+        },
+        "openreview-icml-2026-2kkk6w6oof": {
+          "score": 0.009900990099009901,
+          "rank": 41
+        }
+      }
+    },
+    {
+      "type": "keyword",
+      "tag": "sketch-to-D",
+      "paper_tag": "keyword:sketch-to-D",
+      "query_text": "maintaining multi-view consistency in artistic 3D generation",
+      "sim_scores": {
+        "anthology-2026.findings-acl.2116": {
+          "score": 0.01639344262295082,
+          "rank": 1
+        },
+        "openreview-icml-2026-2kkk6w6oof": {
+          "score": 0.014084507042253521,
+          "rank": 11
+        },
+        "openreview-icml-2026-q1xtvvwjz9": {
+          "score": 0.010869565217391304,
+          "rank": 32
+        },
+        "openreview-icml-2026-yqd2yrftir": {
+          "score": 0.010752688172043012,
+          "rank": 33
+        },
+        "openreview-icml-2026-tfizpwa6s0": {
+          "score": 0.010309278350515464,
+          "rank": 37
+        }
+      }
+    },
+    {
+      "type": "keyword",
+      "tag": "sketch-to-D",
+      "paper_tag": "keyword:sketch-to-D",
+      "query_text": "reconstructing 3D models from concept art drawings",
+      "sim_scores": {
+        "anthology-2026.findings-acl.2116": {
+          "score": 0.01639344262295082,
+          "rank": 1
+        },
+        "openreview-icml-2026-iae4cvykfu": {
+          "score": 0.014925373134328358,
+          "rank": 7
+        },
+        "openreview-icml-2026-tfizpwa6s0": {
+          "score": 0.012658227848101266,
+          "rank": 19
+        },
+        "openreview-icml-2026-2ai08vgfp0": {
+          "score": 0.01098901098901099,
+          "rank": 31
+        },
+        "openreview-icml-2026-q1xtvvwjz9": {
+          "score": 0.010638297872340425,
+          "rank": 34
+        }
+      }
+    },
+    {
+      "type": "keyword",
+      "tag": "sketch-to-D",
+      "paper_tag": "keyword:sketch-to-D",
+      "query_text": "reconstructing 3D models from hand-drawn sketches",
+      "sim_scores": {
+        "anthology-2026.findings-acl.2116": {
+          "score": 0.01639344262295082,
+          "rank": 1
+        },
+        "openreview-icml-2026-iae4cvykfu": {
+          "score": 0.015151515151515152,
+          "rank": 6
+        },
+        "openreview-icml-2026-q1xtvvwjz9": {
+          "score": 0.011111111111111112,
+          "rank": 30
+        },
+        "openreview-icml-2026-yqd2yrftir": {
+          "score": 0.01098901098901099,
+          "rank": 31
+        },
+        "openreview-icml-2026-2kkk6w6oof": {
+          "score": 0.009345794392523364,
+          "rank": 47
+        }
+      }
+    },
+    {
+      "type": "keyword",
+      "tag": "sketch-to-D",
+      "paper_tag": "keyword:sketch-to-D",
+      "query_text": "single-image 3D reconstruction for artistic paintings",
+      "sim_scores": {
+        "openreview-icml-2026-q1xtvvwjz9": {
+          "score": 0.015873015873015872,
+          "rank": 3
+        },
+        "openreview-icml-2026-hqwwtwgayu": {
+          "score": 0.015384615384615385,
+          "rank": 5
+        },
+        "openreview-icml-2026-2kkk6w6oof": {
+          "score": 0.014084507042253521,
+          "rank": 11
+        },
+        "openreview-icml-2026-yqd2yrftir": {
+          "score": 0.013513513513513514,
+          "rank": 14
+        },
+        "anthology-2026.findings-acl.2116": {
+          "score": 0.013333333333333334,
+          "rank": 15
+        }
+      }
+    }
+  ],
+  "global_candidate_ids": [
+    "anthology-2026.findings-acl.2116",
+    "openreview-icml-2026-2ndp39vgte",
+    "openreview-icml-2026-ihmx2vrcof",
+    "openreview-icml-2026-pxymbd1uzg",
+    "openreview-icml-2026-f3ayj7znav",
+    "openreview-icml-2026-pyq9gfqlec",
+    "openreview-icml-2026-uamxhbdr3p",
+    "openreview-icml-2026-zsjnkegh6i",
+    "openreview-icml-2026-fpl30b32rt",
+    "openreview-icml-2026-7gibzl9jwe",
+    "openreview-icml-2026-bjtuhob3vn",
+    "openreview-icml-2026-re0ivnywr4",
+    "openreview-icml-2026-e90s2t7s5t",
+    "openreview-icml-2026-q1xtvvwjz9",
+    "openreview-icml-2026-c6cefncr9w",
+    "openreview-icml-2026-elmtnbu5kz",
+    "openreview-icml-2026-tfizpwa6s0",
+    "openreview-icml-2026-2kkk6w6oof",
+    "openreview-icml-2026-y45p7d88ux",
+    "openreview-icml-2026-b3yorya3vd",
+    "openreview-icml-2026-pgcmxkhzog",
+    "anthology-2026.acl-short.13",
+    "openreview-icml-2026-rvcyqfcgy9",
+    "openreview-icml-2026-bozd8pg5e2",
+    "openreview-icml-2026-m1bu4krgtb",
+    "openreview-icml-2026-a359qygvvr",
+    "openreview-icml-2026-yqd2yrftir",
+    "openreview-icml-2026-auo3hdgocp",
+    "openreview-icml-2026-r85lhlw35y",
+    "openreview-icml-2026-t6ovjczbrs",
+    "openreview-icml-2026-23ps2azoza",
+    "openreview-icml-2026-pgpegzhl7y",
+    "openreview-icml-2026-wqc09ugdju",
+    "openreview-icml-2026-sqegqxm1ya",
+    "openreview-icml-2026-iozl3dvsht",
+    "openreview-icml-2026-lkv9oqkank",
+    "openreview-icml-2026-vonlrmdlbv",
+    "openreview-icml-2026-iae4cvykfu",
+    "openreview-icml-2026-asfd58cecj",
+    "openreview-icml-2026-2znijsn2jc",
+    "openreview-icml-2026-6fntrlylbu",
+    "openreview-icml-2026-sebprrnbux",
+    "openreview-icml-2026-zjsvhm2qyv",
+    "openreview-icml-2026-mrb4eour7r",
+    "openreview-icml-2026-t4a2ayyaq9",
+    "openreview-icml-2026-ewwyjykvjv",
+    "openreview-icml-2026-hqwwtwgayu",
+    "openreview-icml-2026-wwejh8o9bq",
+    "openreview-icml-2026-lshqyeeop5",
+    "openreview-icml-2026-jilmairchs",
+    "openreview-icml-2026-hr6yh73ufb",
+    "anthology-2026.findings-acl.1524",
+    "openreview-icml-2026-fxy0gcahq1",
+    "openreview-icml-2026-fcjkhj6z4v",
+    "openreview-icml-2026-vioti25gjz",
+    "openreview-icml-2026-fk2szbz1ye",
+    "openreview-icml-2026-icj19twhi1",
+    "openreview-icml-2026-i5kngunorx",
+    "openreview-icml-2026-cxchpexywb",
+    "openreview-icml-2026-zodtlk9uw0",
+    "openreview-icml-2026-ujy9pcpv1v",
+    "openreview-icml-2026-etnzn3onnz",
+    "openreview-icml-2026-3jsh1ksoyk",
+    "anthology-2026.findings-acl.2122",
+    "openreview-icml-2026-uigxpevth4",
+    "openreview-icml-2026-yyitz0hjqk",
+    "openreview-icml-2026-wllmpcx9zf",
+    "openreview-icml-2026-jk7bhonaal",
+    "anthology-2026.findings-acl.1508",
+    "openreview-icml-2026-azwb7xzt6n",
+    "openreview-icml-2026-fn7kiziqia",
+    "openreview-icml-2026-ipadrceojx",
+    "openreview-icml-2026-5p36n5cmjy",
+    "openreview-icml-2026-ofzlydmmhe",
+    "openreview-icml-2026-sd1014tyra",
+    "openreview-icml-2026-i4bplsvsoy",
+    "openreview-icml-2026-iyenyj06nt",
+    "openreview-icml-2026-fneepkfvht",
+    "openreview-icml-2026-3sxfim8xh4",
+    "openreview-icml-2026-rl565epghr",
+    "anthology-2026.acl-long.98",
+    "openreview-icml-2026-msvqm8ub2y",
+    "openreview-icml-2026-dzx0encdip",
+    "openreview-icml-2026-bjjlw1gjqh",
+    "openreview-icml-2026-faj3mjghc0",
+    "openreview-icml-2026-z6j8s5lwml",
+    "openreview-icml-2026-kxub6vuyby",
+    "openreview-icml-2026-jva4wveyso",
+    "openreview-icml-2026-zfw9qaygxd",
+    "openreview-icml-2026-ws8swql5ob",
+    "openreview-icml-2026-xegoenrp8b",
+    "openreview-icml-2026-f1q8dfnxty",
+    "openreview-icml-2026-lzxjgxypyt",
+    "openreview-icml-2026-iz2enqf9kn",
+    "openreview-icml-2026-ehkgfkxio7",
+    "anthology-2026.acl-long.2014",
+    "openreview-icml-2026-2ai08vgfp0",
+    "openreview-icml-2026-doyi2chedg",
+    "openreview-icml-2026-xhi7fcd1w1",
+    "anthology-2026.findings-acl.980",
+    "openreview-icml-2026-tg9q3rhcdm",
+    "anthology-2026.findings-acl.1383",
+    "openreview-icml-2026-t5wtxgqrbk",
+    "openreview-icml-2026-id88hhwbgc",
+    "openreview-icml-2026-4blahr3kk7",
+    "openreview-icml-2026-wuk8jieetf",
+    "openreview-icml-2026-kaliw0bql9",
+    "openreview-icml-2026-akzvovkwpd",
+    "openreview-icml-2026-j3um4v9vjv",
+    "openreview-icml-2026-ebt72acjt6",
+    "openreview-icml-2026-qshadvaew3",
+    "openreview-icml-2026-xhctwvm3o2",
+    "anthology-2026.acl-long.1871",
+    "openreview-icml-2026-vtp9jtozl9",
+    "openreview-icml-2026-k8uwwjunyf",
+    "openreview-icml-2026-cbwcad8trc",
+    "openreview-icml-2026-dmnc6avfat",
+    "openreview-icml-2026-iaoeffuybn",
+    "openreview-icml-2026-s7pdlewyyw",
+    "anthology-2026.acl-long.604"
+  ],
+  "global_pool_lane_top_k": 30,
+  "global_pool_limit": 120,
+  "global_pool_guaranteed_per_lane": 2,
+  "global_pool_effective_size": 120,
+  "reranked_at": "2026-07-21T07:49:55.392625+00:00",
+  "llm_ranked": [
+    {
+      "paper_id": "openreview-icml-2026-2ai08vgfp0",
+      "score": 10.0,
+      "evidence_en": "Directly maps hand-drawn sketches to parametric CAD models.",
+      "evidence_cn": "直接从手绘草图重建参数化CAD模型。",
+      "canonical_evidence": "直接从手绘草图重建参数化CAD模型。",
+      "tldr_en": "The paper presents a unified framework that directly converts hand-drawn sketches and text into parametric CAD code, enabling intent-to-CAD modeling without target models.",
+      "tldr_cn": "该论文提出统一框架，将手绘草图和文本描述直接映射为参数化CAD代码，实现从人类意图到CAD模型的转换。通过构建首个对齐手绘草图、文本描述和参数化CAD代码的大规模数据集HiCAD，并设计两阶段协同多任务对齐与空间感知强化学习框架，该方法在概念设计阶段无需预定义目标模型即可生成三维CAD。该工作为从非真实感绘画（如草图）生成精确三维CAD模型提供了有效解决方案。",
+      "title_zh": "重新思考人类意图到CAD：通过协作多任务对齐和空间感知强化学习的参数化CAD模型生成",
+      "motivation_cn": "概念设计阶段的人类意图表达（如手绘草图）难以直接转换为可执行CAD代码。",
+      "method_cn": "构建HiCAD数据集，并提出两阶段框架：先进行草图到基元序列的生成，再通过强化学习优化空间关系。",
+      "result_cn": "能够从粗糙手绘草图和文本描述直接生成精确的参数化CAD模型。",
+      "conclusion_cn": "实现了从非结构化草图到结构化CAD的直接映射，推动了手绘三维建模的实际应用。",
+      "matched_requirement_id": "req-1",
+      "matched_query_tag": "query:sketch-to-d",
+      "matched_query_text": "reconstructing 3D models from hand-drawn sketches"
+    },
+    {
+      "paper_id": "openreview-icml-2026-yqd2yrftir",
+      "score": 8.0,
+      "evidence_en": "Single-view complete scene reconstruction with layered point maps, applicable to paintings and sketches.",
+      "evidence_cn": "单视图完整场景重建方法，使用分层点图，适用于绘画和草图。",
+      "canonical_evidence": "单视图完整场景重建方法，使用分层点图，适用于绘画和草图。",
+      "tldr_en": "LaRI predicts multiple surfaces from a single image using layered point maps, enabling complete single-view 3D geometric reasoning in one forward pass.",
+      "tldr_cn": "LaRI 提出一种全监督的单视图方法，通过预测分层点图来恢复被遮挡的多个表面，从而在单次前馈传递中从单张图像实现完整的三维场景重建。不同于传统深度估计仅关注可见表面，该技术能推理遮挡几何，为物体级和场景级任务提供高效且视角对齐的几何推理。这为从绘画、草图等单张二维内容生成三维几何提供了实用基础。",
+      "title_zh": "LaRI：用于单视图三维几何推理的分层射线相交",
+      "motivation_cn": "现有单视图几何推理方法通常只恢复可见表面，无法处理遮挡几何。",
+      "method_cn": "采用全监督方式预测分层射线相交点图，一次性输出多层点位置及射线停止索引。",
+      "result_cn": "能够在一次前向传播中完成单视图完整场景重建，便于实时应用。",
+      "conclusion_cn": "为单图像三维几何推理提供了高效视图对齐的方案，适合作为绘画等输入的三维几何生成组件。",
+      "matched_requirement_id": "req-9",
+      "matched_query_tag": "query:sketch-to-d",
+      "matched_query_text": "single image 3D generation techniques applicable to paintings"
+    },
+    {
+      "paper_id": "openreview-icml-2026-q1xtvvwjz9",
+      "score": 7.0,
+      "evidence_en": "Single-view 3D object reconstruction using 3D Gaussian Splatting, applicable to drawing inputs.",
+      "evidence_cn": "基于3D高斯泼溅的单视图三维物体重建，可应用于绘画输入。",
+      "canonical_evidence": "基于3D高斯泼溅的单视图三维物体重建，可应用于绘画输入。",
+      "tldr_en": "Addresses single-view 3D reconstruction sensitivity to viewpoint changes by continuously adapting 3D Gaussian Splatting predictions. Demonstrates improved consistency and reduced artifacts in novel view synthesis. Provides a generalizable approach for converting single images, including drawings, into 3D representations.",
+      "tldr_cn": "针对单视图三维重建对视角变化敏感的问题，提出一种连续视角自适应方法，利用3D高斯泼溅从单张图像重建物体。通过连续学习相机视角表示，改善了新颖视角合成的一致性和清晰度。为将单张图像（包括绘画）转换为三维内容提供了通用且鲁棒的技术路线。",
+      "title_zh": "面向单视图三维物体重建的连续视角自适应方法",
+      "motivation_cn": "现有单视图3D重建方法对视角变化敏感，遮挡下易产生模糊和伪影。",
+      "method_cn": "提出连续视角自适应学习方法，通过极角和方位角连续表示相机视角，改进3D Gaussian预测。",
+      "result_cn": "在多个数据集上验证，有效提升新视角渲染的一致性和清晰度。",
+      "conclusion_cn": "为通用单图像三维重建提供了视角鲁棒的方法，可推广至绘画等非真实感输入。",
+      "matched_requirement_id": "req-5",
+      "matched_query_tag": "query:sketch-to-d",
+      "matched_query_text": "3D Gaussian splatting reconstruction from drawing"
+    },
+    {
+      "paper_id": "openreview-icml-2026-hqwwtwgayu",
+      "score": 7.0,
+      "evidence_en": "single-image to 3D point map via pixel-space diffusion",
+      "evidence_cn": "通过像素空间扩散从单图生成3D点图",
+      "canonical_evidence": "通过像素空间扩散从单图生成3D点图",
+      "tldr_en": "PointDiT introduces a minimalist pixel-space diffusion transformer for single-image 3D reconstruction, directly operating on point map patches and achieving state-of-the-art without complex losses.",
+      "tldr_cn": "现有单图三维重建依赖复杂架构或潜在扩散，PointDiT提出在像素空间直接扩散点图块的极简方案，使用纯ViT和DINOv3条件，无需点图分词器，在多个基准上取得最优或可比性能，证明简洁设计可高效解决单目几何估计。",
+      "title_zh": "PointDiT：像素空间扩散用于单目几何估计",
+      "motivation_cn": "现有单图三维重建方法架构复杂，需潜在压缩，限制了效率和简化。",
+      "method_cn": "提出基于纯ViT的像素空间扩散Transformer，直接在点图块上操作，以DINOv3图像token为条件。",
+      "result_cn": "在多个数据集上达到或超越现有方法，同时架构更简洁。",
+      "conclusion_cn": "极简扩散模型设计可有效用于单目几何估计，无需潜在空间和复杂损失。",
+      "matched_requirement_id": "req-9",
+      "matched_query_tag": "query:sketch-to-d",
+      "matched_query_text": "single image 3D generation techniques applicable to paintings"
+    },
+    {
+      "paper_id": "anthology-2026.findings-acl.2116",
+      "score": 6.0,
+      "evidence_en": "single RGB image to editable 3D scene via language model",
+      "evidence_cn": "通过语言模型从单张RGB图像生成可编辑3D场景",
+      "canonical_evidence": "通过语言模型从单张RGB图像生成可编辑3D场景",
+      "tldr_en": "SceneLM recovers executable metric 3D layout from a single RGB image using language models, enabling high-fidelity reconstruction and interactive editing.",
+      "tldr_cn": "从单张RGB图像合成可编辑3D场景是内容创建的核心任务，现有几何管线难以交互编辑，SceneLM通过语言模型从图像恢复可执行度量3D布局，实现高保真重建与便捷交互式编辑，在场景合成和编辑任务上表现优异。",
+      "title_zh": "SceneLM：面向可编辑3D场景合成的3D感知语言模型",
+      "motivation_cn": "单图3D场景合成难兼顾重建质量和交互编辑。",
+      "method_cn": "基于语言模型框架从单图恢复可执行度量三维布局。",
+      "result_cn": "实现高保真场景重建并支持交互式编辑。",
+      "conclusion_cn": "语言模型驱动度量3D理解可简化场景合成与编辑流程。",
+      "matched_requirement_id": "req-9",
+      "matched_query_tag": "query:sketch-to-d",
+      "matched_query_text": "single image 3D generation techniques applicable to paintings"
+    },
+    {
+      "paper_id": "openreview-icml-2026-2kkk6w6oof",
+      "score": 6.0,
+      "evidence_en": "accelerating open-world 3D reconstruction from images",
+      "evidence_cn": "加速从图像进行开放世界3D重建",
+      "canonical_evidence": "加速从图像进行开放世界3D重建",
+      "tldr_en": "Fast-SAM3D accelerates SAM3D inference by exploiting multi-level heterogeneity, using training-free mechanisms to reduce latency while maintaining reconstruction quality.",
+      "tldr_cn": "SAM3D虽能实现开放世界3D重建，但推理速度慢，Fast-SAM3D首次系统分析推理动态中的多级异构性，提出模态自适应调度、纹理稀疏化和几何频谱适配等训练无关机制，动态分配计算，显著加速3D生成且质量无损。",
+      "title_zh": "Fast-SAM3D：更快的图像到3D转换",
+      "motivation_cn": "SAM3D速度瓶颈限制了实际部署。",
+      "method_cn": "提出训练无关框架，集成模态自适应调度、纹理稀疏化、几何频谱适配三机制。",
+      "result_cn": "在保持重建质量下大幅降低推理时间。",
+      "conclusion_cn": "异构感知计算分配有效加速开放世界3D重建流程。",
+      "matched_requirement_id": "req-9",
+      "matched_query_tag": "query:sketch-to-d",
+      "matched_query_text": "single image 3D generation techniques applicable to paintings"
+    },
+    {
+      "paper_id": "openreview-icml-2026-iae4cvykfu",
+      "score": 5.0,
+      "evidence_en": "Monocular 3D shape recovery via deformation",
+      "evidence_cn": "通过形变实现的单目3D形状恢复",
+      "canonical_evidence": "通过形变实现的单目3D形状恢复",
+      "tldr_en": "A generalizable deformation learning framework reconstructs 3D objects from a single image by deforming category-level templates with geometry-guided features.",
+      "tldr_cn": "本文提出一种泛化形变学习框架，从单张图像恢复三维物体。该框架通过几何引导的基座特征建模，对类别级形状模板进行显式形变以匹配目标观测，解决了跨视角和跨类别的形状恢复难题，在未见类别上取得鲁棒泛化。",
+      "title_zh": "几何引导的基座特征建模支持泛化目标形状形变学习",
+      "motivation_cn": "单目3D形状恢复在任意视角和未见类别上泛化困难。",
+      "method_cn": "提出几何引导的特征建模机制，利用模板拓扑丰富基座特征并指导精确形变。",
+      "result_cn": "方法在跨类别和视角的变形任务上实现鲁棒泛化。",
+      "conclusion_cn": "几何引导特征能有效提升单目3D恢复的泛化能力。",
+      "matched_requirement_id": "req-4",
+      "matched_query_tag": "query:sketch-to-d",
+      "matched_query_text": "single-image 3D reconstruction for artistic paintings"
+    },
+    {
+      "paper_id": "openreview-icml-2026-tfizpwa6s0",
+      "score": 5.0,
+      "evidence_en": "generates 3D avatars from a single image",
+      "evidence_cn": "从单张图像生成三维头像",
+      "canonical_evidence": "从单张图像生成三维头像",
+      "tldr_en": "SAMT generates structured 3D face meshes and view-consistent textures from a single input image via a two-stage latent diffusion and multi-view texturing framework.",
+      "tldr_cn": "针对单张图像生成高保真三维头像的难题，提出SAMT框架，第一阶段用潜在三维扩散模型生成面部网格，第二阶段通过多视角感知纹理策略合成视图一致性纹理。在大规模头像数据集上微调后，方法能产生具有身份细节和精细纹理的三维面部资产，对绘画等非真实感输入有潜在适用性。",
+      "title_zh": "SAMT：从单张图像生成结构化头像网格和纹理",
+      "motivation_cn": "单图像三维头像生成需同时保持面部微结构特征和多视角纹理一致性，现有方法常难以兼具。",
+      "method_cn": "两阶段框架：预训练潜在三维扩散模型生成面部网格，结合多视角先验与网格几何进行多视角感知纹理合成。",
+      "result_cn": "在35K三维头像模型上微调后，能生成高质量几何与视图一致性纹理。",
+      "conclusion_cn": "SAMT为单图像三维头像生成提供了结构化且纹理精细的解决方案，可潜在应用于角色原画等绘画输入。",
+      "matched_requirement_id": "req-9",
+      "matched_query_tag": "query:sketch-to-d",
+      "matched_query_text": "single image 3D generation techniques applicable to paintings"
+    }
+  ],
+  "llm_ranked_at": "2026-07-21T07:54:17.793970+00:00",
+  "display_min_score": 4.0,
+  "pruned_at": "2026-07-21T07:54:17.835263+00:00"
+}
