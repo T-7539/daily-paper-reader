@@ -1,0 +1,254 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-21T21:33:05.284293+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 3,
+    "deep_cap": 6,
+    "deep_selected": 3,
+    "quick_candidates": 2,
+    "quick_skim_target": 11,
+    "quick_selected": 2
+  },
+  "deep_dive": [
+    {
+      "id": "2607.12752v1",
+      "source": "arxiv",
+      "title": "Hallo4D: Multi-Modal Hallucination Mitigation for Consistent Spatio-Temporal Generation",
+      "abstract": "While recent advances in 3D generation have enabled impressive visual synthesis, existing methods often rely on 2D diffusion supervision without explicit mechanisms for geometric consistency, leading to spatial hallucinations such as duplicated structures and misaligned geometry. These issues become more severe in 4D generation, where maintaining consistency across viewpoints and temporal evolution introduces additional challenges, including jitter, identity flicker, and structural drift. We present \\textbf{Hallo4D}, a unified and model-agnostic framework for mitigating spatiotemporal hallucinations in 3D and 4D content generation. Hallo4D introduces a generation-detection-correction paradigm that leverages large multimodal language models (LMMs) to identify and summarize spatial and temporal inconsistencies from multi-view and multi-frame renderings. These insights guide a consensus-driven image-space consistency optimization, where an LMM-based selector evaluates candidate corrections through multi-model voting, without requiring retraining or architectural modifications. To further improve temporal consistency and optimization efficiency, Hallo4D incorporates motion-aware keyframe sampling, LMM-guided initialization, and appearance alignment. We additionally introduce exposure-aware optimization and visibility pruning to enhance robustness under challenging viewpoints. Extensive experiments demonstrate that Hallo4D consistently outperforms strong baselines across diverse 3D and 4D generation settings, providing a scalable and generalizable solution for consistency-aware content generation.",
+      "authors": [
+        "Hongbo Wang",
+        "Huaibo Huang",
+        "Jie Cao",
+        "Jin Liu",
+        "Haoyang Tong",
+        "Ran He"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI"
+      ],
+      "published": "2026-07-14T13:19:06+00:00",
+      "link": "https://arxiv.org/pdf/2607.12752v1",
+      "tags": [
+        "keyword:sketch-to-D",
+        "query:sketch-to-D"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "mitigates spatial hallucinations for consistent multi-view 3D/4D generation",
+      "llm_evidence_cn": "缓解空间幻觉以实现一致的多视角三维/四维生成",
+      "llm_evidence": "缓解空间幻觉以实现一致的多视角三维/四维生成",
+      "canonical_evidence": "缓解空间幻觉以实现一致的多视角三维/四维生成",
+      "llm_tldr_en": "Hallo4D introduces a generation-detection-correction paradigm with multimodal language models to reduce spatial and temporal inconsistencies in 3D and 4D content generation.",
+      "llm_tldr_cn": "Hallo4D 针对三维和四维生成中普遍存在的空间与时间幻觉问题，提出了一种生成-检测-校正的统一框架。该方法利用多模态大语言模型检测生成内容中的不一致区域，并指导校正过程，显著提升了多视角生成和动态生成中的几何与身份一致性。实验在多个数据集上验证了其有效性，为艺术化三维内容创作中的一致性问题提供了通用解决方案。",
+      "llm_tldr": "Hallo4D 针对三维和四维生成中普遍存在的空间与时间幻觉问题，提出了一种生成-检测-校正的统一框架。该方法利用多模态大语言模型检测生成内容中的不一致区域，并指导校正过程，显著提升了多视角生成和动态生成中的几何与身份一致性。实验在多个数据集上验证了其有效性，为艺术化三维内容创作中的一致性问题提供了通用解决方案。",
+      "llm_tags": [
+        "query:sketch-to-d"
+      ],
+      "matched_query_tag": "query:sketch-to-d",
+      "matched_query_text": "maintaining multi-view consistency in artistic 3D generation",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2607.17519v1",
+      "source": "arxiv",
+      "title": "GEAR: Reconstruction of Classical Paintings via Geometry Grounding and Appearance Restitution",
+      "abstract": "Classical paintings preserve rich spatial, cultural, and historical content, making their reconstruction as explorable 3D scenes valuable for digital preservation, immersive exhibition, and cultural engagement. Yet, unlike photographs, they often depict scenes in a single-view, stylized manner, with weak perspective, lighting, and depth cues. Existing 3D reconstruction methods are largely built on natural-image priors, making it difficult to recover geometrically plausible and visually faithful 3D representations from such inputs. To address this challenge, we introduce Classical Painting-to-3D (CP3D), a new task that aims to recover a 3D representation from a single classical painting while jointly ensuring geometric plausibility, appearance fidelity to the source artwork, and plausible novel-view synthesis. We further propose GeAR, a training-free two-stage framework for Geometry Grounding and Appearance Restitution. GeAR first converts the input painting into a geometry-grounded representation with more coherent shading and illumination cues, improving the stability of 3D Gaussian reconstruction. It then restores artwork-faithful appearance across views under spatial constraints and multi-view consistency, recovering the painterly textures and details weakened during grounding. In addition, we construct HeriArch, a curated benchmark of 10,160 high-resolution classical artworks for systematic evaluation of CP3D. Extensive experiments and user studies show that GeAR consistently outperforms strong baselines in geometric plausibility, appearance fidelity, and human preference. Code and dataset will be released publicly.",
+      "authors": [
+        "Qinyu Zhang",
+        "Xinda Liu",
+        "Yunchen Li",
+        "Yunzhuo Liu",
+        "Chenxi Hu",
+        "Kang Li",
+        "Guohua Geng"
+      ],
+      "primary_category": "cs.MM",
+      "categories": [
+        "cs.MM"
+      ],
+      "published": "2026-07-20T03:53:52+00:00",
+      "link": "https://arxiv.org/pdf/2607.17519v1",
+      "tags": [
+        "keyword:sketch-to-D",
+        "query:sketch-to-D"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "directly reconstructs explorable 3D scenes from single classical paintings",
+      "llm_evidence_cn": "直接从单幅古典绘画重建可探索的三维场景",
+      "llm_evidence": "直接从单幅古典绘画重建可探索的三维场景",
+      "canonical_evidence": "直接从单幅古典绘画重建可探索的三维场景",
+      "llm_tldr_en": "Introduces CP3D task to recover 3D from classical paintings using geometry grounding and appearance restitution, handling stylized and weak cues.",
+      "llm_tldr_cn": "本文提出古典绘画到三维（CP3D）新任务，针对古典绘画单视角、风格化、透视和光照线索弱等问题，设计GEAR方法，结合几何接地与外观复原，从单幅古典绘画中恢复几何合理且视觉保真的三维场景表示，为数字保存和沉浸式展览提供支持。",
+      "llm_tldr": "本文提出古典绘画到三维（CP3D）新任务，针对古典绘画单视角、风格化、透视和光照线索弱等问题，设计GEAR方法，结合几何接地与外观复原，从单幅古典绘画中恢复几何合理且视觉保真的三维场景表示，为数字保存和沉浸式展览提供支持。",
+      "llm_tags": [
+        "query:sketch-to-d"
+      ],
+      "matched_query_tag": "query:sketch-to-d",
+      "matched_query_text": "single-image 3D reconstruction for artistic paintings",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2607.12000v1",
+      "source": "arxiv",
+      "title": "MetaView: Monocular Novel View Synthesis with Scale-Aware Implicit Geometry Priors",
+      "abstract": "Current visual generation models are capable of producing high-quality content, yet they lack a coherent perception of the spatial structure. Existing generative novel view synthesis methods typically introduce explicit geometry priors, which enforce spatial consistency but inherently restrict generalization in large view changes. In contrast, recent interactive generative methods favor implicit scene modeling, offering greater flexibility at the cost of precise camera control and geometry consistency. In this paper, we propose MetaView, a diffusion-based monocular novel view synthesis framework that enables rendering under large view changes from a single image. Our key insight is to combine implicit geometry modeling with minimal yet essential explicit 3D cues: we incorporate implicit geometry priors from a feed-forward geometry perception network to regularize structure without imposing restrictive reconstruction pipelines, while leveraging metric depth to anchor the generation to a metric scale. This design allows MetaView to achieve both geometry consistency and precise controllability. Extensive experiments demonstrate that, under challenging monocular large viewpoint changes, MetaView significantly outperforms existing methods and exhibits superior generalization. Our code is publicly available at https://github.com/KlingAIResearch/MetaView.",
+      "authors": [
+        "Yufei Cai",
+        "Xuesong Niu",
+        "Hao Lu",
+        "Kun Gai",
+        "Kai Wu",
+        "Guosheng Lin"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-07-13T17:51:32+00:00",
+      "link": "https://arxiv.org/pdf/2607.12000v1",
+      "tags": [
+        "keyword:sketch-to-D",
+        "query:sketch-to-D"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "diffusion-based monocular novel view synthesis from a single image, enabling large view changes and implicit geometry modeling",
+      "llm_evidence_cn": "基于扩散的单目新视角合成，从单张图像合成大视角变化的新视图，适用于绘画到3D任务",
+      "llm_evidence": "基于扩散的单目新视角合成，从单张图像合成大视角变化的新视图，适用于绘画到3D任务",
+      "canonical_evidence": "基于扩散的单目新视角合成，从单张图像合成大视角变化的新视图，适用于绘画到3D任务",
+      "llm_tldr_en": "MetaView proposes a diffusion-based framework for single-image novel view synthesis that combines implicit geometry modeling with minimal explicit priors to handle large viewpoint changes.",
+      "llm_tldr_cn": "MetaView 针对单图像新视角合成中显式几何先验限制大视角变化、隐式建模缺乏相机控制的问题，提出了结合隐式几何建模与最小显式先验的扩散框架。该方法从单张图像出发，能够渲染大视角变化下的高质量新视图，并保持几何一致性。实验表明其在多个数据集上优于现有方法，为艺术绘画的三维新视角合成提供了灵活且精确的解决方案。",
+      "llm_tldr": "MetaView 针对单图像新视角合成中显式几何先验限制大视角变化、隐式建模缺乏相机控制的问题，提出了结合隐式几何建模与最小显式先验的扩散框架。该方法从单张图像出发，能够渲染大视角变化下的高质量新视图，并保持几何一致性。实验表明其在多个数据集上优于现有方法，为艺术绘画的三维新视角合成提供了灵活且精确的解决方案。",
+      "llm_tags": [
+        "query:sketch-to-d"
+      ],
+      "matched_query_tag": "query:sketch-to-d",
+      "matched_query_text": "single-image 3D reconstruction for artistic paintings",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2607.11673v2",
+      "source": "arxiv",
+      "title": "ABot-3DWorld 0: A Universal World Model to Explore Any 3D Space",
+      "abstract": "We present ABot-3DWorld 0, a universal multimodal 3D world model that turns text, image, and video inputs into high-fidelity, explorable 3D worlds. At the heart of our framework is a unified Spatial Generative Primitive (SGP), a compact tuple of a high-quality panorama and a spatial point cloud that delivers an efficient description of any 3D space. Multimodal inputs are first lifted into this primitive; a 3D-consistent panoramic video generator then explores the primitive along a planned trajectory; finally, our panoramic video reconstruction engine converts the generated video into a clean, photorealistic 3D Gaussian Splatting (3DGS) world. This pipeline covers two regimes: rich inputs (multi-view sets, casual video) are lifted into the SGP through a geometry-rigorous recovery that mirrors the observed scene, while a single image or sentence is completed generatively into a creative world. The result is one low-barrier engine for general 3D content creation that further anchors generated worlds to geographic points of interest, enabling map-native spatial exploration at consumer scale. Experiments show that ABot-3DWorld 0 sets the state of the art among open-source methods and demonstrates stronger scene fidelity than Marble under rich multimodal inputs.",
+      "authors": [
+        "Mingchao Sun",
+        "Luyang Tang",
+        "Yu Liu",
+        "Xu Yan",
+        "Zhan Li",
+        "Yunwei Zhang",
+        "Fei Yu",
+        "Zengye Ge",
+        "Yumin Liu",
+        "Jiacheng Zhang",
+        "Yongchang Zhang",
+        "Jiawei Zhang",
+        "Zhicheng Liu",
+        "Zhongxu Sun",
+        "Tianjian Ouyang",
+        "Wenzheng Chen",
+        "Shixing Yang",
+        "Nianfei Fan",
+        "Guodong Sun",
+        "Huan Li",
+        "Zheng Zhou",
+        "Yongze Li",
+        "Yingliang Peng",
+        "Mengmeng Du",
+        "Yuan Liu",
+        "Haozhe Shi",
+        "Chunnuo Gong",
+        "Chengzhen Yu",
+        "Chunxue Jia",
+        "Yang Liu",
+        "Shiying Zeng",
+        "Junnan Lai",
+        "Hang Zhang",
+        "Ning Guo",
+        "Baoquan Chen",
+        "Mu Xu",
+        "Hongyu Pan"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-07-13T15:14:48+00:00",
+      "link": "https://arxiv.org/pdf/2607.11673v2",
+      "tags": [
+        "keyword:sketch-to-D",
+        "query:sketch-to-D"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "universal 3D world model with 3D Gaussian Splatting from single images, applicable to artistic painting reconstruction",
+      "llm_evidence_cn": "基于3D高斯泼溅的通用三维世界模型，可从单张图像生成，适用于艺术绘画重建",
+      "llm_evidence": "基于3D高斯泼溅的通用三维世界模型，可从单张图像生成，适用于艺术绘画重建",
+      "canonical_evidence": "基于3D高斯泼溅的通用三维世界模型，可从单张图像生成，适用于艺术绘画重建",
+      "llm_tldr_en": "ABot-3DWorld 0 turns text, image, or video into explorable 3D Gaussian Splatting worlds via a spatial generative primitive and panoramic video reconstruction.",
+      "llm_tldr_cn": "ABot-3DWorld 0 是一个通用多模态三维世界模型，通过空间生成原语和全景视频重建引擎，将文本、图像或视频输入转换为高保真、可探索的3D高斯泼溅世界。该框架支持从单一图像输入重建三维场景，具有三维一致性和真实的细节。在绘画类二维内容的三维化任务中，该模型有望作为基础工具，实现从平面艺术到三维空间的转换。",
+      "llm_tldr": "ABot-3DWorld 0 是一个通用多模态三维世界模型，通过空间生成原语和全景视频重建引擎，将文本、图像或视频输入转换为高保真、可探索的3D高斯泼溅世界。该框架支持从单一图像输入重建三维场景，具有三维一致性和真实的细节。在绘画类二维内容的三维化任务中，该模型有望作为基础工具，实现从平面艺术到三维空间的转换。",
+      "llm_tags": [
+        "query:sketch-to-d"
+      ],
+      "matched_query_tag": "query:sketch-to-d",
+      "matched_query_text": "3D Gaussian splatting reconstruction from drawing",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2607.13468v1",
+      "source": "arxiv",
+      "title": "HIVE-3D: Hierarchical Voxel Enhancement for High-Quality 3D Scene Generation",
+      "abstract": "Recently, a line of works can generate impressive 3D objects from a single image, but they are limited by restricted representation resolution, making them unsuitable for 3D scene generation. In this work, we introduce HIVE-3D, a novel method for high-quality 3D scene generation based on hierarchical voxel enhancement framework. Specifically, given a single scene image as input, we first produce a coarse initial scene, then introduce image segmentation and attention-based retrieval to align 2D image components with 3D scene components. Subsequently, we organize these scene relations into a hierarchical component tree, where nodes closer to the leaves denote finer-grained components. Finally, we propose a voxel super-resolution model that generates refined voxels for the target instance while maintaining strong consistency with the coarse voxels. Equipped with this model, we perform coarse-to-fine hierarchical super-resolution on images and voxels for each component, producing a high-resolution and high-quality 3D scene. Extensive experiments demonstrate that our method significantly outperforms previous approaches, achieving state-of-the-art performance.",
+      "authors": [
+        "Bin Zang",
+        "Wenting Zheng",
+        "Xiaoliang Luo",
+        "Zhiyuan Fang",
+        "Shi Li",
+        "Lvchun Wang",
+        "Wei Yu",
+        "Yi Zhao",
+        "Tian Xie",
+        "Yuchi Huo",
+        "Rengan Xie"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.LG"
+      ],
+      "published": "2026-07-15T05:56:34+00:00",
+      "link": "https://arxiv.org/pdf/2607.13468v1",
+      "tags": [
+        "keyword:sketch-to-D",
+        "query:sketch-to-D"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "single-image 3D scene generation applicable to illustrations",
+      "llm_evidence_cn": "单图生成3D场景，可应用于插画",
+      "llm_evidence": "单图生成3D场景，可应用于插画",
+      "canonical_evidence": "单图生成3D场景，可应用于插画",
+      "llm_tldr_en": "HIVE-3D generates high-quality 3D scenes from a single image using hierarchical voxel enhancement, improving resolution for scene-level reconstruction and enabling conversion of illustrations into 3D assets.",
+      "llm_tldr_cn": "针对单图三维场景生成分辨率受限的问题，HIVE-3D提出基于分层体素增强的框架，从单张场景图像生成高质量三维场景，可用于将插画等二维内容转换为三维资产，实验表明其在场景级重建上具有优越性。",
+      "llm_tldr": "针对单图三维场景生成分辨率受限的问题，HIVE-3D提出基于分层体素增强的框架，从单张场景图像生成高质量三维场景，可用于将插画等二维内容转换为三维资产，实验表明其在场景级重建上具有优越性。",
+      "llm_tags": [
+        "query:sketch-to-d"
+      ],
+      "matched_query_tag": "query:sketch-to-d",
+      "matched_query_text": "converting 2D illustrations into 3D assets",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}

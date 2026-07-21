@@ -1,0 +1,89 @@
+{
+  "date": "20260721",
+  "date_label": "",
+  "generated_at": "2026-07-21 21:38:04 UTC",
+  "recommend_exists": true,
+  "run_count": 1,
+  "papers": [
+    {
+      "paper_id": "2607.12752v1",
+      "route": "202607/21/2607.12752v1-hallo4d-multi-modal-hallucination-mitigation-for-consistent-spatio-temporal-generation",
+      "title": "Hallo4D: Multi-Modal Hallucination Mitigation for Consistent Spatio-Temporal Generation",
+      "section": "deep",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "sketch-to-d"
+        }
+      ],
+      "score": 9.0,
+      "evidence": "缓解空间幻觉以实现一致的多视角三维/四维生成",
+      "first_seen_at": "2026-07-21 21:38:04 UTC",
+      "updated_at": "2026-07-21 21:38:04 UTC"
+    },
+    {
+      "paper_id": "2607.17519v1",
+      "route": "202607/21/2607.17519v1-gear-reconstruction-of-classical-paintings-via-geometry-grounding-and-appearance-restitution",
+      "title": "GEAR: Reconstruction of Classical Paintings via Geometry Grounding and Appearance Restitution",
+      "section": "deep",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "sketch-to-d"
+        }
+      ],
+      "score": 9.0,
+      "evidence": "直接从单幅古典绘画重建可探索的三维场景",
+      "first_seen_at": "2026-07-21 21:38:04 UTC",
+      "updated_at": "2026-07-21 21:38:04 UTC"
+    },
+    {
+      "paper_id": "2607.12000v1",
+      "route": "202607/21/2607.12000v1-metaview-monocular-novel-view-synthesis-with-scale-aware-implicit-geometry-priors",
+      "title": "MetaView: Monocular Novel View Synthesis with Scale-Aware Implicit Geometry Priors",
+      "section": "deep",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "sketch-to-d"
+        }
+      ],
+      "score": 8.0,
+      "evidence": "基于扩散的单目新视角合成，从单张图像合成大视角变化的新视图，适用于绘画到3D任务",
+      "first_seen_at": "2026-07-21 21:38:04 UTC",
+      "updated_at": "2026-07-21 21:38:04 UTC"
+    },
+    {
+      "paper_id": "2607.11673v2",
+      "route": "202607/21/2607.11673v2-abot-3dworld-0-a-universal-world-model-to-explore-any-3d-space",
+      "title": "ABot-3DWorld 0: A Universal World Model to Explore Any 3D Space",
+      "section": "quick",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "sketch-to-d"
+        }
+      ],
+      "score": 7.0,
+      "evidence": "基于3D高斯泼溅的通用三维世界模型，可从单张图像生成，适用于艺术绘画重建",
+      "first_seen_at": "2026-07-21 21:38:04 UTC",
+      "updated_at": "2026-07-21 21:38:04 UTC"
+    },
+    {
+      "paper_id": "2607.13468v1",
+      "route": "202607/21/2607.13468v1-hive-3d-hierarchical-voxel-enhancement-for-high-quality-3d-scene-generation",
+      "title": "HIVE-3D: Hierarchical Voxel Enhancement for High-Quality 3D Scene Generation",
+      "section": "quick",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "sketch-to-d"
+        }
+      ],
+      "score": 7.0,
+      "evidence": "单图生成3D场景，可应用于插画",
+      "first_seen_at": "2026-07-21 21:38:04 UTC",
+      "updated_at": "2026-07-21 21:38:04 UTC"
+    }
+  ]
+}

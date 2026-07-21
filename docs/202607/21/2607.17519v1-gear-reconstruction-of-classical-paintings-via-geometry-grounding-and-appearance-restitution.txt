@@ -1,0 +1,442 @@
+Title: GEAR: Reconstruction of Classical Paintings via Geometry Grounding and Appearance Restitution
+
+URL Source: https://arxiv.org/pdf/2607.17519v1
+
+Published Time: Tue, 21 Jul 2026 01:27:00 GMT
+
+Number of Pages: 9
+
+Markdown Content:
+# GEAR: Reconstruction of Classical Paintings via Geometry Grounding and Appearance Restitution 
+
+# Qinyu Zhang 
+
+Northwest University Xi’an, Shaanxi, China 
+
+# Xinda Liu ∗
+
+liuxinda@nwu.edu.cn Northwest University Xi’an, Shaanxi, China 
+
+# Yunchen Li 
+
+Northwest University Xi’an, Shaanxi, China 
+
+# Yunzhuo Liu 
+
+Northwest University Xi’an, Shaanxi, China 
+
+# Chenxi Hu 
+
+Northwest University Xi’an, Shaanxi, China 
+
+# Kang Li 
+
+Northwest University Xi’an, Shaanxi, China 
+
+# Guohua Geng 
+
+Northwest University Xi’an, Shaanxi, China Reconstruction results 
+
+Why SOTA Methods Fail on CP3D 
+
+Input view Depth map 
+
+Flat shading 
+
+Symbolic layout 
+
+Erroneous depth cues 
+
+> 1
+> 2
+> 3
+> 3
+> 2
+> 1
+
+CP3D Task 
+
+Classic painting 
+
+Reconstruction 
+
+Plausible 
+
+geometry 
+
+Appearance 
+
+fidelity 
+
+Why it work s on Nature Image s
+
+Input view Depth map 
+
+Reconstruction results 
+
+> 1
+> 2
+
+Consistent perspective 
+
+Complex lighting feature 
+
+High -fidelity depth cues 
+
+> 3
+> 3
+> 1
+> 2
+
+Figure 1: Motivation of Classical Painting-to-3D (CP3D) and the domain gap between classical paintings and natural images. (a) CP3D aims to recover 3D structure from a classical painting while preserving appearance fidelity. (b) Paintings provide sparse, stylized, and inconsistent geometric cues, violating the assumptions of existing reconstruction methods. (c) Natural images provide physically consistent cues that support reliable 3D reconstruction. 
+
+## Abstract 
+
+Classical paintings preserve rich spatial, cultural, and historical content, making their reconstruction as explorable 3D scenes valu-able for digital preservation, immersive exhibition, and cultural engagement. Yet, unlike photographs, they often depict scenes in a single-view, stylized manner, with weak perspective, lighting, and depth cues. Existing 3D reconstruction methods are largely built on natural-image priors, making it difficult to recover geo-metrically plausible and visually faithful 3D representations from such inputs. To address this challenge, we introduce Classical Painting-to-3D (CP3D) , a new task that aims to recover a 3D rep-resentation from a single classical painting while jointly ensuring 
+
+> ∗Corresponding author.
+
+geometric plausibility, appearance fidelity to the source artwork, and plausible novel-view synthesis. We further propose GeAR , a training-free two-stage framework for Geometry Grounding and Appearance Restitution. GeAR first converts the input painting into a geometry-grounded representation with more coherent shading and illumination cues, improving the stability of 3D Gaussian re-construction. It then restores artwork-faithful appearance across views under spatial constraints and multi-view consistency, recov-ering the painterly textures and details weakened during ground-ing. In addition, we construct HeriArch , a curated benchmark of 10,160 high-resolution classical artworks for systematic evaluation of CP3D. Extensive experiments and user studies show that GeAR consistently outperforms strong baselines in geometric plausibility, arXiv:2607.17519v1 [cs.MM] 20 Jul 2026 MM ’26, November 10–14, 2026, Rio de Janeiro, Brazil Qinyu Zhang, Xinda Liu, Yunchen Li, Yunzhuo Liu, Chenxi Hu, Kang Li, and Guohua Geng 
+
+appearance fidelity, and human preference. Code and dataset will be released publicly. 
+
+## CCS Concepts 
+
+• Applied computing → Arts and humanities ; • Computing methodologies → Computer vision problems .
+
+## Keywords 
+
+Classical Painting-to-3D, 3D Gaussian Splatting, Cultural Heritage 
+
+## 1 Introduction 
+
+Classical paintings are enduring visual records of lost worlds, pre-serving not only people and events but also how past cultures organized space, ritual, and everyday life. Reconstructing them as explorable 3D scenes is therefore valuable not only for recovering the spatial experience embedded in the artwork, but also for sup-porting digital preservation, immersive exhibition, and new forms of cultural engagement [ 6, 23 , 33 ]. Unlike photographs, however, classical paintings often rely on flattened composition, stylized perspective, and symbolic depiction rather than physically consis-tent scene geometry [ 20 , 22 ]. Consequently, their reconstruction cannot be handled by directly applying existing single-image 3D reconstruction methods developed for natural images. Motivated by this mismatch, we introduce a new task, Classical Painting-to-3D ( CP3D ), for inferring a plausible 3D representation from a single classical painting. CP3D requires a 3D representation that jointly satisfies geometric plausibility and appearance fidelity to the source painting, while enabling plausible novel-view synthe-sis (Fig. 1 (a)). This dual requirement makes CP3D fundamentally different from standard single-image 3D reconstruction, which as-sumes to be a camera observation of a real, physically consistent 3D scene rather than a planar depiction shaped by artistic intent and stylized representation. This difference makes reliable geometry recovery in CP3D partic-ularly challenging, since the available spatial cues are often weak, stylized, and ambiguous. As shown in Fig. 1 (b), classical paint-ings frequently exhibit flattened shading, symbolic layout, and misleading depth cues, making perspective, illumination, and spa-tial structure difficult to interpret in physically consistent terms. By contrast, natural images usually offer more coherent perspec-tive, richer illumination variation, and stronger depth cues, as il-lustrated in Fig. 1 (c). Existing monocular reconstruction models [18 , 21 , 25 , 32 ] therefore struggle in the CP3D setting because their underlying assumptions, including photometric consistency, physi-cally grounded image formation, and natural-image statistics, are frequently violated in classical paintings. To address this tension, we propose GeAR , a training-free frame-work for Ge ometry Grounding and Appearance Restitution. The key insight of GeAR is that the representation best suited for stable geometry recovery is not necessarily the one that best preserves the painterly appearance of the source artwork. In classical paintings, the visual patterns that obstruct physically grounded reconstruction often remain essential to brushwork, texture, and stylistic identity. GeAR therefore does not force a single representation to simulta-neously maximize structural recoverability and painterly fidelity. Instead, it assigns these two requirements to different stages of the reconstruction pipeline. Geometry Grounding first transforms the input painting into a geometry-oriented representation with more coherent shading and illumination cues, reducing ambiguity introduced by stylized depiction and enabling a pretrained recon-struction model to infer a more stable 3D representation. Because this process may attenuate fine textures and painterly details, GeAR then performs Appearance Restitution on the grounded 3D scene under spatial constraints and multi-view consistency, restoring the visual characteristics weakened during grounding while preserving the recovered structure. This design improves geometric stability without collapsing the reconstructed result toward a natural-image appearance, while retaining the visual identity of the original paint-ing throughout the reconstruction process. To support systematic study of CP3D, we construct HeriArch ,a large-scale benchmark for classical painting-to-3D reconstruc-tion. Existing cultural-heritage datasets [ 13 , 29 , 31 ] mainly focus on 2D restoration and preservation, and are therefore not suitable for evaluating 3D reconstruction from classical planar artworks. By con-trast, HeriArch contains 10,160 high-resolution images spanning murals, ukiyo-e prints, and religious paintings, covering diverse artistic styles, compositional conventions, and degrees of geometric ambiguity. This diversity makes HeriArch a suitable testbed for systematic evaluation of CP3D across varied artistic conventions and levels of geometric ambiguity. Our contributions can be summarized as follows: 
+
+• We introduce Classical Painting-to-3D (CP3D) , a new problem setting for inferring a plausible 3D representation from a single classical painting while jointly enforcing geometric plausibility and fidelity to the source artwork. 
+
+• We propose GeAR , a training-free framework that improves geometric recoverability by grounding classical paintings into a geometry-oriented representation, and restores painterly fidelity by recovering artwork-faithful appearance on the grounded 3D scene. 
+
+• We construct HeriArch , a 10,160-image benchmark for system-atic evaluation of CP3D, and show through extensive qualitative, quantitative, and human evaluations that GeAR achieves more sta-ble geometry and more faithful appearance than strong baselines. 
+
+## 2 Related Work 
+
+Neural Single-Image 3D Reconstruction. Reconstructing 3D scenes from a single image is a fundamental yet ill-posed task in computer vision, owing to missing depth cues and occluded geometry [ 4 , 9 ]. Existing methods often adopt either neural implicit representations [ 15 , 17 , 21 ] or point-based explicit approaches [ 3, 7,10 ]. NeRF [ 15 ] models continuous 3D scenes via MLPs but struggles under sparse-view inputs. Recent extensions introduce structural priors for regularization, such as depth smoothing [ 17 ], visibility priors [ 21 ], and frequency constraints [ 32 ]. In parallel, monocular 3D Gaussian Splatting (3DGS) is gaining traction. Splatter Image [ 26 ] maps pixels to Gaussians in a feed-forward manner. Flash3D [ 25 ] predicts layered Gaussians for occlusion modeling. Triplane-based approaches [ 19 ] and transformer-based pipelines [ 18 ] further improve efficiency. However, these methods are largely developed for natural images and typically assume physically consistent scene geometry, perspective, and appearance cues, assumptions that may not hold for classical or heritage paintings. GEAR: Reconstruction of Classical Paintings via Geometry Grounding and Appearance Restitution MM ’26, November 10–14, 2026, Rio de Janeiro, Brazil I
+
+Geometry Grounding 
+
+Ig
+
+3D 
+
+Reconstruction 
+
+Classic 
+
+Painting 
+
+Grounded 
+
+Image 
+
+Sg
+
+Appearance Restitution 
+
+Gaussian 
+
+Scene 
+
+Gaussian 
+
+Scene 
+
+（1）Geometry Grounding （2）Appearance Restitution 
+
+I Iedge 
+
+Style 
+
+Transfer G
+
+Is Ls
+
+Tg
+
+Luminance 
+
+Extraction 
+
+R
+
+Mult -scale 
+
+Blending 
+
+Rfinal 
+
+I
+
+Lout 
+
+A
+
+Ig
+
+# ⊕
+
+high -frequency 
+
+Sg
+
+𝑅 𝑘 = ෑ(𝑆𝑔 , 𝜋 𝑘 ) Diffusion 
+
+Model 
+
+𝐼 𝑘 
+
+~
+
+𝐼 𝑘 
+
+~
+
+𝑅 𝑘 Gaussian Refinement 
+
+Anchor -constrained 
+
+Adaptive 
+
+Gain 
+
+𝛼 ms 
+
+Smooth 
+
+Luminance 
+
+Extraction 
+
+መ𝑆 
+
+መ𝑆 
+
+Editing 
+
+Figure 2: Overview of GeAR. We first perform Geometry Grounding to transform a classical painting into a geometry-oriented representation for stable 3D reconstruction, yielding a grounded Gaussian scene S𝑔 . We then apply Appearance Restitution, where multi-view targets guided by a source-derived prompt are used to refine the scene via anchor-constrained optimization. The final result S∗ is both geometrically plausible and faithful to the original artwork. Generative 3D via Diffusion and Latent Priors. Diffusion mod-els and latent priors have recently been exploited for 3D reconstruc-tion. SiTH produces unseen-view textures and recovers textured meshes [ 8 ], while Diffusion - FOF models Fourier Occupancy Fields for joint geometry and appearance. VideoScene distills video diffu-sion into a one-shot 3D scene generator [ 28 ], and DRiVE creates riggable 3D Gaussians from a single image [ 24 ]. Other notable methods include RenderDiffusion, which integrates rendering into the denoiser to enforce multi-view consistency [ 1]. LN3Diff, which diffuses over a compact latent 3D space for fast monocular recon-struction and generation [ 11 ], and DiffRF, which directly generates volumetric radiance fields under rendering guidance [ 16 ]. These approaches are also primarily developed for natural-image domains, and their assumptions may not transfer directly to heritage imagery with non-physical perspective and artist-mediated structure. 
+
+Artistic and Heritage Image Datasets. Existing cultural her-itage datasets, including MuralDH [ 31 ], DunHuang-Mural [ 29 ], and ARMCD [ 13 ], mainly focus on 2D restoration problems and there-fore provide annotations such as synthetic degradations, restoration targets, or segmentation masks rather than explicit 3D structural supervision. This design makes them valuable for preservation-oriented image restoration, but less suitable for studying monocular 3D reconstruction. In addition, their samples often contain repeated content, local crops, or region-specific annotations, which weakens the global compositional and spatial cues needed for geometric reasoning. HeriArch is constructed to fill this gap. It is a large-scale benchmark designed for monocular 3D reconstruction from her-itage imagery, containing unique samples with diverse artistic styles and cultural backgrounds. To the best of our knowledge, HeriArch is the first large-scale benchmark for evaluating monocular 3D re-construction across a broad spectrum of non-photorealistic heritage artworks. HeriArch offers a more suitable testbed for 3D-aware cultural heritage analysis thanks to its non-redundant samples, stylistic diversity, and consistent benchmark setting. 
+
+## 3 Method 
+
+We first formalize the Classical Painting-to-3D (CP3D) task and then present GeAR, a training-free framework that decomposes recon-struction into geometry grounding and appearance restitution. The key idea is to avoid forcing a single representation to simultaneously maximize geometric recoverability and painterly fidelity. Instead, GeAR first converts the input painting into a geometry-oriented representation that is more suitable for stable 3D reconstruction, and then restores artwork-faithful appearance on the recovered 3D scene under structural constraints. 
+
+## 3.1 Problem Formulation 
+
+Given a single classical painting I ∈ R𝐻 ×𝑊 ×3, CP3D aims to recover a 3D scene representation ˆS that supports plausible novel-view rendering while remaining faithful to the source artwork: 
+
+ˆS = {𝑔 𝑖 }𝑁 𝑖 =1, (1) where 𝑁 denotes the number of Gaussian primitives, and each primitive 𝑔 𝑖 is parameterized by its center, scale, rotation, opacity, and appearance attributes. Let Π(S, 𝜋 ) denote the differentiable rendering of a Gaussian scene S under camera pose 𝜋 .Unlike conventional single-image 3D reconstruction, CP3D takes as input an artist-mediated planar depiction rather than a physical MM ’26, November 10–14, 2026, Rio de Janeiro, Brazil Qinyu Zhang, Xinda Liu, Yunchen Li, Yunzhuo Liu, Chenxi Hu, Kang Li, and Guohua Geng 
+
+observation of a geometrically consistent 3D scene. Consequently, perspective, shading, and depth cues in the painting may be styl-ized, ambiguous, or internally inconsistent, making reliable geome-try inference difficult. At the same time, the reconstructed scene should remain faithful to the painterly appearance of the source artwork. CP3D therefore requires jointly satisfying two objectives: recovering geometrically plausible scene structure from an under-constrained painting and preserving fidelity to the source artwork in the rendered appearance. 
+
+## 3.2 GeAR 
+
+Our proposed GeAR consists of two components, as illustrated in Figure 2: Ge ometry Grounding and Appearance Restitution. Ge-ometry Grounding first improves geometric recoverability from classical paintings, whose structural, shading, and illumination cues are often weak, stylized, or unreliable for direct 3D reconstruction. Specifically, the input painting is mapped to a geometry-oriented representation that provides more coherent cues for pretrained monocular reconstruction, thereby producing an initial 3D scene with stabilized geometry. Appearance Restitution then restores the painterly appearance and artwork-specific details that may be weakened during geometry grounding. Specifically, the grounded 3D scene is refined with view-aligned appearance targets and con-strained Gaussian refinement, thereby recovering fidelity to the source artwork while preserving the grounded geometry. 
+
+3.2.1 Geometry Grounding. The goal of Geometry Grounding is to stabilize 3D reconstruction from an underconstrained painting by constructing a geometry-oriented intermediate representation with more coherent structural and illumination cues. This stage is not intended to preserve the final artwork appearance. Instead, it focuses on suppressing depiction-specific ambiguities that would otherwise be absorbed into the recovered geometry. 
+
+Structure-preserving geometry translation. A straightfor-ward translation from paintings to a more natural-image-like do-main may alter composition or distort object boundaries, which is undesirable because subsequent 3D recovery depends strongly on spatial layout. To preserve scene layout during translation, we first extract a contour-based structural prior: 
+
+Iedge = 𝑓 edge (I), (2) where 𝑓 edge (·) denotes an edge detector applied to the input paint-ing. The resulting contour map preserves object boundaries and coarse scene organization, which serve as structural guidance dur-ing translation. Conditioned on this structural prior, we then gen-erate a geometry-oriented image: 
+
+I𝑠 = 𝐺 (Iedge , I,𝑇 𝑔 ), (3) where 𝐺 (·) denotes a text-guided image translation model, and 𝑇 𝑔 
+
+is a prompt that encourages physically coherent shape, shading, and illumination cues. This translation is not intended to beautify the painting, but to suppress depiction-specific ambiguity while retaining the original compositional structure. The translated im-age therefore provides a more suitable input for downstream 3D reconstruction. 
+
+Illumination grounding. Building on the structure-preserving translated image, we further improve geometric recoverability by grounding its illumination cues. Because monocular 3D reconstruc-tion depends strongly on shading and luminance structure, this step regularizes the translated image toward more spatially coher-ent illumination, yielding a more reliable input for downstream reconstruction. Let 𝐿 𝑠 denote the luminance of the translated image I𝑠 after linearization to the radiance domain. We first compute a log-ratio illumination field: 
+
+𝑅 = log (𝐿 𝑠 + 𝜀 ) − log (gmean (𝐿 𝑠 + 𝜀 )) , (4) where 𝜀 > 0 avoids numerical instability, and gmean (·) denotes the geometric mean over all pixels. The resulting ratio field 𝑅 cap-tures relative illumination variation while reducing sensitivity to the global intensity scale. We then apply local mean filtering to obtain a smoothed ratio field that enforces spatial consistency in illumination variation. For each pixel 𝑝 , the smoothed ratio field is computed as: 
+
+𝑅 smooth (𝑝 ) = 1
+
+|Ω(𝑝 )| ∑︁ 𝑞 ∈Ω (𝑝 )
+
+𝑅 (𝑞 ), (5) where 𝑝 indexes a pixel location, Ω(𝑝 ) denotes the local filter win-dow centered at 𝑝 , 𝑞 indexes pixels inside that window, and |Ω(𝑝 )| 
+
+is the number of pixels in Ω(𝑝 ). To balance global illumination consistency against local structural detail, we further refine 𝑅 smooth 
+
+in a multi-scale, boundary-aware manner. Specifically, we construct an illumination pyramid to capture global trends at coarse scales and local shading variations at fine scales, while deriving inverse boundary weights from the edge map to suppress halo artifacts near structural boundaries. The resulting multi-scale estimate is denoted by 𝑅 ms . A fixed fusion weight cannot accommodate the large variation in illumination contrast across paintings: it tends to over-regularize some cases while under-regularizing others. We therefore adapt the fusion strength on a per-image basis. 
+
+Adaptive Gain Control. To this end, we introduce an adaptive gain control mechanism that regulates the fusion strength accord-ing to the global contrast of the multi-scale illumination estimate. Specifically, we measure the global contrast of the multi-scale ratio field using its standard deviation: 
+
+𝜎 𝑅 = std (𝑅 ms ), (6) which quantifies the overall contrast of the multi-scale illumination estimate. We then define an adaptive fusion weight as: 
+
+˜𝛼 ms = 𝛼 base · 𝛼 target 
+
+𝜎 𝑅 + 𝜀 , (7) where 𝛼 base is the base fusion strength, 𝛼 target denotes the target contrast level, and 𝜀 > 0 is a small constant for numerical stability. To ensure stable adaptation, we constrain the fusion weight to lie within a bounded range: 
+
+𝛼 ms = clip ( ˜𝛼 ms , 𝛼 min , 𝛼 max ), (8) where clip (· , ·, ·) restricts the fusion weight to [𝛼 min , 𝛼 max ] for nu-merical stability and perceptual coherence. This form inversely scales the fusion weight with the contrast of 𝑅 ms , so that images with stronger illumination variation receive weaker smoothing, while flatter cases receive stronger regularization. The final illumi-nation ratio is then obtained as 
+
+𝑅 final = 𝛼 ms 𝑅 ms + ( 1 − 𝛼 ms )𝑅 smooth . (9) GEAR: Reconstruction of Classical Paintings via Geometry Grounding and Appearance Restitution MM ’26, November 10–14, 2026, Rio de Janeiro, Brazil 
+
+Notably, 𝛼 𝑚𝑠 is not confined to [0, 1]. When 𝛼 𝑚𝑠 > 1, Eq. (9) per-forms controlled extrapolation instead of convex blending, which empirically amplifies informative illumination in flat paintings. 
+
+Illumination-consistent reconstruction. We then reconstruct a geometry-grounded image in the linear radiance domain by com-bining the grounded illumination with reflectance estimated from the original painting. Let 𝐿 denote the luminance of the original painting after linearization. We recover the grounded illumination map by injecting the refined illumination ratio in the log domain: 
+
+𝐿 out = exp   log 𝐿 + 𝛽 𝑅 final 
+
+, (10) where 𝛽 controls the strength of illumination grounding. We esti-mate the reflectance map 𝐴 from the original painting by dividing its linearized RGB values by the original luminance: 
+
+𝐴 = Linearize (I)
+
+𝐿 + 𝜀 , (11) where 𝜀 > 0 ensures numerical stability. The grounded linear image is then reconstructed by combining the preserved reflectance with the grounded illumination: 
+
+I𝑔, linear = 𝐴 ⊙ 𝐿 out . (12) To recover fine brushwork and local texture, we extract high-frequency components from the original artwork and add them back: 
+
+I𝑔 = I𝑔, linear + HF (Linearize (I)) , (13) where HF (·) denotes a high-frequency extraction operator. The resulting grounded image I𝑔 is finally fed into a pretrained monocu-lar 3D reconstruction network [ 30 ] to obtain a grounded Gaussian scene S𝑔 . In practice, this grounded input yields more stable geom-etry than reconstructing directly from the original painting. 
+
+3.2.2 Appearance Restitution. Although Geometry Grounding im-proves structural stability, it does not fully preserve the appearance of the original artwork. In particular, the grounding process tends to suppress high-frequency visual patterns that may be geometrically unreliable but remain essential to painterly appearance. Naively restoring each view independently in 2D is insufficient, because the resulting edits often introduce severe cross-view inconsistency when used as supervision for 3D refinement. To resolve this issue, we restore appearance directly on the grounded 3D scene through multi-view refinement under geometric constraints. 
+
+Multi-view appearance target generation. We first render the grounded scene S𝑔 from a set of sampled viewpoints {𝜋 𝑘 }𝑛 𝑘 =1:
+
+R𝑘 = Π(S𝑔 , 𝜋 𝑘 ), 𝑘 = 1, . . . , 𝑛. (14) These rendered views provide geometrically consistent observa-tions of the grounded scene under known camera poses. We then edit each rendered view with an appearance-oriented diffusion model [2] to recover artwork-faithful texture and style: 
+
+˜I𝑘 = 𝐷 (R𝑘 ,𝑇 𝑎 ), (15) where 𝐷 (·) denotes the diffusion-based appearance editing model, and 𝑇 𝑎 is an appearance prompt derived from the source painting to encourage preservation of its artwork-specific texture, style, and se-mantic content. Because each target ˜I𝑘 is generated from a rendered view R𝑘 under a known camera pose, it preserves the coarse layout and viewpoint of the current 3D representation. These restored views therefore serve as approximately view-aligned appearance targets for subsequent 3D refinement. 
+
+Geometry-preserving appearance refinement. We then lever-age GaussianEditor [ 5] to refine the Gaussian representation so that its rendered views match the appearance-restored targets while preserving the grounded geometry. Formally, starting from the grounded initialization S𝑔 , we obtain the final representation ˆS by optimizing: 
+
+ˆS = arg min 
+
+> S
+> 𝑛
+
+∑︁ 
+
+> 𝑘 =1
+
+Ledit 
+
+ Π(S, 𝜋 𝑘 ), ˜I𝑘 
+
+ + 𝜆 anc Lanchor (S, S𝑔 ), (16) where Ledit encourages the rendered appearance of S to match the restored view targets, while Lanchor regularizes the optimization toward the grounded initialization S𝑔 to suppress geometric drift. In practice, the anchor term suppresses large geometric drift and keeps the refinement focused on texture, color, and painterly detail rather than structural change. 
+
+## 4 The HeriArch Dataset 
+
+The HeriArch dataset is a comprehensive collection of 10,160 unique images of classical hand-painted artworks, spanning from the 3rd to the 20th century and encompassing over 17 centuries of artistic evolution. This dataset encompasses a broad spectrum of artistic styles and traditions, offering an invaluable resource for research on style consistency and geometric structure recovery in cultural heritage artworks. The dataset is organized into several key subsets, each representing a distinct artistic tradition: (1) Mural: 2,361 im-ages, including 1,591 from the DhMural dataset [ 14 ] and additional murals from Dunhuang, China. (2) Court Ladies Paintings: 775 de-pictions of historical court life from the Tang to Qing dynasties. (3) Tibetan Thangka: 1,783 images spanning 13 centuries, illustrating the evolution of Tibetan Buddhist art. (4) Indian Art: 709 artworks from the 18th–20th centuries, sourced from the Smithsonian Insti-tution, showcasing three centuries of Indian artistic development. (5) Ukiyo-e: 4,241 Japanese woodblock prints from the Edo period, documenting the transition from monochrome sumi-e to multicolor 
+
+nishiki-e . (6) Persian Miniature: 291 classical Persian manuscripts and illuminated paintings from the Safavid and Timurid eras. Refer to Appendix Section 2 for details. 
+
+## 5 Experiments 5.1 Experimental Setup 
+
+Evaluation Protocol and Metrics. Since ground-truth novel views are unavailable for classical paintings, CP3D cannot be adequately evaluated with a single family of metrics. We therefore evaluate the final reconstructions from two complementary perspectives: 
+
+geometric plausibility and artwork fidelity . For geometric plausibil-ity, we report two geometry-oriented metrics, Volumetric Extent and Normal Directional Diversity (VEND) and Depth Detail Integrity 
+
+(DDI), computed on the final outputs to assess whether the recov-ered geometry remains plausible after the full two-stage pipeline. For artwork fidelity, we conduct a texture-focused MLLM evalua-tion and a human study on the final reconstructions to assess how well they preserve the painterly appearance of the source artwork and their overall perceptual preference. (1) VEND measures both the MM ’26, November 10–14, 2026, Rio de Janeiro, Brazil Qinyu Zhang, Xinda Liu, Yunchen Li, Yunzhuo Liu, Chenxi Hu, Kang Li, and Guohua Geng 
+
+Method VEND ↑ DDI 15 ◦ ↑ DDI 30 ◦ ↑ DDI 45 ◦ ↑ DDI 60 ◦ ↑ DDI 75 ◦ ↑ DDI 90 ◦ ↑ DDI 𝑎𝑣𝑔 ↑
+
+SplatterImage [26] 66.65 4.11 4.03 3.96 3.82 3.90 3.18 3.83 LGM [27] 73.84 5.67 4.98 4.16 4.23 4.47 4.56 4.68 TRELLIS [30] 77.64 6.35 6.30 6.58 6.96 8.12 9.82 7.37 GeAR (Ours) 85.29 10.66 10.56 10.62 10.87 11.29 12.29 11.05 Table 1: Quantitative comparison on final reconstructions. We report geometry-oriented metrics on the final outputs to evaluate whether the recovered geometry remains plausible after the full two-stage pipeline. 
+
+volumetric extent of the reconstructed shape and the directional di-versity of surface normals, thereby reflecting global structural plau-sibility and local geometric variation. Higher VEND scores indicate reconstructions with less flattening and richer surface-orientation diversity. (2) DDI evaluates the integration of local surface detail and global volumetric structure by combining high-frequency geo-metric variation with shape anisotropy. Higher DDI values indicate that the reconstruction preserves finer depth variations while main-taining stable three-dimensional structure across viewpoints. (3) Inspired by [ 12 ], we conduct a texture-focused MLLM evaluation on the final reconstructions to assess how well they preserve the texture and painterly appearance of the source painting. (4) We additionally conduct a human study on the final reconstructions to assess overall perceptual quality and human preference. The study involves over 300 participants, and each sample is evaluated at least 30 times in total under randomized presentation. Detailed definitions of VEND, DDI, and the full evaluation protocols are provided in the appendix. Implementation details. Unless otherwise specified, we use the same settings across all experiments. For 3D reconstruction, we use TRELLIS as the pretrained monocular reconstruction backbone. For metric computation, each reconstructed scene is rendered from six offset viewpoints at 15 ◦, 30 ◦, 45 ◦, 60 ◦, 75 ◦, and 90 ◦ relative to the input view. In Geometry Grounding, we set 𝛼 base = 0.8, 𝛼 target = 1.0,
+
+𝛼 min = 0.4, and 𝛼 max = 1.5. In Appearance Restitution, we render 
+
+𝑛 = 7 viewpoints from the grounded Gaussian scene to construct multi-view appearance targets. The rendered views of each painting are edited using the same source-derived appearance prompt 𝑇 𝑎 ,and the edited views are used to supervise Gaussian refinement with GaussianEditor. Detailed hyperparameter settings, including the anchor weight 𝜆 anc , the number of refinement iterations, and other implementation details, are provided in the appendix. 
+
+Comparison with SOTA methods. Since CP3D is a new setting and no prior method is designed specifically for monocular 3D reconstruction of classical hand-painted artworks, we compare GeAR with three strong monocular 3D reconstruction baselines based on 3D Gaussian representations: SplatterImage [ 26 ], LGM [ 27 ], and TRELLIS [ 30 ]. All baselines are evaluated using their official or publicly released inference pipelines on the same test set and input resolution for fair comparison. 
+
+## 5.2 Quantitative Evaluation of Geometric Plausibility 
+
+GeAR achieves the best geometry-oriented performance on the final reconstructions, as shown in Table 1. Compared with TREL-LIS, GeAR improves VEND from 77.64 to 85.29 and increases the average DDI from 7.37 to 11.05, with consistent gains across all Cultural Heritage Specialists  
+
+> 3D Rendering Experts
+> General Participants
+> 10%
+> 85%
+> 5%
+> (a) Expertise Distribution
+> Splatter
+> LGM
+> TRELLIS
+> GeAR
+> 4% 6%
+> 17%
+> 73%
+> (b) Preference Distribution
+
+Figure 3: (a) Distribution of participants across three exper-tise groups; (b) Distribution of participant preferences among the evaluated methods. 
+
+viewpoint offsets. These results indicate that GeAR produces final reconstructions with stronger volumetric plausibility and richer depth variation under novel views. The improvements also suggest that the geometric gains introduced by Geometry Grounding are preserved after Appearance Restitution, rather than being degraded by the final refinement stage. Overall, the results show that GeAR achieves more plausible final geometry than strong monocular 3D reconstruction baselines in the CP3D setting. Method TF ↑ GA ↑ VC ↑ AC ↑
+
+SplatterImage [26] 6.12 3.32 3.92 4.36 LGM [27] 4.35 2.79 4.25 4.11 TRELLIS [30] 5.92 6.54 6.55 5.52 GeAR w/o AR 7.97 7.43 7.14 7.29 GeAR w/ AR 8.71 8.03 7.95 7.97 Table 2: The results of different methods evaluated by MLLMs on four appearance dimensions. AR denotes Appearance Restitution. 
+
+## 5.3 MLLM-Based Evaluation of Appearance Fidelity 
+
+Geometric metrics alone are insufficient to assess the perceptual quality of the final reconstruction. Table 2 therefore reports an additional evaluation of the final outputs using a blind MLLM judge following the LLM-as-a-judge paradigm [ 12 ], with randomized method order and four evaluation dimensions: Texture Fidelity (TF), Geometric Accuracy (GA), View Consistency (VC), and Aesthetic Consistency (AC). GeAR with Appearance Restitution achieves the best performance on all four dimensions. The gain in TF indicates that Appearance Restitution restores artwork-specific textures and painterly details weakened during Geometry Grounding, while the improvements in GA and VC suggest that the restored appearance remains compatible with the grounded geometry. The higher AC further indicates stronger overall perceptual coherence. Together, these results show that GeAR achieves a better overall balance between geometric plausibility and artwork fidelity in the final reconstruction. GEAR: Reconstruction of Classical Paintings via Geometry Grounding and Appearance Restitution MM ’26, November 10–14, 2026, Rio de Janeiro, Brazil Splatter [ 26Image ] LGM [ 27 ] GEAR TRELLIS [ 30] (Ours) 
+
+Figure 4: Comparisons of generated 3D Gaussians for image-to-3D. Including Mural, Indian Art, Persian Miniature, Court Ladies Paintings, Tibetan Thangka, and Ukiyo-e. Our method generates Gaussian splatting with better visual quality on various challenging hand-painted artworks. Additional visual results are available in Appendix. 
+
+## 5.4 User Study 
+
+We conducted a comprehensive user study involving over 300 par-ticipants, including 29 experts in 3D rendering and 15 specialists in cultural heritage. The goal was to compare different monocu-lar 3D reconstruction methods for hand-painted artworks based on user preference. Specifically, we randomly sampled 300 clas-sic hand-painted artworks from the HeriArch Dataset and gener-ated corresponding monocular 3D reconstructions using various methods. The reconstructed results were randomly shuffled and presented to participants, who were asked to evaluate them from three perspectives: perceived depth realism, aesthetic quality, and overall preference based on personal intuition. As shown in Fig-ure 3, GeAR received overwhelmingly positive feedback, being strongly preferred by participants for its significant improvement in reconstruction quality. 
+
+## 5.5 Qualitative Results 
+
+We compare GeAR with recent monocular image-to-3D Gaussian reconstruction methods. Figure 4 presents rendered results from the reconstructed 3D models under different viewpoints. GeAR achieves better preservation of artistic details such as figure posture, fabric folds, and object structure. SplatterImage and TRELLIS lose sub-stantial detail, particularly in complex regions such as faces and clothing, while LGM recovers some structure but remains blurry and distorted in high-frequency areas. In contrast, GeAR produces more accurate geometry, preserves local details more effectively, and maintains better global shape consistency. It also recovers light-ing variation and material appearance more faithfully, especially in shadow transitions, fabric reflections, and object glossiness. Overall, GeAR produces more stable and visually faithful reconstructions than competing methods. MM ’26, November 10–14, 2026, Rio de Janeiro, Brazil Qinyu Zhang, Xinda Liu, Yunchen Li, Yunzhuo Liu, Chenxi Hu, Kang Li, and Guohua Geng 
+
+## 5.6 Ablation Study 
+
+In this section, we perform ablation studies to examine the contri-bution of key components in GeAR. Unless otherwise specified, all results are reported on the final reconstructions. For analy-ses related to Geometry Grounding, we additionally report NIQE on the grounded intermediate as a supplementary diagnostic of natural-image compatibility rather than a holistic metric of final CP3D quality, since Appearance Restitution intentionally restores painting-specific textures and stylistic patterns that may deviate from natural-image statistics. (a) Original Image      
+
+> (b)GeAR w/o Appearance Restitution
+> (c)GeAR w/Appearance Restitution
+
+Figure 5: Qualitative Comparison of Reconstruction Results W/ and W/o Appearance Restitution 
+
+Method VEND ↑ DDI 𝑎𝑣𝑔 ↑ NIQE 𝑎𝑣𝑔 ↓
+
+GeAR w/o AR 85.84 6.68 4.75 
+
+GeAR w/ AR 87.61 10.24 6.12 
+
+Table 3: Stage-wise ablation of GeAR on 1000 samples. We report VEND, DDI, and NIQE for the output w/ or w/o Ap-pearance Restitution. Stage-wise Effect of Appearance Restitution. We conduct a stage-wise ablation on 1000 samples to examine the role of the two stages in GeAR. Specifically, we compare the grounded out-put without Appearance Restitution and the final reconstruction with Appearance Restitution, using both quantitative metrics in Table 3 and qualitative comparisons in Figure 5. As shown in Ta-ble 3, adding Appearance Restitution improves both VEND and DDI, indicating that the second stage preserves and further enhances geometric plausibility after Geometry Grounding. This behavior is also visually consistent with Figure 5: the grounded result exhibits more stable structure but loses part of the original painterly texture, while Appearance Restitution recovers texture, decorative patterns, and stylistic details on top of the grounded reconstruction. As ex-pected, NIQE increases after Appearance Restitution, since this stage intentionally restores artwork-specific textures and stylistic patterns that depart from natural-image statistics. Prompt Style VEND ↑ DDI 𝑎𝑣𝑔 ↑ NIQE 𝑎𝑣𝑔 ↓
+
+Sculpture 85.58 11.05 4.79 
+
+Pencil sketch 83.86 2.46 7.25 
+
+Woodcut 80.46 2.95 6.79 
+
+Table 4: Results of different prompt styles on geometry-oriented metrics, with NIQE reported as a supplementary diagnostic of natural-image compatibility. Effect of Different Prompt Styles. We examine how the Sculpture 
+
+prompt influences reconstruction performance compared to other styles. As shown in Table 4, the sculpture-style prompt significantly improves both VEND and DDI scores, indicating better 3D structure recovery and more accurate surface details. The physically consis-tent lighting with clear highlight and shadow transitions provides strong depth cues for the model. In contrast, prompts like Pencil sketch and Woodcut lack continuous tonal transitions, leading to in-complete shading and reduced geometric fidelity. Furthermore, the sculpture prompt achieves the lowest NIQE, indicating that it better aligns the grounded intermediate with the natural-image statistics assumed by pretrained monocular 3D reconstruction models. Range of 𝛼 VEND ↑ DDI 𝑎𝑣𝑔 ↑ NIQE 𝑎𝑣𝑔 ↓
+
+Fixed 86.01 7.45 5.09 0.5-1.2 85.35 10.35 4.79 
+
+0.4-1.5 85.29 11.05 4.79 
+
+0.3-1.8 85.27 11.04 4.79 Table 5: Performance Comparison of Fixed vs. Adaptive 𝛼 ms 
+
+Fusion Coefficient. 
+
+𝜶 ms V.S. 𝜶 adaptive . We compare a fixed 𝛼 ms with an adaptive 𝛼 ms 
+
+scheme. The fixed setting uses 𝛼 ms = 0.8, while the adaptive scheme is evaluated with [𝛼 min , 𝛼 max ] = [0.5, 1.2], [0.4, 1.5], and [0.3, 1.8].As shown in Table 5, the fixed 𝛼 ms = 0.8 achieves a slightly higher VEND, likely because stronger relighting contrast provides more pronounced shading cues for volumetric recovery. However, this more aggressive enhancement also leads to overexposure, which weakens depth-detail preservation and reduces compatibility with the natural-image statistics assumed by pretrained reconstruction models, as reflected by the lower DDI and higher NIQE. In con-trast, the adaptive scheme yields a better trade-off between struc-tural extent and detail preservation. Among the tested ranges, 
+
+[𝛼 min , 𝛼 max ] = [0.4, 1.5] gives the best overall balance, achieving the highest DDI and the lowest NIQE while maintaining competi-tive VEND. Overall, these results suggest that adaptive 𝛼 ms provides a more robust setting for Geometry Grounding across diverse paint-ings. Method VEND ↑ DDI 𝑎𝑣𝑔 ↑ NIQE 𝑎𝑣𝑔 ↓
+
+TRELLIS 77.64 7.37 5.53 TRELLIS + HE 75.86 3.89 5.07 TRELLIS + Retinex 75.40 3.24 5.39 TRELLIS + Ge 85.29 11.05 4.79 Table 6: Comparison of geometry grounding with generic image enhancement baselines. Ge: Geometry Grounding. Geometry Grounding vs. Generic Image Enhancement. We further compare Geometry Grounding with two generic image en-hancement baselines, Histogram Equalization (HE) and Retinex, GEAR: Reconstruction of Classical Paintings via Geometry Grounding and Appearance Restitution MM ’26, November 10–14, 2026, Rio de Janeiro, Brazil 
+
+both integrated into the same TRELLIS reconstruction pipeline (Table 6). Although HE and Retinex slightly reduce NIQE, they substantially degrade VEND and DDI, indicating that generic en-hancement alone does not improve geometric recoverability from classical paintings. By contrast, Geometry Grounding consistently improves all three metrics, showing that the gains in Table 1 do not come from arbitrary preprocessing, but from constructing a more geometry-compatible intermediate representation for monocular 3D reconstruction. 
+
+## 6 Conclusion 
+
+We introduce CP3D , a new task that aims to reconstruct 3D scenes from classical paintings while preserving fidelity to the source art-work. To address the geometric ambiguity and appearance loss inherent in this setting, we propose GeAR , a training-free two-stage framework that combines Geometry Grounding with Appear-ance Restitution. We further present HeriArch , a benchmark for systematic evaluation of classical painting-to-3D reconstruction. Through extensive experiments, we show that GeAR produces more stable geometry and more faithful final reconstructions than strong monocular 3D baselines. These results highlight the importance of separating geometric recoverability from appearance restoration in CP3D. 
+
+## References 
+
+[1] Titas Anciukevičius, Zexiang Xu, Matthew Fisher, Paul Henderson, Hakan Bilen, Niloy J Mitra, and Paul Guerrero. 2023. Renderdiffusion: Image diffusion for 3d reconstruction, inpainting and generation. In Proceedings of the IEEE/CVF conference on computer vision and pattern recognition . 12608–12618. [2] Stephen Batifol, Andreas Blattmann, Frederic Boesel, Saksham Consul, Cyril Diagne, Tim Dockhorn, Jack English, Zion English, Patrick Esser, Sumith Kulal, et al . 2025. Flux. 1 kontext: Flow matching for in-context image generation and editing in latent space. arXiv e-prints (2025), arXiv–2506. [3] David Charatan, Sizhe Lester Li, Andrea Tagliasacchi, and Vincent Sitzmann. 2024. pixelsplat: 3d gaussian splats from image pairs for scalable generalizable 3d reconstruction. In Proceedings of the IEEE/CVF conference on computer vision and pattern recognition . 19457–19467. [4] Ruiyang Chen, Mohan Yin, Jiawei Shen, and Wei Ma. 2024. Recon3D: High Quality 3D Reconstruction from a Single Image Using Generated Back-View Explicit Priors. In Proceedings of the IEEE/CVF conference on computer vision and pattern recognition . 2802–2811. [5] Yiwen Chen, Zilong Chen, Chi Zhang, Feng Wang, Xiaofeng Yang, Yikai Wang, Zhongang Cai, Lei Yang, Huaping Liu, and Guosheng Lin. 2024. Gaussianeditor: Swift and controllable 3d editing with gaussian splatting. In Proceedings of the IEEE/CVF conference on computer vision and pattern recognition . 21476–21485. [6] Andreas Dahn, Leszek Plichta, Simon Spielmann, Eduard Schäfer, and Justus Blönnigen. 2024. Fate of the Minotaur: A scalable location based VR experience. In ACM SIGGRAPH 2024 Immersive Pavilion . 1–2. [7] Zhiwen Fan, Wenyan Cong, Kairun Wen, Kevin Wang, Jian Zhang, Xinghao Ding, Danfei Xu, Boris Ivanovic, Marco Pavone, Georgios Pavlakos, et al . 2024. Instantsplat: Unbounded sparse-view pose-free gaussian splatting in 40 seconds. 
+
+arXiv preprint arXiv:2403.20309 2, 3 (2024), 4. [8] I Ho, Jie Song, Otmar Hilliges, et al . 2024. Sith: Single-view textured human reconstruction with image-conditioned diffusion. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition . 538–549. [9] Zixuan Huang, Mark Boss, Aaryaman Vasishta, James M Rehg, and Varun Jam-pani. 2025. Spar3d: Stable point-aware reconstruction of 3d objects from single images. In Proceedings of the Computer Vision and Pattern Recognition Conference .16860–16870. [10] Bernhard Kerbl, Georgios Kopanas, Thomas Leimkühler, and George Drettakis. 2023. 3D Gaussian splatting for real-time radiance field rendering. ACM Trans. Graph. 42, 4 (2023), 139–1. [11] Yushi Lan, Fangzhou Hong, Shuai Yang, Shangchen Zhou, Xuyi Meng, Bo Dai, Xingang Pan, and Chen Change Loy. 2024. Ln3diff: Scalable latent neural fields diffusion for speedy 3d generation. In European Conference on Computer Vision .Springer, 112–130. [12] Dawei Li, Bohan Jiang, Liangjie Huang, Alimohammad Beigi, Chengshuai Zhao, Zhen Tan, Amrita Bhattacharjee, Yuxuan Jiang, Canyu Chen, Tianhao Wu, et al .2025. From generation to judgment: Opportunities and challenges of llm-as-a-judge. In Proceedings of the 2025 Conference on Empirical Methods in Natural Language Processing . 2757–2791. [13] Haolong Li, Chenghao Du, Ziheng Jiang, Yifan Zhang, Jiawei Ma, and Chen Ye. 2024. Towards automated Chinese ancient character restoration: a diffusion-based method with a new dataset. In Proceedings of the AAAI Conference on Artificial Intelligence , Vol. 38. 3073–3081. [14] Luxi Li, Qin Zou, Fan Zhang, Hongkai Yu, Long Chen, Chengfang Song, Xianfeng Huang, and Xiaoguang Wang. 2022. Line Drawing Guided Progressive Inpainting of Mural Damages. ArXiv 2211.06649 (2022), 1–12. [15] Ben Mildenhall, Pratul P Srinivasan, Matthew Tancik, Jonathan T Barron, Ravi Ramamoorthi, and Ren Ng. 2021. Nerf: Representing scenes as neural radiance fields for view synthesis. Commun. ACM 65, 1 (2021), 99–106. [16] Norman Müller, Yawar Siddiqui, Lorenzo Porzi, Samuel Rota Bulo, Peter Kontschieder, and Matthias Nießner. 2023. Diffrf: Rendering-guided 3d radi-ance field diffusion. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition . 4328–4338. [17] Michael Niemeyer, Jonathan T Barron, Ben Mildenhall, Mehdi SM Sajjadi, Andreas Geiger, and Noha Radwan. 2022. Regnerf: Regularizing neural radiance fields for view synthesis from sparse inputs. In Proceedings of the IEEE/CVF conference on computer vision and pattern recognition . 5480–5490. [18] Qiuhong Shen, Zike Wu, Xuanyu Yi, Pan Zhou, Hanwang Zhang, Shuicheng Yan, and Xinchao Wang. 2025. Gamba: Marry Gaussian Splatting With Mamba for Single-View 3D Reconstruction. IEEE Transactions on Pattern Analysis and Machine Intelligence (2025), 1–14. [19] J Ryan Shue, Eric Ryan Chan, Ryan Po, Zachary Ankner, Jiajun Wu, and Gordon Wetzstein. 2023. 3d neural field generation using triplane diffusion. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition . 20875– 20886. [20] Jocelyn Penny Small. 2019. Circling round Vitruvius, linear perspective, and the design of Roman wall painting. In Arts , Vol. 8. MDPI, 118. [21] Nagabhushan Somraj and Rajiv Soundararajan. 2023. Vip-nerf: Visibility prior for sparse input neural radiance fields. In ACM SIGGRAPH 2023 conference proceedings .1–11. [22] Huang SongSheng, Azian Tahir, and Issarezal Ismail. 2025. Re-examining the Meaning of Flatness Based on the Theory Evolution of Medium Specificity in Painting. Asian Journal of Research in Education and Social Sciences 7, 1 (2025), 93–104. [23] Matthias Springstein, Stefanie Schneider, Javad Rahnama, Julian Stalter, Maxi-milian Kristen, Eric Müller-Budack, and Ralph Ewerth. 2024. Visual narratives: Large-scale hierarchical classification of art-historical images. In Proceedings of the IEEE/CVF Winter Conference on Applications of Computer Vision . 7220–7230. [24] Mingze Sun, Junhao Chen, Junting Dong, Yurun Chen, Xinyu Jiang, Shiwei Mao, Puhua Jiang, Jingbo Wang, Bo Dai, and Ruqi Huang. 2025. Drive: Diffusion-based rigging empowers generation of versatile and expressive characters. In 
+
+Proceedings of the Computer Vision and Pattern Recognition Conference . 21170– 21180. [25] Stanislaw Szymanowicz, Eldar Insafutdinov, Chuanxia Zheng, Dylan Campbell, Joao F Henriques, Christian Rupprecht, and Andrea Vedaldi. 2025. Flash3d: Feed-forward generalisable 3d scene reconstruction from a single image. In 2025 International Conference on 3D Vision (3DV) . IEEE, 670–681. [26] Stanislaw Szymanowicz, Chrisitian Rupprecht, and Andrea Vedaldi. 2024. Splatter image: Ultra-fast single-view 3d reconstruction. In Proceedings of the IEEE/CVF conference on computer vision and pattern recognition . 10208–10217. [27] Jiaxiang Tang, Zhaoxi Chen, Xiaokang Chen, Tengfei Wang, Gang Zeng, and Ziwei Liu. 2024. Lgm: Large multi-view gaussian model for high-resolution 3d content creation. In European Conference on Computer Vision . Springer, 1–18. [28] Hanyang Wang, Fangfu Liu, Jiawei Chi, and Yueqi Duan. 2025. VideoScene: Distilling video diffusion model to generate 3D scenes in one step. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition . 16475– 16485. [29] Han-Lei Wang, Ping-Hsuan Han, Yu-Mu Chen, Kuan-Wen Chen, XinYi Lin, Ming-Sui Lee, and Yi-Ping Hung. 2018. Dunhuang mural restoration using deep learning. In SIGGRAPH Asia 2018 technical briefs . 1–4. [30] Jianfeng Xiang, Zelong Lv, Sicheng Xu, Yu Deng, Ruicheng Wang, Bowen Zhang, Dong Chen, Xin Tong, and Jiaolong Yang. 2025. Structured 3d latents for scalable and versatile 3d generation. In Proceedings of the Computer Vision and Pattern Recognition Conference . 21469–21480. [31] Zishan Xu, Yuqing Yang, Qianzhen Fang, Wei Chen, Tingting Xu, Jueting Liu, and Zehua Wang. 2024. A comprehensive dataset for digital restoration of Dunhuang murals. Scientific Data 11, 1 (2024), 955. [32] Jiawei Yang, Marco Pavone, and Yue Wang. 2023. Freenerf: Improving few-shot neural rendering with free frequency regularization. In Proceedings of the IEEE/CVF conference on computer vision and pattern recognition . 8254–8263. [33] Shuo Zhao, Yifei Huang, Xiaoyang He, Xin Tong, Xin Li, and Dan Wu. 2025. Reviving Mural Art through Generative AI: A Comparative Study of AI-Generated and Hand-Crafted Recreations. In Proceedings of the 2025 CHI Conference on Human Factors in Computing Systems . 1–20.
