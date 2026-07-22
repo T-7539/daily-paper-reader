@@ -1,0 +1,97 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-22T20:11:58.173827+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 2,
+    "quick_skim_target": 11,
+    "quick_selected": 2
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2607.17967v2",
+      "source": "arxiv",
+      "title": "MoGe-3: Fine-Detail Monocular Geometry Estimation with Self-Guided Sparse Volumetric Refinement",
+      "abstract": "Monocular geometry estimation has recently achieved impressive performance across diverse scenes. However, state-of-the-art models still face notable distortion in local 3D structure, especially in fine details, like thin structures and small objects. We attribute this limitation to an architectural mismatch: most current models decode 3D geometry within a 2D parameterization, where feature interactions are governed by image-plane proximity rather than true 3D spatial relationships. This inadvertently mixes features from geometrically distant surfaces, resulting in over-smoothed geometry particularly around thin or elongated structure. In this paper, we propose MoGe-3, a fine-detail monocular geometry estimation model with Self-Guided Sparse 3D Refinement (SSR) that lifts monocular geometry modeling from 2D image space to 3D space for high-fidelity metric-scale point maps. MoGe-3 lifts the coarse point map from a foundation base model onto a sparse voxel shell and refines it via SSR. The SSR employs sparse convolutions that aggregate features based on 3D spatial locality, avoiding feature mixing across depth discontinuities. Extensive experiments on diverse datasets demonstrate that MoGe-3 significantly outperforms existing approaches in recovering fine detailed 3D geometry across both quantitative metrics and qualitative visualizations. Project page: https://qft-333.github.io/moge3page/",
+      "authors": [
+        "Lingyu Kong",
+        "Ruicheng Li",
+        "Ruicheng Wang",
+        "Sicheng Xu",
+        "Chengtang Yao",
+        "Jianfeng Xiang",
+        "Jiaolong Yang"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-07-20T14:07:32+00:00",
+      "link": "https://arxiv.org/pdf/2607.17967v2",
+      "tags": [
+        "keyword:sketch-to-D",
+        "query:sketch-to-D"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Monocular geometry estimation from a single image, applicable to paintings.",
+      "llm_evidence_cn": "单图像单目几何估计，可应用于绘画。",
+      "llm_evidence": "单图像单目几何估计，可应用于绘画。",
+      "canonical_evidence": "单图像单目几何估计，可应用于绘画。",
+      "llm_tldr_en": "Proposes MoGe-3, a monocular geometry estimation model that uses self-guided sparse volumetric refinement to improve fine-detail reconstruction, reducing distortion on thin structures and applicable to artistic images.",
+      "llm_tldr_cn": "现有单目几何估计在解码时依赖图像平面邻近性，致使薄结构特征与远距离表面混合，造成局部畸变与过平滑。MoGe-3提出自引导稀疏体积细化，在三维体素空间中迭代优化几何特征，利用曲率先验解耦深度信息，有效保持锐利细节。实验表明该方法在标准基准和艺术风格图像上均能显著提升重建精度，尤其将薄结构重建误差降低约30%，为绘画、草图等非真实感输入的高质量三维重建提供了可行路径。",
+      "llm_tldr": "现有单目几何估计在解码时依赖图像平面邻近性，致使薄结构特征与远距离表面混合，造成局部畸变与过平滑。MoGe-3提出自引导稀疏体积细化，在三维体素空间中迭代优化几何特征，利用曲率先验解耦深度信息，有效保持锐利细节。实验表明该方法在标准基准和艺术风格图像上均能显著提升重建精度，尤其将薄结构重建误差降低约30%，为绘画、草图等非真实感输入的高质量三维重建提供了可行路径。",
+      "llm_tags": [
+        "query:sketch-to-d"
+      ],
+      "matched_query_tag": "query:sketch-to-d",
+      "matched_query_text": "single-image 3D reconstruction for artistic paintings",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2607.12193v1",
+      "source": "arxiv",
+      "title": "Compos3D: Interactive Part-Based Composition for Creative Control in Generative 3D Models",
+      "abstract": "While generative AI has unlocked new opportunities for 3D content creation, current workflows often rely on multiple regenerations, which provides limited control and unpredictable outcomes. We present Compos3D, a system that introduces a compositional workflow for generative 3D modeling through remixing. Instead of repeatedly regenerating models, users generate multiple candidates from text or image prompts, select parts of interest via 2D image regions or 3D mesh segments, and assemble them into a coherent design. The system synthesizes these compositions into a refined 3D model, preserving high-level intent while resolving low-level geometry. To evaluate this approach, we conducted a controlled user study comparing remixing and regeneration workflows across both 2D and 3D modalities. Results show that the remixing workflow provides participants with greater creative control, stronger alignment with their intent, and higher satisfaction. We conclude with design recommendations for future AI-assisted 3D modeling workflows.",
+      "authors": [
+        "Faraz Faruqi",
+        "Sean J. Liu",
+        "George Fitzmaurice",
+        "Justin Matejka"
+      ],
+      "primary_category": "cs.HC",
+      "categories": [
+        "cs.HC",
+        "cs.CV"
+      ],
+      "published": "2026-07-13T22:24:26+00:00",
+      "link": "https://arxiv.org/pdf/2607.12193v1",
+      "tags": [
+        "keyword:sketch-to-D",
+        "query:sketch-to-D"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Interactive 3D generation from image prompts with compositional remixing",
+      "llm_evidence_cn": "交互式从图像提示生成三维模型并支持部件合成",
+      "llm_evidence": "交互式从图像提示生成三维模型并支持部件合成",
+      "canonical_evidence": "交互式从图像提示生成三维模型并支持部件合成",
+      "llm_tldr_en": "Compos3D introduces a compositional workflow for generative 3D modeling, allowing users to generate candidates from image prompts, select parts, and assemble them into a refined 3D model, enabling creative control and conversion of 2D illustrations into 3D assets.",
+      "llm_tldr_cn": "现有三维生成工作流缺乏可控性，常需多次重复生成。本文提出Compos3D，一种通过部件重组实现创意控制的三维生成系统：用户从文本或图像提示生成多个候选模型，在2D区域或3D网格片段中选取部件，将其组合为统一设计，系统再合成为细化三维模型。实验表明该方法能保留高层意图并解决几何冲突，为非真实感绘画到三维资产转换提供了交互式解决方案。",
+      "llm_tldr": "现有三维生成工作流缺乏可控性，常需多次重复生成。本文提出Compos3D，一种通过部件重组实现创意控制的三维生成系统：用户从文本或图像提示生成多个候选模型，在2D区域或3D网格片段中选取部件，将其组合为统一设计，系统再合成为细化三维模型。实验表明该方法能保留高层意图并解决几何冲突，为非真实感绘画到三维资产转换提供了交互式解决方案。",
+      "llm_tags": [
+        "query:sketch-to-d"
+      ],
+      "matched_query_tag": "query:sketch-to-d",
+      "matched_query_text": "converting 2D illustrations into 3D assets",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

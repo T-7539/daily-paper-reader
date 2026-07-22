@@ -1,0 +1,41 @@
+{
+  "date": "20260722",
+  "date_label": "",
+  "generated_at": "2026-07-22 20:13:26 UTC",
+  "recommend_exists": true,
+  "run_count": 1,
+  "papers": [
+    {
+      "paper_id": "2607.17967v2",
+      "route": "202607/22/2607.17967v2-moge-3-fine-detail-monocular-geometry-estimation-with-self-guided-sparse-volumetric-refinement",
+      "title": "MoGe-3: Fine-Detail Monocular Geometry Estimation with Self-Guided Sparse Volumetric Refinement",
+      "section": "quick",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "sketch-to-d"
+        }
+      ],
+      "score": 7.0,
+      "evidence": "单图像单目几何估计，可应用于绘画。",
+      "first_seen_at": "2026-07-22 20:13:26 UTC",
+      "updated_at": "2026-07-22 20:13:26 UTC"
+    },
+    {
+      "paper_id": "2607.12193v1",
+      "route": "202607/22/2607.12193v1-compos3d-interactive-part-based-composition-for-creative-control-in-generative-3d-models",
+      "title": "Compos3D: Interactive Part-Based Composition for Creative Control in Generative 3D Models",
+      "section": "quick",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "sketch-to-d"
+        }
+      ],
+      "score": 6.0,
+      "evidence": "交互式从图像提示生成三维模型并支持部件合成",
+      "first_seen_at": "2026-07-22 20:13:26 UTC",
+      "updated_at": "2026-07-22 20:13:26 UTC"
+    }
+  ]
+}

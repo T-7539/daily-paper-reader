@@ -1,0 +1,39 @@
+{
+  "label": "2026-07-22",
+  "date": "2026-07-22",
+  "generated_at": "2026-07-22T20:13:31",
+  "count": 2,
+  "papers": [
+    {
+      "paper_id": "202607/22/2607.17967v2-moge-3-fine-detail-monocular-geometry-estimation-with-self-guided-sparse-volumetric-refinement",
+      "section": "quick",
+      "title_en": "MoGe-3: Fine-Detail Monocular Geometry Estimation with Self-Guided Sparse Volumetric Refinement",
+      "authors": "Lingyu Kong, Ruicheng Li, Ruicheng Wang, Sicheng Xu, Chengtang Yao, Jianfeng Xiang, Jiaolong Yang",
+      "date": "2026-07-20",
+      "pdf": "https://arxiv.org/pdf/2607.17967v2",
+      "score": "7.0",
+      "evidence": "单图像单目几何估计，可应用于绘画。",
+      "tldr": "现有单目几何估计最先进模型因在2D参数化下解码3D几何，导致特征交互基于图像平面邻近性而非真实3D空间关系，局部精细结构严重失真，尤其薄结构和细小物体。MoGe-3提出自引导稀疏3D精化（SSR），将基础模型粗点图提升至稀疏体素壳，利用稀疏卷积实现三维空间局部特征聚合，有效避免跨深度不连续特征混合。在多个数据集上，MoGe-3定量定性大幅超越现有方法，精确恢复精细细节。该工作将单目几何建模从2D提升到3D空间，生成高保真度量尺度点云，对精细结构重建意义重大。",
+      "tags": "query:sketch-to-d",
+      "abstract_en": "Monocular geometry estimation has recently achieved impressive performance across diverse scenes. However, state-of-the-art models still face notable distortion in local 3D structure, especially in fine details, like thin structures and small objects. We attribute this limitation to an architectural mismatch: most current models decode 3D geometry within a 2D parameterization, where feature interactions are governed by image-plane proximity rather than true 3D spatial relationships. This inadvertently mixes features from geometrically distant surfaces, resulting in over-smoothed geometry particularly around thin or elongated structure. In this paper, we propose MoGe-3, a fine-detail monocular geometry estimation model with Self-Guided Sparse 3D Refinement (SSR) that lifts monocular geometry modeling from 2D image space to 3D space for high-fidelity metric-scale point maps. MoGe-3 lifts the coarse point map from a foundation base model onto a sparse voxel shell and refines it via SSR. The SSR employs sparse convolutions that aggregate features based on 3D spatial locality, avoiding feature mixing across depth discontinuities. Extensive experiments on diverse datasets demonstrate that MoGe-3 significantly outperforms existing approaches in recovering fine detailed 3D geometry across both quantitative metrics and qualitative visualizations. Project page: https://qft-333.github.io/moge3page/",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/22/2607.12193v1-compos3d-interactive-part-based-composition-for-creative-control-in-generative-3d-models",
+      "section": "quick",
+      "title_en": "Compos3D: Interactive Part-Based Composition for Creative Control in Generative 3D Models",
+      "authors": "Faraz Faruqi, Sean J. Liu, George Fitzmaurice, Justin Matejka",
+      "date": "2026-07-13",
+      "pdf": "https://arxiv.org/pdf/2607.12193v1",
+      "score": "6.0",
+      "evidence": "交互式从图像提示生成三维模型并支持部件合成",
+      "tldr": "生成式AI虽拓展3D创作可能，但当前工作流需多次重新生成，控制力弱、结果不可预测。本文提出Compos3D系统，引入基于混音的组合式3D建模方法：用户可从文本或图像提示生成多个候选模型，通过2D图像区域或3D网格段选择感兴趣部件，组装为统一设计，系统再合成保留高层意图、解决低层几何问题的精细3D模型。受控用户研究对比混音与重新生成工作流，结果表明混音方式提供了更强的创意控制、更符合用户意图且满意度更高。为未来AI辅助3D建模提供设计建议。",
+      "tags": "query:sketch-to-d",
+      "abstract_en": "While generative AI has unlocked new opportunities for 3D content creation, current workflows often rely on multiple regenerations, which provides limited control and unpredictable outcomes. We present Compos3D, a system that introduces a compositional workflow for generative 3D modeling through remixing. Instead of repeatedly regenerating models, users generate multiple candidates from text or image prompts, select parts of interest via 2D image regions or 3D mesh segments, and assemble them into a coherent design. The system synthesizes these compositions into a refined 3D model, preserving high-level intent while resolving low-level geometry. To evaluate this approach, we conducted a controlled user study comparing remixing and regeneration workflows across both 2D and 3D modalities. Results show that the remixing workflow provides participants with greater creative control, stronger alignment with their intent, and higher satisfaction. We conclude with design recommendations for future AI-assisted 3D modeling workflows.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

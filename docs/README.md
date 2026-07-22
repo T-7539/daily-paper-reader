@@ -41,17 +41,17 @@
 <section class="dpr-home-dashboard-card dpr-home-report-card">
   <div class="dpr-home-dashboard-header">
     <div>
-      <span class="dpr-home-dashboard-kicker">2026-07-21</span>
+      <span class="dpr-home-dashboard-kicker">2026-07-22</span>
       <h3 class="dpr-home-dashboard-title">今日汇总</h3>
     </div>
-    <strong class="dpr-home-dashboard-count">共 5 篇</strong>
+    <strong class="dpr-home-dashboard-count">共 2 篇</strong>
   </div>
   <dl class="dpr-home-dashboard-stats">
     <div class="dpr-home-dashboard-stat"><dt>累计更新</dt><dd>1 次</dd></div>
-    <div class="dpr-home-dashboard-stat"><dt>精读</dt><dd>3</dd></div>
+    <div class="dpr-home-dashboard-stat"><dt>精读</dt><dd>0</dd></div>
     <div class="dpr-home-dashboard-stat"><dt>速读</dt><dd>2</dd></div>
   </dl>
-  <p class="dpr-home-dashboard-body">最近更新：2026-07-21 21:38:04 UTC<br>状态：成功</p>
+  <p class="dpr-home-dashboard-body">最近更新：2026-07-22 20:13:26 UTC<br>状态：成功</p>
 </section>
 <section class="dpr-home-dashboard-card dpr-home-brief-card">
   <div class="dpr-home-dashboard-header">
@@ -62,7 +62,9 @@
     <strong class="dpr-home-dashboard-count">AI</strong>
   </div>
   <div class="dpr-home-dashboard-body">
-<p>3D生成领域迎来新突破，精读《Hallo4D》提出多模态幻觉缓解实现时空一致性生成，《GEAR》通过几何与外观复原重建古典油画。速读论文探索通用世界模型与分层体素增强，但冲击力稍逊。想跟上AIGC最前沿，不妨先深入这两篇9.0分工作，感受从画作修复到动态场景生成的跨越。</p>
+<p>今日速读两篇三维视觉论文，聚焦精细几何重建与部件化生成。</p>
+<p>值得关注单目几何的稀疏体素自引导细化，以及通过部件组合实现创作可控的3D生成。</p>
+<p>建议普通读者试玩类似Part-Based组合的3D工具，直观体验创意控制如何落地。</p>
   </div>
 </section>
 <section class="dpr-home-dashboard-card dpr-home-deep-card">
@@ -71,12 +73,12 @@
       <span class="dpr-home-dashboard-kicker">今日累计</span>
       <h3 class="dpr-home-dashboard-title">精读推荐</h3>
     </div>
-    <strong class="dpr-home-dashboard-count">3 篇</strong>
+    <strong class="dpr-home-dashboard-count">0 篇</strong>
   </div>
   <div class="dpr-home-dashboard-body">
-<ul class="dpr-home-dashboard-paper-list"><li><span class="dpr-home-dashboard-paper-title" title="Hallo4D: Multi-Modal Hallucination Mitigation for Consistent Spatio-Temporal Generation">Hallo4D: Multi-Modal Hallucination Mitigation for Consistent Spatio-Temporal Generation</span></li><li><span class="dpr-home-dashboard-paper-title" title="GEAR: Reconstruction of Classical Paintings via Geometry Grounding and Appearance Restitution">GEAR: Reconstruction of Classical Paintings via Geometry Grounding and Appearance Restitution</span></li><li><span class="dpr-home-dashboard-paper-title" title="MetaView: Monocular Novel View Synthesis with Scale-Aware Implicit Geometry Priors">MetaView: Monocular Novel View Synthesis with Scale-Aware Implicit Geometry Priors</span></li></ul>
+<p class="dpr-home-dashboard-empty">今日暂无推荐。</p>
   </div>
-  <div class="dpr-home-dashboard-tags"><span class="dpr-home-dashboard-tag">sketch-to-d <strong>3</strong></span></div>
+
 </section>
 <section class="dpr-home-dashboard-card dpr-home-skim-card">
   <div class="dpr-home-dashboard-header">
@@ -87,7 +89,7 @@
     <strong class="dpr-home-dashboard-count">2 篇</strong>
   </div>
   <div class="dpr-home-dashboard-body">
-<ul class="dpr-home-dashboard-paper-list"><li><span class="dpr-home-dashboard-paper-title" title="ABot-3DWorld 0: A Universal World Model to Explore Any 3D Space">ABot-3DWorld 0: A Universal World Model to Explore Any 3D Space</span></li><li><span class="dpr-home-dashboard-paper-title" title="HIVE-3D: Hierarchical Voxel Enhancement for High-Quality 3D Scene Generation">HIVE-3D: Hierarchical Voxel Enhancement for High-Quality 3D Scene Generation</span></li></ul>
+<ul class="dpr-home-dashboard-paper-list"><li><span class="dpr-home-dashboard-paper-title" title="MoGe-3: Fine-Detail Monocular Geometry Estimation with Self-Guided Sparse Volumetric Refinement">MoGe-3: Fine-Detail Monocular Geometry Estimation with Self-Guided Sparse Volumetric Refinement</span></li><li><span class="dpr-home-dashboard-paper-title" title="Compos3D: Interactive Part-Based Composition for Creative Control in Generative 3D Models">Compos3D: Interactive Part-Based Composition for Creative Control in Generative 3D Models</span></li></ul>
   </div>
   <div class="dpr-home-dashboard-tags"><span class="dpr-home-dashboard-tag">sketch-to-d <strong>2</strong></span></div>
 </section>
