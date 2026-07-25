@@ -1,0 +1,25 @@
+{
+  "date": "20260725",
+  "date_label": "",
+  "generated_at": "2026-07-25 19:48:50 UTC",
+  "recommend_exists": true,
+  "run_count": 1,
+  "papers": [
+    {
+      "paper_id": "2607.20417v1",
+      "route": "202607/25/2607.20417v1-atsplat-compact-feed-forward-3d-gaussian-splatting-with-adaptive-token-expansion",
+      "title": "ATSplat: Compact Feed-forward 3D Gaussian Splatting with Adaptive Token Expansion",
+      "section": "quick",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "sketch-to-d"
+        }
+      ],
+      "score": 6.0,
+      "evidence": "从单张图像的前馈式3D高斯泼溅重建",
+      "first_seen_at": "2026-07-25 19:48:50 UTC",
+      "updated_at": "2026-07-25 19:48:50 UTC"
+    }
+  ]
+}
