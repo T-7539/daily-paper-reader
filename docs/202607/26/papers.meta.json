@@ -1,0 +1,39 @@
+{
+  "label": "2026-07-26",
+  "date": "2026-07-26",
+  "generated_at": "2026-07-26T20:55:46",
+  "count": 2,
+  "papers": [
+    {
+      "paper_id": "202607/26/2607.18630v1-seeing-before-generating-object-perception-enhances-single-view-3d-reconstruction",
+      "section": "quick",
+      "title_en": "Seeing Before Generating: Object Perception Enhances Single-View 3D Reconstruction",
+      "authors": "Y Huynh, Duc Thanh Nguyen, Mohamed Abdelrazek",
+      "date": "2026-07-21",
+      "pdf": "https://arxiv.org/pdf/2607.18630v1",
+      "score": "7.0",
+      "evidence": "即插即用方法利用感知信号增强单视图三维重建，可应用于绘画三维生成。",
+      "tldr": "物体感知与重建在人类视觉中紧密关联，但计算机视觉领域未充分利用这一关系。本文针对单视图三维物体重建任务，提出从预训练感知模型提取语义与几何感知信号，以驱动重建过程。方法模型无关、即插即用，在两个先进重建流程上带来一致且显著的性能提升。该研究证明了将感知融入生成能有效增强三维重建，为感知引导的生成任务提供新见解。",
+      "tags": "query:sketch-to-d",
+      "abstract_en": "The relationship between object perception and reconstruction is well established in human vision, yet remains underexplored in computer vision. In this paper, we demonstrate that learnt object perception can significantly enhance 3D reconstruction. Focusing on the challenging task of single-view 3D object reconstruction, we propose a method that leverages perceptual signals extracted from pretrained perception models capturing semantic and geometric information to drive the reconstruction of an object from its single image. Our approach is model-agnostic and can be integrated into various reconstruction methods in a plug-and-play manner. Experiments with two state-of-the-art single-view 3D reconstruction pipelines in a benchmark dataset show consistent and substantial improvements achieved by our method, validating the effectiveness of incorporating perception into generation. We provide in-depth analysis of various aspects of our method and its application. Our project page is at https://ynhuhuynh.github.io/perception-3d/.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/26/2607.20922v1-fa-lam-focus-aware-large-avatar-model-for-one-shot-4d-animatable-gaussian-head",
+      "section": "quick",
+      "title_en": "FA-LAM: Focus-Aware Large Avatar Model for One-Shot 4D Animatable Gaussian Head",
+      "authors": "Yingdong Hu, Yisheng He, Yiming Jiang, Zehong Lin, Steven Hoi, Jun Zhang",
+      "date": "2026-07-23",
+      "pdf": "https://arxiv.org/pdf/2607.20922v1",
+      "score": "7.0",
+      "evidence": "从单张图像一次性生成可动画的3D高斯头部，可应用于艺术肖像画",
+      "tldr": "一次性从单目图像重建可动画3D头部是数字人应用的关键，但现有方法因注意力激活存在噪声且重建与动画任务相互干扰，导致全头生成质量不佳。FA-LAM深度解析了此类方法的注意力机制与训练管线，明确两大瓶颈：错误注意力激活和目标冲突。为此，提出对称语义注意力正则化，强制模型关注具有对称性和语义一致性的面部区域，消除无关激活；并设计双阶段训练，将大视角幻视与动画变形分配至不同优化阶段，彻底分离任务。模型进一步通过自回归视角扩展和可见性感知令牌融合，实现高效的多视角与流式4D重建，且内存开销低。实验显示，FA-LAM在单张照片输入下可生成极富细节、大角度可驱动的全头高斯表示，尤其在眼口等精细区域远超同类方法，为高保真实时数字化身奠定了坚实技术基础。",
+      "tags": "query:sketch-to-d",
+      "abstract_en": "We propose FA-LAM, a Focus-Aware Large Avatar Model for one-shot animatable Gaussian head creation, while simultaneously enabling static 3D and dynamic 4D full-head recovery. The core of our method lies in a thorough analysis of the attention mechanisms and the entangled reconstruction and animation training pipeline adopted by prior state-of-the-art approaches. Our analysis identifies two main factors that compromise the quality of 3D full-head generation: (1) incorrect and noisy attention activations, and (2) conflicts between the tasks of reconstruction and animation. To address the first issue, we introduce a symmetric and semantic attention regularization strategy that leverages the inherent semantics and structural symmetry of human heads. To disentangle the objectives of reconstruction and animation, we develop a novel dual-phase training pipeline that separates the model's capabilities for large-view hallucination and animation into distinct modules. Moreover, we enhance our model to support multi-view and streaming 4D reconstruction in an efficient and memory-friendly manner through a core autoregressive modification with tailored visibility-aware token fusion. Collectively, these innovations enable FA-LAM to reconstruct animatable Gaussian full heads with superior quality, particularly in fine facial regions and large viewing angles.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

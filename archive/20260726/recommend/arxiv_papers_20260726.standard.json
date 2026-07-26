@@ -1,0 +1,94 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-26T20:52:52.620826+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 2,
+    "quick_skim_target": 11,
+    "quick_selected": 2
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2607.18630v1",
+      "source": "arxiv",
+      "title": "Seeing Before Generating: Object Perception Enhances Single-View 3D Reconstruction",
+      "abstract": "The relationship between object perception and reconstruction is well established in human vision, yet remains underexplored in computer vision. In this paper, we demonstrate that learnt object perception can significantly enhance 3D reconstruction. Focusing on the challenging task of single-view 3D object reconstruction, we propose a method that leverages perceptual signals extracted from pretrained perception models capturing semantic and geometric information to drive the reconstruction of an object from its single image. Our approach is model-agnostic and can be integrated into various reconstruction methods in a plug-and-play manner. Experiments with two state-of-the-art single-view 3D reconstruction pipelines in a benchmark dataset show consistent and substantial improvements achieved by our method, validating the effectiveness of incorporating perception into generation. We provide in-depth analysis of various aspects of our method and its application. Our project page is at https://ynhuhuynh.github.io/perception-3d/.",
+      "authors": [
+        "Y Huynh",
+        "Duc Thanh Nguyen",
+        "Mohamed Abdelrazek"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-07-21T01:55:24+00:00",
+      "link": "https://arxiv.org/pdf/2607.18630v1",
+      "tags": [
+        "keyword:sketch-to-D",
+        "query:sketch-to-D"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Plug-and-play method enhances single-view 3D reconstruction using perceptual signals, applicable to painting-to-3D.",
+      "llm_evidence_cn": "即插即用方法利用感知信号增强单视图三维重建，可应用于绘画三维生成。",
+      "llm_evidence": "即插即用方法利用感知信号增强单视图三维重建，可应用于绘画三维生成。",
+      "canonical_evidence": "即插即用方法利用感知信号增强单视图三维重建，可应用于绘画三维生成。",
+      "llm_tldr_en": "Incorporating object perception from pretrained models significantly improves single-view 3D reconstruction, offering a generic enhancement applicable to artistic images.",
+      "llm_tldr_cn": "针对单视图三维重建任务，提出利用预训练感知模型提取的语义和几何信息来驱动重建过程，方法即插即用，可集成到现有流程中，实验表明在基准数据集上显著提升了重建质量，为基于绘画等艺术图像的三维生成提供了通用增强途径。",
+      "llm_tldr": "针对单视图三维重建任务，提出利用预训练感知模型提取的语义和几何信息来驱动重建过程，方法即插即用，可集成到现有流程中，实验表明在基准数据集上显著提升了重建质量，为基于绘画等艺术图像的三维生成提供了通用增强途径。",
+      "llm_tags": [
+        "query:sketch-to-d"
+      ],
+      "matched_query_tag": "query:sketch-to-d",
+      "matched_query_text": "single image 3D generation techniques applicable to paintings",
+      "matched_requirement_id": "req-9",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2607.20922v1",
+      "source": "arxiv",
+      "title": "FA-LAM: Focus-Aware Large Avatar Model for One-Shot 4D Animatable Gaussian Head",
+      "abstract": "We propose FA-LAM, a Focus-Aware Large Avatar Model for one-shot animatable Gaussian head creation, while simultaneously enabling static 3D and dynamic 4D full-head recovery. The core of our method lies in a thorough analysis of the attention mechanisms and the entangled reconstruction and animation training pipeline adopted by prior state-of-the-art approaches. Our analysis identifies two main factors that compromise the quality of 3D full-head generation: (1) incorrect and noisy attention activations, and (2) conflicts between the tasks of reconstruction and animation. To address the first issue, we introduce a symmetric and semantic attention regularization strategy that leverages the inherent semantics and structural symmetry of human heads. To disentangle the objectives of reconstruction and animation, we develop a novel dual-phase training pipeline that separates the model's capabilities for large-view hallucination and animation into distinct modules. Moreover, we enhance our model to support multi-view and streaming 4D reconstruction in an efficient and memory-friendly manner through a core autoregressive modification with tailored visibility-aware token fusion. Collectively, these innovations enable FA-LAM to reconstruct animatable Gaussian full heads with superior quality, particularly in fine facial regions and large viewing angles.",
+      "authors": [
+        "Yingdong Hu",
+        "Yisheng He",
+        "Yiming Jiang",
+        "Zehong Lin",
+        "Steven Hoi",
+        "Jun Zhang"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-07-23T04:57:22+00:00",
+      "link": "https://arxiv.org/pdf/2607.20922v1",
+      "tags": [
+        "keyword:sketch-to-D",
+        "query:sketch-to-D"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "One-shot 3D Gaussian head creation from a single image, applicable to artistic portraits",
+      "llm_evidence_cn": "从单张图像一次性生成可动画的3D高斯头部，可应用于艺术肖像画",
+      "llm_evidence": "从单张图像一次性生成可动画的3D高斯头部，可应用于艺术肖像画",
+      "canonical_evidence": "从单张图像一次性生成可动画的3D高斯头部，可应用于艺术肖像画",
+      "llm_tldr_en": "FA-LAM proposes a focus-aware large avatar model for one-shot animatable 3D Gaussian head creation, addressing attention noise and task conflicts for high-quality single-image 3D generation.",
+      "llm_tldr_cn": "FA-LAM提出面向一次性4D可动画高斯头部的大模型，通过对称语义注意力正则化和解耦训练解决注意力激活错误与重建-动画冲突，从单张图像快速生成高质量静态3D、动态4D头部并驱动动画，为虚拟角色创建提供高效方案。",
+      "llm_tldr": "FA-LAM提出面向一次性4D可动画高斯头部的大模型，通过对称语义注意力正则化和解耦训练解决注意力激活错误与重建-动画冲突，从单张图像快速生成高质量静态3D、动态4D头部并驱动动画，为虚拟角色创建提供高效方案。",
+      "llm_tags": [
+        "query:sketch-to-d"
+      ],
+      "matched_query_tag": "query:sketch-to-d",
+      "matched_query_text": "single image 3D generation techniques applicable to paintings",
+      "matched_requirement_id": "req-9",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}

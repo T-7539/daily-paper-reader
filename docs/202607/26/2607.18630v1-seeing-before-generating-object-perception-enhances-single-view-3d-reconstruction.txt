@@ -1,0 +1,627 @@
+Title: Seeing Before Generating: Object Perception Enhances Single-View 3D Reconstruction
+
+URL Source: https://arxiv.org/pdf/2607.18630v1
+
+Published Time: Wed, 22 Jul 2026 00:23:59 GMT
+
+Number of Pages: 21
+
+Markdown Content:
+# Seeing Before Generating: Object Perception Enhances Single-View 3D Reconstruction 
+
+Y Huynh 
+
+Applied Artificial Intelligence Initiative Deakin University 
+
+s224696943@deakin.edu.au 
+
+Duc Thanh Nguyen 
+
+School of Information Technology Deakin University 
+
+duc.nguyen@deakin.edu.au 
+
+Mohamed Abdelrazek 
+
+Applied Artificial Intelligence Initiative Deakin University 
+
+mohamed.abdelrazek@deakin.edu.au 
+
+# Abstract 
+
+The relationship between object perception and reconstruction is well established in human vision, yet remains underexplored in computer vision. In this paper, we demonstrate that learnt object perception can significantly enhance 3D reconstruc-tion. Focusing on the challenging task of single-view 3D object reconstruction, we propose a method that leverages perceptual signals extracted from pretrained perception models capturing semantic and geometric information to drive the recon-struction of an object from its single image. Our approach is model-agnostic and can be integrated into various reconstruction methods in a plug-and-play manner. Experiments with two state-of-the-art single-view 3D reconstruction pipelines in a benchmark dataset show consistent and substantial improvements achieved by our method, validating the effectiveness of incorporating perception into generation. We provide in-depth analysis of various aspects of our method and its application. Our project page is at https://ynhuhuynh.github.io/perception-3d/ .
+
+# 1 Introduction 
+
+The interplay between object perception and object reconstruction is a foundational principle in human vision. Decades of research in cognitive science and neuroscience have established that humans rely on high-level perceptual understanding, such as object semantics, structure, and affordances, to infer complete 3D shapes from partial observations [ 21 , 2, 26 , 15 ]. This ability enables robust reasoning about occlusion and ambiguity, suggesting that perception is important for reconstruction. In contrast, modern computer vision approaches to 3D reconstruction largely treat the problem as geometric or generative modelling, often without explicitly incorporating object perception. Classical and learning-based methods focus on mapping images to shapes using implicit representations or learnt priors [ 3 , 23 ]. More recently, diffusion-based and neural rendering approaches, including diffusion models for 3D generation [ 28 ] and Neural Radiance Fields (NeRF) [ 24 ], have achieved impressive visual fidelity. However, these methods predominantly rely on data-driven priors or text/image conditioning, and lack an explicit mechanism to incorporate structured perceptual under-standing of the object itself. As a result, they often struggle with semantic consistency, structural plausibility, or view coherence, particularly in the single-view setting. Single-view 3D object reconstruction is inherently ill-posed, requiring models to infer unseen geometry and synthesize novel viewpoints from limited input. This task fundamentally depends on understanding what the object is, how it is structured, and how it should appear under different 
+
+> Preprint. arXiv:2607.18630v1 [cs.CV] 21 Jul 2026
+
+viewpoints. We argue that treating reconstruction purely as a generative or geometric problem is insufficient; instead, it should be grounded in object perception. In other words, perception is the key to resolving ambiguity in 3D reconstruction. In this paper, we challenge the prevailing paradigm of single-view 3D reconstruction by demonstrating that object perception can serve as a powerful source of knowledge for 3D reconstruction from a single image. We propose a framework that explicitly injects perceptual signals from pretrained perception models into the reconstruction process. Our approach leverages the rich knowledge encoded in foundation large-scale models, including vision-language models (VLMs) [ 30 ], large-language models (LLMs) [ 31 ], and foundation monocular depth estimation model [ 39 ]. Crucially, our method is model-agnostic and operates as a plug-and-play enhancement to existing reconstruction pipelines, including both feed-forward reconstruction networks and generative approaches. Unlike diffusion-based or NeRF-based methods that implicitly rely on large-scale priors, our approach explicitly introduces perceptual understanding as a controllable signal, enabling more accurate and semantically consistent reconstructions. We summarise our contributions as follows. • We propose a novel, model-agnostic framework that leverages perceptual signals from pretrained perception models to drive single-view 3D object reconstruction. • We systematically study the integration of diverse perceptual signals across various single-view 3D reconstruction paradigms. • We conduct extensive experiments and in-depth analyses, demonstrating that incorporat-ing perception yields consistent improvements and provides new insights into the role of perception in 3D reconstruction. 
+
+# 2 Related Work 
+
+2.1 Multi-view 3D Reconstruction 
+
+Multi-view 3D reconstruction leverages multiple images with known or estimated camera poses to recover accurate geometry. Traditional approaches rely on Structure-from-Motion (SfM) and Multi-View Stereo (MVS), while recent advances focus on neural representations such as Neural Radiance Fields (NeRF) [24] and 3D Gaussian Splatting (3DGS) [11]. NeRF-based methods achieve high-quality view synthesis but typically require dense views and expensive per-scene optimization. To address these limitations, recent works explore sparse-view and feed-forward reconstruction. For example, SparseFusion [ 41 ] integrates diffusion priors to improve reconstruction under limited viewpoints. Concurrently, 3DGS-based approaches provide efficient real-time rendering and reconstruction. Extensions such as SparseAGS [ 40 ] and FreeSplatter [ 38 ] further improve scalability by enabling sparse-view reconstruction and relaxing camera pose assumptions, with FreeSplatter demonstrating pose-free feed-forward reconstruction from uncalibrated inputs. These advances highlight a shift from optimization-heavy pipelines toward efficient, generalizable reconstruction frameworks. However, most methods still rely on geometric or generative priors, with limited explicit incorporation of object-level perception. 
+
+2.2 Single-view 3D Reconstruction 
+
+Single-view 3D reconstruction is inherently ill-posed, requiring strong priors to infer unseen geometry. Early works rely on supervised learning of shape priors [ 3, 34 ], while recent approaches increasingly leverage generative models and diffusion priors. A dominant paradigm is to first generate multi-view images and then reconstruct 3D geometry. For example, Zero-1-to-3 [17] introduces view-conditioned diffusion for novel view synthesis, which is widely adopted in subsequent pipelines. Building on this idea, One-2-3-45 [ 16 ] generates multi-view images and reconstructs a full 3D mesh in a feed-forward manner, significantly improving efficiency and consistency. More advanced methods combine 2D and 3D priors. Magic123 [ 29 ] employs a coarse-to-fine pipeline that jointly leverages 2D diffusion priors and 3D representations to produce high-quality 2textured meshes. RealFusion [ 22 ] and Point-E [ 25 ] further explore diffusion-based generation of 3D representations from single images or text prompts. Recent methods aim to improve multi-view consistency and reconstruction fidelity. SyncDreamer [ 18 ]enforces multi-view consistency during diffusion, while Wonder3D [ 19 ] introduces cross-domain diffusion to jointly generate multi-view images and normal maps for improved geometry. Era3D [ 14 ]addresses the highly computational cost in the multi-view attention layers used in multi-view genera-tion approaches by sampling important rows in the attention layers. Several recent pipelines, such as InstantMesh [ 37 ] and CRM [ 36 ], focus on efficient feed-forward reconstruction with improved scalability and inference speed. LRM proposes a transformer-based model that directly predicts a NeRF from a single image, trained on large-scale multi-view data to achieve strong generalisation across diverse objects. Unlike prior category-specific or optimisation-heavy methods, it enables fast (approximately 5 seconds) feed-forward 3D reconstruction by learning a scalable, general 3D prior. Despite these advances, most methods treat reconstruction as a generative problem, relying heavily on diffusion priors without explicitly modeling object perception. 
+
+2.3 Perception for 3D Reconstruction 
+
+There are a few methods that incorporate perception into 3D reconstruction. These methods aim to leverage semantic and perceptual understanding to guide reconstruction. For example, panoptic 3D reconstruction [ 4] jointly predicts geometric information, semantic labels, and object instances from an input RGB image, which are then fused into the 3D space. Another line of work, e.g., MS-GS [ 13 ] and PE3R [ 9], leverages perception from individual views to enforce cross-view consistency. By aligning semantic features across views and aggregating multi-level perceptual cues, these methods reduce inconsistencies in reconstructed geometry and improve global scene understanding. Such strategies are particularly important in sparse-view or single-view settings, where geometric constraints alone are insufficient. In general, these approaches demonstrate that perceptual signals can provide strong priors for resolving ambiguities in reconstruction, highlighting that reconstruction benefits from reasoning about what the object is, rather than relying solely on geometric cues. Despite these advances, existing methods remain limited in three key aspects. First, they are tightly coupled with specific architectures, restricting their general applicability. Second, they do not fully exploit the rich knowledge encoded in modern pretrained perception models, such as vision-language models. Third, their integration of perception requires complicated training, making it difficult to extend to various perceptual signals. In contrast, our work takes a model-agnostic approach by leveraging pretrained perception models as external sources of perceptual knowledge. By explicitly injecting perceptual signals into the reconstruction process, our method provides a general and flexible framework that bridges perception and generation for single-view 3D reconstruction. 
+
+# 3 Methodology 
+
+3.1 Overview 
+
+We illustrate our method in Figure 1. As aforementioned, our target is to reconstruct a 3D object X
+
+given its single image y. Existing single-view 3D reconstruction works, e.g., [ 18 , 19 , 14 ], use the input image y to condition a generative model (e.g., the stable diffusion model in [ 32 ]) to generate a set of N views x(1: N ) 
+
+> t
+
+, where t ∈ { T, ..., 0} is the time variable. This process is referred to as multi-view generation. The views x(1: N ) 
+
+> t=0
+
+are then used to reconstruct the object X using the method [ 35 ]. Formally, the multi-view generation process can be generalised from single image generation [8] with condition y as follows. 
+
+pθ
+
+ x(1: N )0: T |y = p x(1: N ) 
+
+> T
+
+|y TY
+
+> t=1
+> N
+
+Y
+
+> n=1
+
+pθ
+
+ x(n)
+
+> t−1
+
+|x(1: N ) 
+
+> t
+
+, y (1) 
+
+pθ
+
+ x(n)
+
+> t−1
+
+|x(1: N ) 
+
+> t
+
+, y = N  x(n)
+
+> t−1
+
+; μ(n) 
+
+> θ
+
+(x(1: N ) 
+
+> t
+
+, y, t ), σ 2 
+
+> t
+
+I (2) 
+
+μ(n)
+
+> θ
+
+ x(1: N ) 
+
+> t
+
+, y, t  = 1
+
+√αt
+
+
+
+x(n) 
+
+> t
+
+− βt
+
+√1 − ¯αt
+
+ϵ(n)
+
+> θ
+
+ x(1: N ) 
+
+> t
+
+, y, t 
+
+(3) 3Figure 1: Overview of our framework . We leverage foundation large-scale models, e.g., VLMs, LLMs, foundation monocular depth estimation model, to extract perceptional knowledge guiding multi-view image generation. where βt is a schedule, αt = 1 − βt, ¯αt = Qtt′=1 αt′ , σt is a time-dependent but not learnable variable (see detailed descriptions of these variables in [ 8]), and θ represents learnable parameters of a U-Net ϵθ which predicts the standard noise ϵ(1: N ) added to all N views. We argue that, without understanding of the object being reconstructed, the above process may not generate the multi-view imagery with accurate semantic and/or geometric details, leading to hallucinated reconstruction errors. In this work, we present a method that incorporates object perception with noise prediction (i.e., estimation of ϵ(1: N )), driving the generation towards the object’s perceptual knowledge. Specifically, we leverage pre-trained perception models to extract perceptual information. These models have been pre-trained on large-scale datasets, thereby capturing enriched knowledge on a wide range of objects. We propose a generation-perception alignment module (GPAM), which aligns the features learnt from the generation process (i.e., from the U-Net 
+
+ϵθ ) with the retrieved perceptual signals (see Section 3.3). Our method works as follows. Let s
+
+be the perceptual features learnt by a perception model about the input image y. Let u be the generation-perception aligned features learnt by our GPAM. Following the control guidance sampling in [ 6 , 20 ], we integrate the perceptual information into the noise sampling process in DDIM [ 33 ] as, 
+
+ϵ(1: N ) 
+
+> t
+
+←− ϵ(1: N )
+
+> θ
+
+ x(1: N ) 
+
+> t
+
+, y, t  − η∇x(1: N )
+
+> t
+
+L(s, u ) (4) where η ∈ { 0, 1} is the sampling rate of perceptual guidance and L is a loss function that measures the similarity between perceptual signals s and generation-perception aligned features u.Our framework is general and can be applied to various perception modalities (see Section 3.2) and single-view 3D reconstruction pipelines (see Section 4). When there are multiple perception modalities, for example, suppose that there are K modalities, one just needs to train K corresponding GPAMs (one GPAM per perception modality) with respective loss functions (i.e., Lk, k = 1 , ..., K ), and then use all these modules to guide the multi-view generation as follows, 
+
+ϵ(1: N ) 
+
+> t
+
+←− ϵ(1: N )
+
+> θ
+
+ x(1: N ) 
+
+> t
+
+, y, t  −
+
+> K
+
+X
+
+> k=1
+
+λkηk∇x(1: N )
+
+> t
+
+Lk(sk, u k) (5) where λk are the weights for the involved perception modalities such that PKk=1 λk = 1 .43.2 Perception Modalities 
+
+We demonstrate our approach with two types of perceptual information: semantic information via language description and geometric information via depth sensing. 
+
+Semantic perception Language descriptions can capture the semantics (e.g., identity, texture, and appearance) of the reconstructed object. Given the input image y, we first extract per-object text caption from y using Qwen2.5VL-7B [ 1] with the following caption “ describe the 3D shape, geometry, and structure of this object in detail .” We then encode the caption into a 768-dimensional embedding s using a T5-base mean-pooling encoder [ 31 ]. The embedding s is considered the perceptual signal used to guide the subsequent multi-view generation. We found that using a two-step combination of a VLM (i.e., Qwen2.5VL-7B) and an LLM (i.e., T5) outperforms the only use of Qwen2.5VL-7B. We present details of our findings in the supplementary material. 
+
+Geometric perception Depth sensing provides direct geometric information about the object’s 3D structure. We use DepthAnything-V2 (ViT-L) [ 39 ] as the perception model. Given the input image y, we first extract the activations from the refinenet3 layer of DepthAnything-V2, and then apply adaptive average pooling to produce a [256 , 64 , 64] feature map, which is considered the depth perceptual signal s. We observed that, compared with depth maps (i.e, the final output of DepthAnything-V2), using intermediate feature maps to create the perceptual signal s leads to better multi-view generation and later 3D reconstruction. This observation also aligns with the findings in [10], indicating that high-level features better capture perceptual information (e.g., style, semantics), which is needed in reconstruction than pixel-level features. We provide a detailed analysis of our observation in depth sensing use in our supplementary material. 
+
+3.3 Generation-Perception Alignment 
+
+The generation-perception alignment module (GPAM) aims to align the perceptual features s extracted from the perception models with the features extracted from the U-Net. The GPAM includes two sub-modules: a Feature Aggregation module, which aggregates intermediate activations from the U-Net into a compact multi-view representation, and a Perception Mapping module, which projects the aggregated features to the target perceptual space and produces the aligned feature u. We provide the implementation details of our GPAM in the supplementary material. 
+
+Feature Aggregation We register non-detaching forward hooks on three decoder blocks of the frozen U-Net ϵθ —up_blocks[1,2,3] —capturing feature maps at the respective decoder-block resolutions with channel widths 1280, 640, and 320, respectively. Like the aggregation network in [ 20 ], each feature map is projected to a common channel dimension using 1×1 convolution, then bilinearly upsampled to a shared spatial resolution H×H, and summed. The summed features are then refined by a stack of BottleneckBlocks (residual 3×3 convolution with channel squeeze-and-excite) to produce a tensor of size [N, C agg , H, H ], where N denotes the number of generated views, and both Cagg and H are backbone-dependent: Cagg = 384 and H = 32 for Wonder3D, and 
+
+Cagg = 128 and H = 64 for Era3D. Since the hooks are non-detaching, gradients flow back through the Feature Aggregation module and the U-Net’s feature maps to the noisy latents x(1: N ) 
+
+> t
+
+via the chain rule, enabling the sampling step in Eq. (4) and Eq. (5). 
+
+Perception Mapping Depending on the perception modality used, a modality-specific perception mapping module is designed. In principle, perception mapping aims to project the aggregated features, achieved from the feature aggregation module, into the target perceptual space. For the semantic modality (from language descriptions), we concatenate the aggregated features from all N views in the RGB stream, yielding a feature map of size [N, C agg , H, H ]. Global average pooling is then applied over the spatial dimensions of the feature map to achieve a per-view descriptor of size [N, C agg ], which is then averaged across views to produce a single object-level vector of size 
+
+[Cagg ]. A two-layer MLP— Linear( Cagg →768) → GELU → Linear(768 →768) —maps this to a 768-dimensional generation-perception aligned feature map u.5For the geometric modality (from depth sensing), unlike the semantic information which describes the object holistically across all views, depth information is directly observable only from the front view and can be transferred to nearby viewpoints. Accordingly, we extract the aggregated features from three views only: front, front-left, and front-right. For each of these views, both the RGB- and normal-stream aggregated features are concatenated, yielding a tensor of shape [3 , 2Cagg , H, H ]. A lightweight convolutional decoder— Conv(2 Cagg →2Cagg , 3×3) , GroupNorm, SiLU, 2× bilinear upsample, Conv(2 Cagg →256 , 1×1) —is then applied to produce a generation-perception aligned feature map u of size [3 , 256 , H, H ].
+
+3.4 Training and Inference 
+
+Each perception modality is accompanied with a GPAM, which can be trained separately from the multi-view image generative model. When multiple perception modalities are used, their corre-sponding GPAMs can be trained independently, making our framework flexible and extensible in a plug-and-play fashion. The loss function used to train a GPAM needs to be designed in accordance with the perception modality used. In particular, for the semantic modality, we use the following loss. 
+
+L(s, u ) = 1 − cos  s, u . (6) For the geometric modality, we define the loss based on the similarity between the generation-perception aligned features of the front-view of the object and the depth features from the input image, and the transferability of the generation-perception aligned features to nearby views. In particular, we decompose the generation-perception aligned feature map u (of size [3 , 256 , H, H ]) into three components (of size [1 , 256 , H, H ]) corresponding to three views, ufront , ufront-left , and ufront-right . We then define our geometric loss as follows, 
+
+L(s, u ) = ℓ2−std (s, u front ) + ωfront-left ℓCKA (s, u front-left ) + ωfront-right ℓCKA (s, u front-right ) (7) where ℓ2−std is the scale-shift-invariant MSE loss [ 27 ] (i.e., normalising each map to zero mean, unit variance before computing MSE), ℓCKA is the centered kernel alignment loss proposed in [ 12 ] which measures feature-map similarity invariant to isotropic scaling. ωfront-left and ωfront-right are associated weights of the CKA losses which are set to 0.5 in our implementation. The CKA loss is commonly used to measure representations learnt by different neural networks. In our case, the CKA loss is applied to the front-left and front-right views to encourage cross-view geometric consistency without requiring exact depth alignment as in the front view. We freeze both the multi-view image generative model (i.e., the U-Net) and the perception model(s) while training the GPAM for each perception modality. Training of a GPAM is performed by minimising the corresponding loss L(s, u ) (either Eq. (6) or Eq. (7)) with gradients ∇f,g L(s, u ).For inference, all the single-view generative model, perception model(s), and GPAM(s) are frozen. Gradients ∇x(1: N )
+
+> t
+
+L(s, u ) are calculated with regard to the interim results of the generation process (i.e., x(1: N ) 
+
+> t
+
+) and used in the noise sampling process as in Eq. (4) or Eq. (5). We present the pseudo-code of the training and inference steps in the supplementary material. 
+
+# 4 Experiments 
+
+4.1 Experimental Setup Implementation Details. We validated our framework with two state-of-the-art single-view 3D reconstruction pipelines: Wonder3D [ 19 ] and Era3D [ 14 ]. We trained our GPAMs using AdamW ( lr = 10 −4, weight decay 0.01, gradient clip 1.0, gradient accumulation over 4 steps) for 10,000 steps. The wall-clock training time was approximately 1h50m for Wonder3D pipeline and 3h26m for Era3D pipeline. Inference applied T = 40 DDIM steps with classifier-free guidance scale 3.0. Inference took approximately 2.5 min per object. NeuS mesh reconstruction [ 35 ] adds approximately 2 min. All experiments were conducted on an NVIDIA H100 80G. For Wonder3D, both modalities shared η = 10 −2. For Era3D, we used ηs = 10 −3 for the depth modality and ηd = 10 −2 for the semantic modality. In addition, the input images to Era3D were preprocessed with a tight foreground crop: the foreground bounding box was padded and scaled so 6Table 1: Quantitative evaluation. ∆CD is computed within each baseline group (relative improvement vs. the original one). †Era3D rows with our perceptual guidance are compared against the matched-pipeline no-guidance baseline (identical DDIM scheduler) for fair within-pipeline comparison. 
+
+> ∗
+
+Wilcoxon paired test p < 0.05 . Bold = best per baseline group.                                                       
+
+> Setting CD ( ×10 −3)↓IoU ↑PSNR ↑SSIM ↑LPIPS ↓∆CD Wonder3D [19] 21.21 0.530 21.79 0.926 0.069 —Wonder3D + semantic (ours) 20.52 0.539 21.75 0.925 0.068 −3.7%
+> Wonder3D + depth (ours) 20.18 0.534 21.86 0.926 0.068 −4.9% ∗
+> Wonder3D + semantic + depth (ours) 19.30 0.538 21.86 0.926 0.068 −9.0%∗
+> Era3D [14] 20.78 0.499 21.53 0.922 0.071 —Era3D + semantic (ours) †19.45 0.510 21.68 0.923 0.070 −6.4%
+> Era3D + depth (ours) †14.46 0.561 21.80 0.925 0.067 −30 .4%
+> Era3D + semantic + depth (ours) 13.99 0.558 22.05 0.926 0.066 −32 .7%†
+
+that the longest extent spans 420 px within a 512 ×512 canvas. We set λs = 0 .15 (for the semantic modality) and λd = 0 .85 (for the depth modality) for both Wonder3D and Era3D (see Eq. (5)). 
+
+Datasets. We trained our GPAMs (for both the semantic and geometric perception) on 1,000 objects from Objaverse [ 5 ], divided into 900 training / 100 validation objects. For each object, we rendered a front-facing RGB image at 512 ×512 (for Era3D [ 14 ] pipeline) or 256 ×256 (for Wonder3D [ 19 ]pipeline). Depth targets were extracted from DepthAnything-V2 [39] (ViT-L). Caption targets were T5-base mean-pooled embeddings ( R768 ) [ 31 ], computed from per-object captions. Evaluation used 30 Google Scanned Objects (GSO) [7] with ground-truth textured meshes. 
+
+Evaluation Metrics. We report five metrics on the GSO test set: (i) Chamfer Distance (CD ↓)between predicted and ground-truth meshes, both normalised to a unit sphere; (ii) volumetric IoU (IoU ↑, 256 3 voxel grid); (iii) PSNR ↑, SSIM ↑, LPIPS ↓ on held-out novel views against rendered ground truth. Statistical significance is evaluated via paired Wilcoxon signed-rank test on per-object CD differences. 
+
+4.2 Main Results 
+
+We report the performance of our method with all configurations, applied to Wonder3D [ 19 ] and Era3D [ 14 ] in Table 1. Other single-view 3D reconstruction methods, e.g., [ 17 , 16 , 29 , 22 , 25 , 18 ], are surpassed by Wonder3D and Era3D and hence excluded here. For Wonder3D, both semantic and depth knowledge individually reduce CD over the baseline ( −4.9% 
+
+and −3.7% respectively), and their combination yields −9.0% , exceeding either alone. This effect is statistically supported to Wonder3D (Wilcoxon p = 0 .021 for the combined configuration) and preserves or improves every secondary metric (IoU, PSNR, SSIM, LPIPS). The result demonstrates the central conceptual claim of this work — that pre-trained perception models supply useful, complementary knowledge to multi-view generation and later 3D reconstruction from a single image — in its simplest form: multiple perceptual signals, each helpful, that do not interfere when combined. The usefulness of perception for reconstruction is transferred across architectures. Specifically, for Era3D, a single-view 3D reconstruction pipeline substantially different from Wonder3D (with row-wise self-attention, different resolution, alternative camera embeddings), the same compositional pattern appears: combined perception guidance yields the lowest CD among all configurations, and each individual perception modality again improves over the baseline. The magnitude of improvement on Era3D is more variable than on Wonder3D and does not reach statistical significance under our test ( p = 0 .16 for combined guidance). Inspection of per-object deltas reveals the source: guidance acts most strongly on objects the baseline reconstructs poorly, and mildly regresses on objects the baseline already reconstructs well (Spearman ρ = −0.498 , p = 0 .005 between baseline CD and guidance ∆CD). This is consistent with the conceptual interpretation: perception priors contribute most where the diffusion model’s own prior is weakest. We view this baseline-dependence as a feature of the framework rather than a limitation — it is the expected behaviour of a corrective prior, and it is empirically replicable across the rescue cases shown in qualitative results. 7Figure 2: Qualitative comparison on GSO’s objects. For each object, we show both RGB (top row) and normal generation results (bottom row) and from left to right: the input image, the generation result (of one view) by Era3D (baseline), Era3D + semantic (ours), Era3D + depth (ours), and Era3D + semantic + depth (ours), and the ground truth mesh. As show, our method recovers fine geometric details and corrects shape collapse (hat, alarm, toy). 8Table 2: Ablation study for depth perception loss (CKA) and its associated weights. Loss variant and setting of Eq. (7) CD ( ×10 −3)↓
+
+ℓ2−std only 23.36 
+
+ℓ2−std , ℓVGG , ωfront-left = ωfront-right = 1 .0 23.36 
+
+ℓ2−std , ℓVGG , ωfront-left = ωfront-right = 0 .1 20.29 
+
+ℓ2−std , ℓCKA , ωfront-left = ωfront-right = 0 .25 25.47 
+
+ℓ2−std , ℓCKA , ωfront-left = ωfront-right = 0 .75 20.78 
+
+ℓ2−std , ℓCKA , ωfront-left = ωfront-right = 0 .50 (ours) 20.18 
+
+Table 3: Ablation study for weight setting in combined perception modality configurations. 
+
+(λd, λ s) CD ( ×10 −3)↓ ∆CD Baseline 21.21 —
+
+(0 .50 , 0.50) 20.50 −3.4% (0 .75 , 0.25) 19.93 −6.0% (0.85 , 0.15 ) (current setting) 19.30 −9.0%(0 .95 , 0.05) 20.37 −3.9% 
+
+Figure 2 shows qualitative comparisons of our method and its baseline (Era3D) on the GSO dataset, spanning both rescue cases (large ∆CD) and challenging objects. We observed that Era3D can duplicate the reconstructed object (e.g., the stacked cups in Figure 2) due to ambiguous information in the single-view input. As shown, when the diffusion model’s prior is incomplete, perception priors compose additively to fill the gap. In summary, semantic perception enhances appearance details (e.g., texture) while depth perception is most visibly effective for objects with clear geometric structure that the baseline reconstructs imprecisely. 
+
+4.3 Ablation Studies Depth perception loss. Table 2 compares the CKA loss (our setting) with the VGG loss (or called perceptual loss) in [ 10 ] for the depth perception loss in Eq. (7). We run this experiment with the setting: Wonder3D + depth. For the CKA loss, we found ωfront-left = ωfront-right = 0 .5 optimal. For the VGG loss, we tried with various settings and empirically found ωfront-left = ωfront-right = 0 .1 and 
+
+ωfront-left = ωfront-right = 1 .0 give reasonable results. Table 2 also shows that including front-left and front-right in the perception loss improves reconstruction performance. 
+
+Parameter setting for multiple perception modality configuration. As shown in Eq. (5), when multiple modalities are used, each modality contributes differently. Table 3 studies the mixing coefficients (λd, λ s). We run this experiment with the Wonder3D to identify the best setting and use it in both Wonder3D and Era3D. 
+
+# 5 Conclusion 
+
+We have shown that pre-trained perception models can serve as inference-time priors for single-view 3D reconstruction, steering a frozen single-view 3D reconstruction pipeline through a lightweight generation-perception alignment module. Across two architecturally distinct pipelines, Wonder3D and Era3D, semantic and geometric perception priors each improve reconstruction quality, and combining them yields the strongest result — evidence that distinct perception modalities supply non-redundant corrections to the generative prior. The framework is model-agnostic and, in principle, extensible to other generative settings where pre-trained perception models exist and intermediate features admit gradient-based alignment. We believe this work motivates further research on perception as a general prior for generative systems, for which, we envisage perception for 3D scene reconstruction from a single image our future work. 9References 
+
+[1] Shuai Bai, Keqin Chen, Xuejing Liu, Jialin Wang, Wenbin Ge, Sibo Song, Kai Dang, Peng Wang, Shijie Wang, Jun Tang, Humen Zhong, Yuanzhi Zhu, Ming-Hsuan Yang, Zhaohai Li, Jianqiang Wan, Pengfei Wang, Wei Ding, Zheren Fu, Yiheng Xu, Jiabo Ye, Xi Zhang, Tianbao Xie, Zesen Cheng, Hang Zhang, Zhibo Yang, Haiyang Xu, and Junyang Lin. Qwen2.5-vl technical report. CoRR , abs/2502.13923, 2025. [2] Irving Biederman. Recognition-by-components: A theory of human image understanding. 
+
+Psychological Review , 94(2):115–147, 1987. [3] Christopher B. Choy, Danfei Xu, JunYoung Gwak, Kevin Chen, and Silvio Savarese. 3D-R2N2: A unified approach for single and multi-view 3D object reconstruction. In ECCV , 2016. [4] Manuel Dahnert, Ji Hou, Matthias Nießner, and Angela Dai. Panoptic 3D scene reconstruction from a single RGB image. In NeurIPS , 2021. [5] Matt Deitke, Dustin Schwenk, Jordi Salvador, Luca Weihs, Oscar Michel, Eli VanderBilt, Ludwig Schmidt, Kiana Ehsani, Aniruddha Kembhavi, and Ali Farhadi. Objaverse: A universe of annotated 3D objects. In CVPR , 2023. [6] Prafulla Dhariwal and Alexander Quinn Nichol. Diffusion models beat GANs on image synthesis. In NeurIPS , 2021. [7] Laura Downs, Anthony Francis, Nate Koenig, Brandon Kinman, Ryan Hickman, Krista Rey-mann, Thomas B. McHugh, and Vincent Vanhoucke. Google Scanned Objects: A high-quality dataset of 3D scanned household items. In ICRA , 2022. [8] Jonathan Ho, Ajay Jain, and Pieter Abbeel. Denoising diffusion probabilistic models. In Hugo Larochelle, Marc’Aurelio Ranzato, Raia Hadsell, Maria-Florina Balcan, and Hsuan-Tien Lin, editors, NeurIPS , 2020. [9] Jie Hu, Shizun Wang, and Xinchao Wang. PE3R: perception-efficient 3D reconstruction. CoRR ,abs/2503.07507, 2025. [10] Justin Johnson, Alexandre Alahi, and Li Fei-Fei. Perceptual losses for real-time style transfer and super-resolution. In Bastian Leibe, Jiri Matas, Nicu Sebe, and Max Welling, editors, ECCV ,2016. [11] Bernhard Kerbl, Georgios Kopanas, Thomas Leimkühler, and George Drettakis. 3D Gaussian splatting for real-time radiance field rendering. In SIGGRAPH , 2023. [12] Simon Kornblith, Mohammad Norouzi, Honglak Lee, and Geoffrey E. Hinton. Similarity of neural network representations revisited. In Kamalika Chaudhuri and Ruslan Salakhutdinov, editors, ICML , 2019. [13] Deming Li, Kaiwen Jiang, Yutao Tang, Ravi Ramamoorthi, Rama Chellappa, and Cheng Peng. MS-GS: Multi-appearance sparse-view 3D Gaussian splatting in the wild. In NeurIPS , 2025. [14] Peng Li, Yuan Liu, Xiaoxiao Long, Feihu Zhang, Cheng Lin, Mengfei Li, Xingqun Qi, Shang-hang Zhang, Wei Xue, Wenhan Luo, Ping Tan, Wenping Wang, Qifeng Liu, and Yike Guo. Era3D: Efficient reconstruction via multi-view diffusion. In NeurIPS , 2024. [15] Juan Linde-Domingo, Matthias S. Treder, Casper Kerrén, and Maria Wimber. Evidence that neural information flow is reversed between object perception and object reconstruction from memory. Nature Communications , 10, 2019. [16] Minghua Liu, Chao Xu, Haian Jin, Linghao Chen, Mukund Varma, Zexiang Xu, and Hao Su. One-2-3-45: Any single image to 3D mesh in 45 seconds without per-shape optimization. In 
+
+NeurIPS , 2023. [17] Ruoshi Liu, Rundi Wu, Basile Van Hoorick, Pavel Tokmakov, Sergey Zakharov, and Carl Vondrick. Zero-1-to-3: Zero-shot one image to 3D object. In ICCV , 2023. 10 [18] Yuan Liu, Cheng Lin, Zijiao Zeng, Xiaoxiao Long, Lingjie Liu, Taku Komura, and Wenping Wang. SyncDreamer: Generating multiview-consistent images from a single-view image. In 
+
+ICLR , 2024. [19] Xiaoxiao Long, Yuan-Chen Guo, Cheng Lin, Yuan Liu, and Zhiyang Dou. Wonder3D: Single image to 3D using cross-domain diffusion. In CVPR , 2024. [20] Grace Luo, Trevor Darrell, Oliver Wang, Dan B. Goldman, and Aleksander Holynski. Readout guidance: Learning control from diffusion features. In CVPR , 2024. [21] David Marr. Vision: A Computational Investigation into the Human Representation and Processing of Visual Information . MIT Press, 1982. [22] Luke Melas-Kyriazi et al. RealFusion: 360 reconstruction of any object from a single image. In 
+
+CVPR , 2023. [23] Lars Mescheder, Michael Oechsle, Michael Niemeyer, Sebastian Nowozin, and Andreas Geiger. Occupancy networks: Learning 3D reconstruction in function space. In CVPR , 2019. [24] Ben Mildenhall, Pratul P. Srinivasan, Matthew Tancik, Jonathan T. Barron, Ravi Ramamoorthi, and Ren Ng. NeRF: Representing scenes as neural radiance fields for view synthesis. ECCV ,2020. [25] Alex Nichol, Prafulla Dhariwal, Aditya Ramesh, Pranav Shyam, Pamela Mishkin, and Bob McGrew. Point-E: A system for generating 3D point clouds from complex prompts. In arXiv preprint , 2022. [26] Stephen E. Palmer. Vision Science: Photons to Phenomenology . MIT Press, 1999. [27] Luigi Piccinelli, Christos Sakaridis, Yung-Hsu Yang, Mattia Segù, Siyuan Li, Wim Abbeloos, and Luc Van Gool. UniDepthV2: Universal monocular metric depth estimation made simpler. 
+
+IEEE Trans. Pattern Anal. Mach. Intell. , 48(3):2354–2367, 2026. [28] Ben Poole, Ajay Jain, Jonathan T. Barron, and Ben Mildenhall. DreamFusion: Text-to-3D using 2D diffusion. arXiv preprint arXiv:2209.14988 , 2022. [29] Guocheng Qian, Jinjie Mai, Abdullah Hamdi, Jian Ren, Aliaksandr Siarohin, Bing Li, Hsin-Ying Lee, Ivan Skorokhodov, Peter Wonka, Sergey Tulyakov, and Bernard Ghanem. Magic123: One image to high-quality 3D object generation using both 2D and 3D diffusion priors. In ICLR ,2024. [30] Alec Radford, Jong Wook Kim, Chris Hallacy, Aditya Ramesh, Gabriel Goh, Sandhini Agarwal, et al. Learning transferable visual models from natural language supervision. In ICML , 2021. [31] Colin Raffel, Noam Shazeer, Adam Roberts, Katherine Lee, Sharan Narang, Michael Matena, Yanqi Zhou, Wei Li, and Peter J. Liu. Exploring the limits of transfer learning with a unified text-to-text transformer. J. Mach. Learn. Res. , 21:140:1–140:67, 2020. [32] Robin Rombach, Andreas Blattmann, Dominik Lorenz, Patrick Esser, and Björn Ommer. High-resolution image synthesis with latent diffusion models. In CVPR , 2022. [33] Jiaming Song, Chenlin Meng, and Stefano Ermon. Denoising diffusion implicit models. In 
+
+ICLR , 2021. [34] Maxim Tatarchenko, Stephan R. Richter, René Ranftl, Zhuwen Li, Vladlen Koltun, and Thomas Brox. What do single-view 3D reconstruction networks learn? In CVPR , 2019. [35] Peng Wang, Lingjie Liu, Yuan Liu, Christian Theobalt, Taku Komura, and Wenping Wang. NeuS: Learning neural implicit surfaces by volume rendering for multi-view reconstruction. In 
+
+NeurIPS , 2021. [36] Zhengyi Wang, Yikai Wang, Yifei Chen, Chendong Xiang, Shuo Chen, Dajiang Yu, Chongxuan Li, and Hang Su and. CRM: single image to 3D textured mesh with convolutional reconstruction model. In ECCV , 2024. 11 [37] Jiale Xu, Weihao Cheng, Yiming Gao, Xintao Wang, Shenghua Gao, and Ying Shan. In-stantMesh: Efficient 3D mesh generation from a single image with sparse-view large recon-struction models. CoRR , abs/2404.07191, 2024. [38] Jiale Xu, Shenghua Gao, and Ying Shan. FreeSplatter: Pose-free Gaussian splatting for sparse-view 3D reconstruction. In CVPR , 2025. [39] Lihe Yang, Bingyi Kang, Zilong Huang, Zhen Zhao, Xiaogang Xu, Jiashi Feng, and Hengshuang Zhao. Depth anything V2. In Amir Globersons, Lester Mackey, Danielle Belgrave, Angela Fan, Ulrich Paquet, Jakub M. Tomczak, and Cheng Zhang, editors, NeurIPS , 2024. [40] Qitao Zhao and Shubham Tulsiani. Sparse-view pose estimation and reconstruction via analysis by generative synthesis. In NeurIPS , 2024. [41] Zhizhuo Zhou and Shubham Tulsiani. SparseFusion: Distilling view-conditioned diffusion for 3D reconstruction. In CVPR , 2023. 12 A Detailed Architecture Diagrams 
+
+We provide expanded architectural details of the GPAM (Section 3.3) applied to Wonder3D, for the semantic modality in Figure 3 and for the geometric (depth) modality in Figure 4. The Era3D variants share the same structural design, up to the adaptations described in Section A.1. 
+
+Figure 3: Architecture of our method applied to Wonder3D with the semantic modality. The Feature Aggregation module aggregates U-Net activations from the RGB stream, and the semantic Perception Mapping module produces the aligned feature u, which is compared against the caption embedding 
+
+ss (Eq. (9)). 
+
+A.1 Era3D Architectural Adaptations 
+
+Our framework applied to Era3D shares the same conceptual structure as with Wonder3D, except for the following adaptations. 
+
+Lighter aggregation width and unified forward pass. The aggregation channel width is backbone-dependent: Cagg = 384 for Wonder3D and Cagg = 128 for Era3D, whose Feature Aggregation module is deliberately lighter. In both backbones, the geometric Perception Mapping module receives the channel-wise concatenation of the colour- and normal-domain aggregated features for the three supervised views (front, front-left, and front-right; Section 3.3), of size [3 , 2Cagg , H, H ]:
+
+[3 , 768 , 32 , 32] for Wonder3D and [3 , 256 , 64 , 64] for Era3D. The two backbones differ in how the two domains are produced: Wonder3D generates colour and normal views through two separate U-Net streams, whereas Era3D produces both domains in a single unified U-Net forward pass over a batch-concatenated 2N -view input, from which the colour- and normal-domain activations are captured and aggregated separately before concatenation. 
+
+Higher native spatial resolution. Era3D operates at 512 × 512 image resolution (vs. Wonder3D’s 
+
+256 × 256 ), with corresponding latent resolution H = 64 (vs. H = 32 ). All BottleneckBlocks in the Feature Aggregation module therefore resize features to 64 × 64 rather than 32 × 32 , and the geometric Perception Mapping module outputs its aligned features at 64 × 64 directly — matching the spatial size of the depth target sd (Eq. (8) ) without requiring an upsampling stage. The global average pooling in the semantic Perception Mapping module operates over 64 × 64 instead of 32 × 32 .
+
+Hook placement. The non-detaching forward hooks are registered on up_blocks[1,2,3] with channel widths [1280 , 640 , 320] , identical to Wonder3D. This shared channel hierarchy enabled the Era3D adaptation without redesigning the projection dimensions of the Feature Aggregation module. 13 Figure 4: Architecture of our method applied to Wonder3D with the geometric (depth) modality. Aggregated RGB- and normal-stream features from the front, front-left, and front-right views are mapped to the aligned feature u, which is compared against the DAv2 F3 target sd (Eq. (8)). 
+
+Input preprocessing. Era3D inputs are tight-cropped to ≈ 82% foreground area within the 512 ×
+
+512 canvas. Training-time Objaverse renders apply the same preprocessing to maintain the training– inference distribution match. 
+
+Supervision targets. The supervision targets are identical for both backbones and are computed once per training image: sd, the DAv2 F3 features (Eq. (8) ; see Appendix D), and ss, the Qwen2.5-VL → T5 caption embedding (Eq. (9)). 
+
+# B Pseudo-code 
+
+Algorithms 1 and 2 present the training and inference code of our method. Both operate with Wonder3D’s (or Era3D’s) backbone U-Net weights frozen throughout; only the parameters of the GPAM are updated. 
+
+B.1 Training 
+
+Before training, perceptual targets are computed once per object from the front-view image I:
+
+sd = AdaptivePool 64 
+
+ DAv2( I).refinenet3  ∈ R256 ×64 ×64 , (8) 
+
+ss = ℓ2-norm  MeanPool T (T5 -base(Qwen2 .5-VL( I)))  ∈ R768 . (9) The targets are fixed throughout training; neither DAv2 nor Qwen2.5-VL receives gradients. 14 Algorithm 1 Training 
+
+Require: Precomputed set D = {(Ii, s id, s is)}Mi=1 ; frozen U-Net ϵθ ; AdamW with ηγ = 10 −4 
+
+> 1:
+
+Initialise parameters γ (of the GPAM) ▷ Feature Aggregation g + Perception Mapping fd, fs 
+
+> 2:
+
+for step = 1 to 10 ,000 do  
+
+> 3:
+
+(I, s d, s s) ∼ D  
+
+> 4:
+
+z0 ← Encode( I).expand(6) ▷ front image replicated ×6 
+
+> 5:
+
+t ∼ Uniform( {1, . . . , T }); ε ∼ N (0, I) 
+
+> 6:
+
+zt ← √¯αt z0 + √1 − ¯αt ε 
+
+> 7:
+
+ϵθ (zt, t, I ) ▷ frozen forward; hooks save {Fl
+
+> rgb
+
+, Fl
+
+> norm
+
+}3 
+
+> l=1
+> 8:
+
+argb , anorm ← g
+
+
+
+{Fl
+
+> rgb
+
+}, {Fl
+
+> norm
+
+}
+
+ 
+
+> 9:
+
+ˆud ← fd(argb , anorm ) 
+
+> 10:
+
+ˆus ← fs(argb ) 
+
+> 11:
+
+Ld ← L L2std (ˆ ufront  
+
+> d
+
+, s d) + ωfront-right LCKA (ˆ ufront-right  
+
+> d
+
+, s d) + ωfront-left LCKA (ˆ ufront-left  
+
+> d
+
+, s d) 
+
+> 12:
+
+Ls ← 1 − cos(ˆ us, s s) 
+
+> 13:
+
+γ ← γ − ηγ ∇γ (Ld + Ls) ▷ ϵ θ has no grad; only γ updated  
+
+> 14:
+
+end for B.2 Inference 
+
+At inference, the same target expressions (Eqs. 8–9) are evaluated on the single input image. The GPAM with parameters γ and U-Net ϵθ are both frozen; xt alone is modified at each DDIM step. 
+
+Algorithm 2 Inference (combined depth + semantic) 
+
+Require: Input image I; frozen ϵθ , γ; targets sd, s s; weights λd, λ s; rates ηd, η s; DDIM steps 
+
+{tT , . . . , t 1} 
+
+> 1:
+
+Compute sd, s s from I via Equations 8–9  
+
+> 2:
+
+xtT ∼ N (0, I) 
+
+> 3:
+
+for t ∈ { tT , t T −1, . . . , t 1} do  
+
+> 4:
+
+xt.requires_grad ← True  
+
+> 5:
+
+εθ ← ϵθ (xt, t, I ) ▷ hooks capture Frgb , Fnorm  
+
+> 6:
+
+argb , anorm ← g(Frgb , Fnorm ) 
+
+> 7:
+
+ˆud ← fd(argb , anorm ) 
+
+> 8:
+
+ˆus ← fs(argb ) 
+
+> 9:
+
+Ld ← L L2std (ˆ ufront  
+
+> d
+
+, s d) + ωfront-right LCKA (ˆ ufront-right  
+
+> d
+
+, s d) + ωfront-left LCKA (ˆ ufront-left  
+
+> d
+
+, s d) 
+
+> 10:
+
+Ls ← 1 − cos(ˆ us, s s) 
+
+> 11:
+
+gd ← ∂Ld/∂ xt; gs ← ∂Ls/∂ xt ▷ through frozen ϵθ , γ to xt 
+
+> 12:
+
+gd ← gd / RMS( gd); gs ← gs / RMS( gs) 
+
+> 13:
+
+εθ ← εθ − λd ηd gd + λs ηs gs
+
+ ▷ guided noise prediction  
+
+> 14:
+
+xt−1 ← DDIMStep( xt, εθ , t ) 
+
+> 15:
+
+xt.requires_grad ← False  
+
+> 16:
+
+end for  
+
+> 17:
+
+return Decode( xt1 ) ▷ multi-view RGB + Normal images → NeuS Setting λs=0 or λd=0 recovers depth-only or semantic-only guidance respectively. 
+
+# C Semantic Perception Ablation: VLM+LLM vs. VLM-Only Features 
+
+We compare two ways to get the semantic information from the input image: • T5 mean-pooled embedding (Ours): a two-step pipeline in which Qwen2.5-VL-7B gen-erates a text caption from the front-view image and T5-base then encodes the text into a 768-dimensional mean-pooled embedding. 15 • Qwen2.5-VL-7B feature embedding: a single-step pipeline in which Qwen2.5-VL di-rectly outputs a feature embedding from the front-view image, followed by an appropriate dimensional projection. The single-step VLM-only approach offers conceptual simplicity because it does not require a separate language encoder, which motivates the comparison. 
+
+Experimental setup. For each variant, we train a corresponding perception module using the recipe described in the main paper. We then run inference on the 30-object GSO benchmark with semantic-only guidance at multiple guidance learning rates. 
+
+Results. Table 4 reports CD performance across guidance weights for both target types. Table 4: Caption target ablation on Wonder3D (30-object GSO, n = 30 ). CD ↓, ∆CD relative to each variant’s no-guidance baseline. Qwen2.5-VL-7B features regress at both tested weights, whereas the T5 embedding gives small gains, with the best result at η = 10 −3.Target η CD ( ×10 −3)↓ ∆CD 
+
+Qwen2.5-VL-7B features (single-step VLM), baseline CD = 20.95 
+
+Qwen-7B 10 −3 21.96 +4 .8% 
+
+Qwen-7B 10 −2 21.34 +1 .9% (best Qwen weight) 
+
+T5 embedding from VLM-generated caption (Ours), baseline CD = 21.05 
+
+T5 + Qwen-VL 10 −4 21.00 −0.23% 
+
+T5 + Qwen-VL 10 −3 20.08 −4.60% (best T5 weight) T5 + Qwen-VL 10 −2 20.38 −3.21% 
+
+Discussion. The two-step VLM+LLM approach consistently outperforms the single-step VLM-only baseline across all tested guidance weights. As standalone guidance, Qwen features regress at every tested weight, while T5 provides modest gains that peak at η = 10 −3. The gap between the two targets is explained by CLIP redundancy. 
+
+Text captions provide a cleaner semantic signal. Generating an intermediate caption encourages the VLM to summarise the object into higher-level concepts before re-encoding with T5. This yields a guidance signal that is less tied to low-level appearance. 
+
+Qwen2.5-VL-7B features are redundant with CLIP conditioning. Qwen2.5-VL directly processes the input image, and its last-layer hidden states overlap substantially with Wonder3D’s CLIP ViT-L/14 image embedding. The resulting guidance gradient is therefore largely redundant with the model’s existing cross-attention pathway, whereas T5-base provides a more orthogonal signal and better standalone CD. 
+
+Validation loss does not predict guidance quality. The caption perception mapper achieves the highest validation cosine similarity ( 0.961 ) among the caption variants we tested, yet its standalone GSO gains remain modest ( −4.60% at best). This decoupling indicates that the perception-mapper training objective (minimising cosine distance on held-out Objaverse embeddings) and the down-stream guidance objective measure different quantities. 
+
+# D Depth Perceptual Target: Feature Selection and Loss Ablation 
+
+This appendix documents two design decisions behind the depth perception branch: (i) which internal feature level of DepthAnything-V2 (DAv2) is used as the perceptual target, and (ii) which training loss is used for the depth perception mapping module. Throughout, we write Fk for the feature map produced by the k-th RefineNet stage of the DAv2 decoder, with F4 the coarsest and F1 the finest. In particular, F3 denotes the refinenet3 activations used to construct the depth perceptual signal s in Section 3.2 (cf. Eq. (8)). 16 D.1 DAv2 Feature Hierarchy 
+
+DAv2 (ViT-L) uses a DPT decoder composed of four cascaded RefineNet stages ( refinenet4 →
+
+refinenet3 → refinenet2 → refinenet1 ). Each successive stage fuses one additional ViT-L scale level and doubles the spatial resolution of its output. The four extraction points therefore form a coarse-to-fine hierarchy F4 → F3 → F2 → F1, summarised in Table 5. Table 5: DAv2 decoder features F4–F1 and their suitability as perceptual targets. Spatial sizes are measured with a 518 ×518 input. The last column gives the operation required to match the 64 × 64 
+
+spatial resolution used by the Feature Aggregation module and the depth perception mapping module.                                        
+
+> Feature DAv2 layer Shape ViT-L scales fused Resize to 64 ×64
+> F4refinenet4 [256 ,37 ,37] 1 of 4 non-integer upsample ( 64 /37 ≈
+> 1.73 ×)
+> F3(Ours) refinenet3 [256 ,74 ,74] 2 of 4 mild adaptive pool ( 74 →64 ,
+> 1.16 ×)
+> F2refinenet2 [256 ,148 ,148] 3 of 4 adaptive pool ( 148 →64 )
+> F1refinenet1 [256 ,296 ,296] 4 of 4 (all) adaptive pool ( 296 →64 )
+
+Why F3? We select F3 for three reasons. 
+
+(i) Clean resizing to the mapper resolution. F4 (37 × 37 ) requires non-integer upsampling by 
+
+≈ 1.73 × to reach the 64 × 64 target resolution, which introduces interpolation artefacts into the supervision signal. F3 instead requires only a mild 1.16 × adaptive pooling ( 74 → 64 ), a clean downsampling operation. 
+
+(ii) A mid-decoder balance of scale and detail. F3 fuses two of the four ViT-L resolution levels, so it encodes both coarse depth ordering and finer boundary structure. F4 (single scale) lacks fine geometric detail, while F2 and F1 carry substantially higher spatial cost — F1 has 16 × the spatial footprint of F3 — without a demonstrated accuracy benefit on the 30-object benchmark. 
+
+(iii) Intermediate features are richer than the final depth map. DAv2’s final output is a single-channel depth map, which discards much of the structural information accumulated through the decoder. The 256-channel F3 tensor retains this information, providing far higher information density per spatial location and therefore a richer gradient signal for guidance. 
+
+D.2 F3 Feature Visualisation 
+
+Figure 5 visualises individual channels of the F3 features used as the depth supervision target. Different channels respond to complementary geometric cues — depth discontinuities, surface orientation changes, object boundaries, and coarse planar regions — a diversity that is absent from the collapsed single-channel depth map. This high-dimensional representation is therefore a more informative supervision target for the depth perception mapper than a scalar depth prediction. 
+
+D.3 Loss Function Ablation 
+
+We test five loss formulations for the depth perception mapper, all using F3 as the supervision target. Every formulation shares the same front-view term, LL2-std (front ), a standardised L2 loss on the pixel-aligned front view; they differ only in how the two adjacent side views ( ±45 ◦) are supervised: • No side-view term : front-view L2 only. • CKA side-view term with weight w ∈ { 0.25 , 0.50 , 0.75 }:
+
+LL2-std (front ) + w · L CKA (front-right ) + w · L CKA (front-left ).
+
+Our final model uses w = 0 .50 .• VGG side-view term : the CKA term is replaced by a VGG perceptual loss on each side view. The main paper reports CD at η = 10 −2 for the key variants; Table 6 gives the full comparison together with the corresponding training-loss statistics. 17 Figure 5: Selected F3 channels from DepthAnything-V2 on four representative GSO objects. Channel diversity is consistent across object categories. Table 6: Loss formulation ablation over the side-view supervision term (all at η = 10 −2, n = 30 
+
+GSO objects). val best denotes the best validation loss during 10k-step training. Lower validation loss does not necessarily predict better guidance quality. Side-view supervision val best CD ( ×10 −3) ∆CD LPIPS wins/30 None ( L2 front only) 0.170 23.36 +10 .1% 16/30 CKA, w = 0 .25 0.201 25.47 +20 .1% 16/30 
+
+CKA, w = 0 .50 (Ours) 0.231 20.18 −4.9% 22/30 ∗
+
+CKA, w = 0 .75 0.275 20.78 −2.0% 18/30 VGG, w = 0 .1 0.182 20.29 −4.3% 19/30 Baseline (no guidance) — 21.21 — — 
+
+> ∗
+
+One-sided binomial p = 0 .008 .
+
+Why L2 on the front view but CKA on the side views? The front view is pixel-aligned with the input image, so an element-wise L2 loss on the (standardised) feature maps is well posed. The side views are not pixel-aligned with any observation: the same object surface appears at different image locations under a ±45 ◦ rotation. Element-wise losses would therefore penalise correct predictions for being spatially shifted. Centered Kernel Alignment (CKA) instead measures structural similarity between feature maps in a scale-invariant, alignment-free manner, making it the appropriate choice for supervising the same object under a viewpoint change. The VGG perceptual loss is a partial alternative, but it operates in a natural-image feature space pretrained on ImageNet, which is mismatched to the DAv2 feature tensors used as the supervision target. 18 Non-monotonic CKA weight optimum. The three-point CKA weight sweep (w =0.25 , 0.50 , 0.75 ) reveals a unimodal trend with the optimum at w = 0 .50 . Under-weighting 
+
+(w = 0 .25 ) makes the side-view CKA gradient too weak to differentiate adjacent-view predic-tions from the front view, leaving the guidance largely uninformative. Over-weighting (w = 0 .75 )over-constrains the front-view L2 signal with excessive side-view regularisation, reducing gradient specificity. 
+
+# E Extended Qualitative Results 
+
+We provide qualitative results of our method (combined semantic + depth guidance) on both multi-view diffusion baselines, Wonder3D (Figure 6) and Era3D (Figure 7). For each object, the top row shows the six generated RGB views and the bottom row shows the corresponding normal maps used for downstream NeuS reconstruction. Across all objects and both baselines, the generated views preserve consistent identity, proportions, and surface structure, indicating that our perceptual guidance maintains multi-view coherence regardless of backbone architecture. 19 Figure 6: Wonder3D + combined guidance: six-view RGB and normal outputs for four representative GSO objects. 20 Figure 7: Era3D + combined guidance: six-view RGB and normal outputs for four representative GSO objects. 21

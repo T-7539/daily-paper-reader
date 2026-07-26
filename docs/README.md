@@ -41,17 +41,17 @@
 <section class="dpr-home-dashboard-card dpr-home-report-card">
   <div class="dpr-home-dashboard-header">
     <div>
-      <span class="dpr-home-dashboard-kicker">2026-07-25</span>
+      <span class="dpr-home-dashboard-kicker">2026-07-26</span>
       <h3 class="dpr-home-dashboard-title">今日汇总</h3>
     </div>
-    <strong class="dpr-home-dashboard-count">共 1 篇</strong>
+    <strong class="dpr-home-dashboard-count">共 2 篇</strong>
   </div>
   <dl class="dpr-home-dashboard-stats">
     <div class="dpr-home-dashboard-stat"><dt>累计更新</dt><dd>1 次</dd></div>
     <div class="dpr-home-dashboard-stat"><dt>精读</dt><dd>0</dd></div>
-    <div class="dpr-home-dashboard-stat"><dt>速读</dt><dd>1</dd></div>
+    <div class="dpr-home-dashboard-stat"><dt>速读</dt><dd>2</dd></div>
   </dl>
-  <p class="dpr-home-dashboard-body">最近更新：2026-07-25 19:48:50 UTC<br>状态：成功</p>
+  <p class="dpr-home-dashboard-body">最近更新：2026-07-26 20:55:39 UTC<br>状态：成功</p>
 </section>
 <section class="dpr-home-dashboard-card dpr-home-brief-card">
   <div class="dpr-home-dashboard-header">
@@ -62,9 +62,9 @@
     <strong class="dpr-home-dashboard-count">AI</strong>
   </div>
   <div class="dpr-home-dashboard-body">
-<p>今天速读了一篇关于用自适应令牌扩展让前馈3D高斯泼溅更紧凑的方法。</p>
-<p>论文发现动态调整令牌数量能有效平衡重建质量和计算开销，轻量级3D重建方向可以跟进。</p>
-<p>如果对实时、低资源的3D场景生成感兴趣，可以顺着“自适应令牌”这个线索去看后续的改进和部署方案。</p>
+<p>今日速读两篇前沿论文，分别探索了先感知后生成的3D重建新范式与一次性4D可动头像建模。</p>
+<p>最值得关注的方向是：将物体感知前置能显著提升单视图3D重建质量，而强专注机制使得单张照片即可生成高保真可动头部化身。</p>
+<p>建议感兴趣的朋友从“感知引导生成”这一思路切入，关注这两项技术在虚拟人、AR/VR中的落地潜力。</p>
   </div>
 </section>
 <section class="dpr-home-dashboard-card dpr-home-deep-card">
@@ -86,12 +86,12 @@
       <span class="dpr-home-dashboard-kicker">今日累计</span>
       <h3 class="dpr-home-dashboard-title">速读推荐</h3>
     </div>
-    <strong class="dpr-home-dashboard-count">1 篇</strong>
+    <strong class="dpr-home-dashboard-count">2 篇</strong>
   </div>
   <div class="dpr-home-dashboard-body">
-<ul class="dpr-home-dashboard-paper-list"><li><span class="dpr-home-dashboard-paper-title" title="ATSplat: Compact Feed-forward 3D Gaussian Splatting with Adaptive Token Expansion">ATSplat: Compact Feed-forward 3D Gaussian Splatting with Adaptive Token Expansion</span></li></ul>
+<ul class="dpr-home-dashboard-paper-list"><li><span class="dpr-home-dashboard-paper-title" title="Seeing Before Generating: Object Perception Enhances Single-View 3D Reconstruction">Seeing Before Generating: Object Perception Enhances Single-View 3D Reconstruction</span></li><li><span class="dpr-home-dashboard-paper-title" title="FA-LAM: Focus-Aware Large Avatar Model for One-Shot 4D Animatable Gaussian Head">FA-LAM: Focus-Aware Large Avatar Model for One-Shot 4D Animatable Gaussian Head</span></li></ul>
   </div>
-  <div class="dpr-home-dashboard-tags"><span class="dpr-home-dashboard-tag">sketch-to-d <strong>1</strong></span></div>
+  <div class="dpr-home-dashboard-tags"><span class="dpr-home-dashboard-tag">sketch-to-d <strong>2</strong></span></div>
 </section>
 </div>
 

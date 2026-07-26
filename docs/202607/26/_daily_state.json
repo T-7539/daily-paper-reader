@@ -1,0 +1,41 @@
+{
+  "date": "20260726",
+  "date_label": "",
+  "generated_at": "2026-07-26 20:55:39 UTC",
+  "recommend_exists": true,
+  "run_count": 1,
+  "papers": [
+    {
+      "paper_id": "2607.18630v1",
+      "route": "202607/26/2607.18630v1-seeing-before-generating-object-perception-enhances-single-view-3d-reconstruction",
+      "title": "Seeing Before Generating: Object Perception Enhances Single-View 3D Reconstruction",
+      "section": "quick",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "sketch-to-d"
+        }
+      ],
+      "score": 7.0,
+      "evidence": "即插即用方法利用感知信号增强单视图三维重建，可应用于绘画三维生成。",
+      "first_seen_at": "2026-07-26 20:55:39 UTC",
+      "updated_at": "2026-07-26 20:55:39 UTC"
+    },
+    {
+      "paper_id": "2607.20922v1",
+      "route": "202607/26/2607.20922v1-fa-lam-focus-aware-large-avatar-model-for-one-shot-4d-animatable-gaussian-head",
+      "title": "FA-LAM: Focus-Aware Large Avatar Model for One-Shot 4D Animatable Gaussian Head",
+      "section": "quick",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "sketch-to-d"
+        }
+      ],
+      "score": 7.0,
+      "evidence": "从单张图像一次性生成可动画的3D高斯头部，可应用于艺术肖像画",
+      "first_seen_at": "2026-07-26 20:55:39 UTC",
+      "updated_at": "2026-07-26 20:55:39 UTC"
+    }
+  ]
+}
