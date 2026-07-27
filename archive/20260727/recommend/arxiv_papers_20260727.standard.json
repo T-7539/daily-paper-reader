@@ -1,0 +1,93 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-27T20:45:14.878156+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [
+    {
+      "id": "2607.19765v1",
+      "source": "arxiv",
+      "title": "Extending a Large View Synthesis Model for Multi-view Panoptic Segmentation",
+      "abstract": "Large view synthesis models synthesize novel views through cross-view attention without explicit 3D representations, and recent studies have shown that they learn accurate spatial correspondence from RGB supervision alone. We observe that this correspondence generalizes beyond appearance. When non-photorealistic signals such as binary encoded panoptic labels are passed through the model, they are propagated to novel views with consistent spatial structure. These results indicate that the correspondence learned for RGB view synthesis can also propagate view-independent per-pixel labels. From this observation, we present the first work to extend large view synthesis models beyond appearance rendering to 3D scene understanding. We propose a panoptic segmentation pipeline that reuses a frozen view synthesis model to propagate panoptic labels from input views to novel views, without 3D reconstruction or any segmentation-specific training of the view synthesis model. Given panoptic labels on the input views, we encode them into binary channel representations and pass them through the same model to render target-view segmentation. On ScanNet, our method achieves segmentation quality on par with Gaussian based approaches requiring explicit 3D reconstruction, while outperforming them in novel view synthesis by more than 7 dB. The label propagation also transfers across datasets, surpassing these approaches on Replica without any fine-tuning.",
+      "authors": [
+        "Kwonyoung Ryu",
+        "In-Jae Lee",
+        "Jonghyun Jin",
+        "Hyunjee Lee",
+        "Jongmin Lee",
+        "Jaesik Park"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-07-22T05:16:30+00:00",
+      "link": "https://arxiv.org/pdf/2607.19765v1",
+      "tags": [
+        "keyword:sketch-to-D",
+        "query:sketch-to-D"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "propagates non-photorealistic labels consistently across views",
+      "llm_evidence_cn": "非真实感标签在多视角间一致传播",
+      "llm_evidence": "非真实感标签在多视角间一致传播",
+      "canonical_evidence": "非真实感标签在多视角间一致传播",
+      "llm_tldr_en": "A large view synthesis model is shown to propagate non-photorealistic signals with consistent spatial structure, indicating that its learned correspondence can maintain consistency for artistic-style inputs, useful for multi-view artistic 3D generation.",
+      "llm_tldr_cn": "该论文将大视角合成模型从外观渲染扩展到三维场景理解，提出多视角全景分割方法。研究发现，针对非真实感信号（如编码的全景标签），模型能够将其以一致的空间结构传播到新视角，表明为RGB视角合成学习的对应关系也能传播视角无关的每像素标签。这表明大视角合成模型可用于维持非真实感风格输入的多视角一致性，对艺术化三维生成具有潜在应用价值。",
+      "llm_tldr": "该论文将大视角合成模型从外观渲染扩展到三维场景理解，提出多视角全景分割方法。研究发现，针对非真实感信号（如编码的全景标签），模型能够将其以一致的空间结构传播到新视角，表明为RGB视角合成学习的对应关系也能传播视角无关的每像素标签。这表明大视角合成模型可用于维持非真实感风格输入的多视角一致性，对艺术化三维生成具有潜在应用价值。",
+      "llm_tags": [
+        "query:sketch-to-d"
+      ],
+      "matched_query_tag": "query:sketch-to-d",
+      "matched_query_text": "maintaining multi-view consistency in artistic 3D generation",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2607.20660v1",
+      "source": "arxiv",
+      "title": "Axolotl3D: a Unified Framework for Faithful 3D Shape Completion",
+      "abstract": "Recent 3D generative models produce high-quality geometry from a single image using large-scale priors and diffusion architectures. However, they assume complete visibility and single-view inputs, limiting applicability in multi-view, occluded, or editing scenarios. Although prior works address these challenges individually, they lack a unified framework for controllable 3D completion under diverse conditioning signals. We present Axolotl3D, a multi-modal and occlusion-aware 3D generation model that jointly conditions on images, visibility masks, camera parameters, and a partial point cloud. The point cloud serves as a geometric anchor promoting faithful shape completion, while camera parameters ensure consistent multi-view alignment in a shared 3D coordinate system. A unified training strategy synthesizes diverse conditioning regimes from large-scale 3D data, enabling robust cross-modal reasoning. Experiments on Toys4K and OmniObject3D demonstrate state-of-the-art performance under both clean and occluded settings, as well as strong results in real-world reconstruction and geometry-consistent editing.",
+      "authors": [
+        "Anita Hu",
+        "Maria Shugrina"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-07-22T18:38:20+00:00",
+      "link": "https://arxiv.org/pdf/2607.20660v1",
+      "tags": [
+        "keyword:sketch-to-D",
+        "query:sketch-to-D"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "single-image 3D generative model applicable to diverse inputs",
+      "llm_evidence_cn": "可应用于绘画等多样化输入的单图像三维生成模型",
+      "llm_evidence": "可应用于绘画等多样化输入的单图像三维生成模型",
+      "canonical_evidence": "可应用于绘画等多样化输入的单图像三维生成模型",
+      "llm_tldr_en": "Axolotl3D unifies multi-modal conditioning for faithful 3D shape completion, enabling high-quality geometry from single images with occlusion handling.",
+      "llm_tldr_cn": "针对现有单图像三维生成模型假设无遮挡和完整可见性的局限，提出Axolotl3D，一种多模态、遮挡感知的统一三维形状补全框架，同时利用图像、可见性掩码和部分点云生成高质量三维形状，实验表明其在多种条件信号下均能实现忠实的三维补全。",
+      "llm_tldr": "针对现有单图像三维生成模型假设无遮挡和完整可见性的局限，提出Axolotl3D，一种多模态、遮挡感知的统一三维形状补全框架，同时利用图像、可见性掩码和部分点云生成高质量三维形状，实验表明其在多种条件信号下均能实现忠实的三维补全。",
+      "llm_tags": [
+        "query:sketch-to-d"
+      ],
+      "matched_query_tag": "query:sketch-to-d",
+      "matched_query_text": "single image 3D generation techniques applicable to paintings",
+      "matched_requirement_id": "req-9",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}

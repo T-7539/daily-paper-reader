@@ -1,0 +1,39 @@
+{
+  "label": "2026-07-27",
+  "date": "2026-07-27",
+  "generated_at": "2026-07-27T20:50:05",
+  "count": 2,
+  "papers": [
+    {
+      "paper_id": "202607/27/2607.19765v1-extending-a-large-view-synthesis-model-for-multi-view-panoptic-segmentation",
+      "section": "deep",
+      "title_en": "Extending a Large View Synthesis Model for Multi-view Panoptic Segmentation",
+      "authors": "Kwonyoung Ryu, In-Jae Lee, Jonghyun Jin, Hyunjee Lee, Jongmin Lee, Jaesik Park",
+      "date": "2026-07-22",
+      "pdf": "https://arxiv.org/pdf/2607.19765v1",
+      "score": "9.0",
+      "evidence": "非真实感标签在多视角间一致传播",
+      "tldr": "大型视图合成模型通过RGB训练习得准确的空间对应，本文发现该对应可用于传播非外观语义信号。提出将冻结的视图合成模型重用于全景分割，将标签编码为二进制通道并传递至新视图，无需3D重建或分割训练。在ScanNet上分割质量媲美需显式3D重建的高斯方法，且新视图合成胜出7 dB；该方法还能跨数据集迁移，在Replica上直接超越同类方法。此举首次将视图合成模型延伸至3D场景理解，展示了通用空间对应的潜力。",
+      "tags": "query:sketch-to-d",
+      "abstract_en": "Large view synthesis models synthesize novel views through cross-view attention without explicit 3D representations, and recent studies have shown that they learn accurate spatial correspondence from RGB supervision alone. We observe that this correspondence generalizes beyond appearance. When non-photorealistic signals such as binary encoded panoptic labels are passed through the model, they are propagated to novel views with consistent spatial structure. These results indicate that the correspondence learned for RGB view synthesis can also propagate view-independent per-pixel labels. From this observation, we present the first work to extend large view synthesis models beyond appearance rendering to 3D scene understanding. We propose a panoptic segmentation pipeline that reuses a frozen view synthesis model to propagate panoptic labels from input views to novel views, without 3D reconstruction or any segmentation-specific training of the view synthesis model. Given panoptic labels on the input views, we encode them into binary channel representations and pass them through the same model to render target-view segmentation. On ScanNet, our method achieves segmentation quality on par with Gaussian based approaches requiring explicit 3D reconstruction, while outperforming them in novel view synthesis by more than 7 dB. The label propagation also transfers across datasets, surpassing these approaches on Replica without any fine-tuning.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/27/2607.20660v1-axolotl3d-a-unified-framework-for-faithful-3d-shape-completion",
+      "section": "quick",
+      "title_en": "Axolotl3D: a Unified Framework for Faithful 3D Shape Completion",
+      "authors": "Anita Hu, Maria Shugrina",
+      "date": "2026-07-22",
+      "pdf": "https://arxiv.org/pdf/2607.20660v1",
+      "score": "7.0",
+      "evidence": "可应用于绘画等多样化输入的单图像三维生成模型",
+      "tldr": "针对现有三维生成方法无法统一处理多模态条件与遮挡的局限，Axolotl3D提出联合图像、可见性掩码、相机参数和部分点云的统一框架，以点云作为几何锚点、相机参数对齐多视图，并通过统一训练策略覆盖多样化条件。在Toys4K和OmniObject3D上取得了清洁及遮挡场景下的最优性能，支持真实重建与几何一致编辑，为可控三维补全开辟了新方向。",
+      "tags": "query:sketch-to-d",
+      "abstract_en": "Recent 3D generative models produce high-quality geometry from a single image using large-scale priors and diffusion architectures. However, they assume complete visibility and single-view inputs, limiting applicability in multi-view, occluded, or editing scenarios. Although prior works address these challenges individually, they lack a unified framework for controllable 3D completion under diverse conditioning signals. We present Axolotl3D, a multi-modal and occlusion-aware 3D generation model that jointly conditions on images, visibility masks, camera parameters, and a partial point cloud. The point cloud serves as a geometric anchor promoting faithful shape completion, while camera parameters ensure consistent multi-view alignment in a shared 3D coordinate system. A unified training strategy synthesizes diverse conditioning regimes from large-scale 3D data, enabling robust cross-modal reasoning. Experiments on Toys4K and OmniObject3D demonstrate state-of-the-art performance under both clean and occluded settings, as well as strong results in real-world reconstruction and geometry-consistent editing.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

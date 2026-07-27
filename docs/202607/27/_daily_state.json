@@ -1,0 +1,41 @@
+{
+  "date": "20260727",
+  "date_label": "",
+  "generated_at": "2026-07-27 20:50:01 UTC",
+  "recommend_exists": true,
+  "run_count": 1,
+  "papers": [
+    {
+      "paper_id": "2607.19765v1",
+      "route": "202607/27/2607.19765v1-extending-a-large-view-synthesis-model-for-multi-view-panoptic-segmentation",
+      "title": "Extending a Large View Synthesis Model for Multi-view Panoptic Segmentation",
+      "section": "deep",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "sketch-to-d"
+        }
+      ],
+      "score": 9.0,
+      "evidence": "非真实感标签在多视角间一致传播",
+      "first_seen_at": "2026-07-27 20:50:01 UTC",
+      "updated_at": "2026-07-27 20:50:01 UTC"
+    },
+    {
+      "paper_id": "2607.20660v1",
+      "route": "202607/27/2607.20660v1-axolotl3d-a-unified-framework-for-faithful-3d-shape-completion",
+      "title": "Axolotl3D: a Unified Framework for Faithful 3D Shape Completion",
+      "section": "quick",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "sketch-to-d"
+        }
+      ],
+      "score": 7.0,
+      "evidence": "可应用于绘画等多样化输入的单图像三维生成模型",
+      "first_seen_at": "2026-07-27 20:50:01 UTC",
+      "updated_at": "2026-07-27 20:50:01 UTC"
+    }
+  ]
+}

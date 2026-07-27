@@ -1,0 +1,515 @@
+Title: Extending a Large View Synthesis Model for Multi-view Panoptic Segmentation
+
+URL Source: https://arxiv.org/pdf/2607.19765v1
+
+Published Time: Thu, 23 Jul 2026 00:26:22 GMT
+
+Number of Pages: 31
+
+Markdown Content:
+# Extending a Large View Synthesis Model for Multi-view Panoptic Segmentation 
+
+Kwonyoung Ryu 1 , In-Jae Lee 4 , Jonghyun Jin 2 , Hyunjee Lee 2 ,Jongmin Lee 3 , Jaesik Park 4
+
+> 1
+
+POSTECH 2POSCO DX 3Chung-Ang University 4Seoul National University 
+
+Abstract. Large view synthesis models synthesize novel views through cross-view attention without explicit 3D representations, and recent stud-ies have shown that they learn accurate spatial correspondence from RGB supervision alone. We observe that this correspondence generalizes beyond appearance. When non-photorealistic signals such as binary en-coded panoptic labels are passed through the model, they are propagated to novel views with consistent spatial structure. These results indicate that the correspondence learned for RGB view synthesis can also propa-gate view-independent per-pixel labels. From this observation, we present the first work to extend large view synthesis models beyond appearance rendering to 3D scene understanding. We propose a panoptic segmen-tation pipeline that reuses a frozen view synthesis model to propagate panoptic labels from input views to novel views, without 3D reconstruc-tion or any segmentation-specific training of the view synthesis model. Given panoptic labels on the input views, we encode them into binary channel representations and pass them through the same model to render target-view segmentation. On ScanNet, our method achieves segmenta-tion quality on par with Gaussian based approaches requiring explicit 3D reconstruction, while outperforming them in novel view synthesis by more than 7 dB. The label propagation also transfers across datasets, surpassing these approaches on Replica without any fine-tuning. 
+
+Keywords: Novel View Synthesis, Large View Synthesis Models, 3D Panoptic Segmentation, Label Propagation, Multi-view 3D Understand-ing 
+
+## 1 Introduction 
+
+Predicting panoptic segmentation from novel viewpoints requires assigning se-mantic labels and instance identities to every pixel in an unobserved view, given only a few images of the scene. Embodied agents need this capability to reason about objects beyond the currently observed view. Example applications include anticipating scene content before navigation and augmenting training data from a small number of annotated views. Most existing approaches first reconstruct a 3D representation such as NeRF [31] or 3D Gaussian Splatting [23], and then lift 2D panoptic labels into the recovered arXiv:2607.19765v1 [cs.CV] 22 Jul 2026 2 K. Ryu et al. View Synthesis Model 
+
+> Plücker Ray Embedding
+> Target view Rendered Image Input Images
+
+View Synthesis Model 
+
+> Plücker Ray Embedding
+> Target view Rendered Segmentation Input Images
+> Encoding
+> Encoding
+> Input Segmentation
+> Multiview Panoptic Seg
+> !
+
+Fig. 1: Illustration of a large-view synthesis model and its extension to multi-view panoptic segmentation. In the left figure, a feed-forward large view synthesis model renders a novel target image from the input source views. In the right fig-ure, the same model is bootstrapped for panoptic segmentation. We propose a simple signal-level extension that repurposes the learned cross-view correspondence of a view synthesis model for 3D scene understanding beyond RGB rendering. 
+
+representation through per-scene optimization [5,41]. This design couples recon-struction quality with segmentation quality. Errors in the recovered geometry propagate directly to the lifted labels. Recent feed-forward variants predict 3D Gaussians with semantic features in a single forward pass [14, 52], eliminating per-scene optimization but still coupling reconstruction quality with segmenta-tion in a shared 3D representation. These limitations motivate an alternative that avoids explicit 3D reconstruc-tion entirely. Meanwhile, recent NVS methods replace explicit 3D representations with latent token-based scene modeling [20, 22, 37, 39, 45]. These large view syn-thesis models attend across source and target tokens to synthesize novel views directly, without any 3D inductive bias such as NeRF [31] or 3DGS [23] in the network architecture [22]. Recent studies [20, 45] show that these models learn cross-view spatial correspondence even without explicit 3D supervision, and that their attention layers learn accurate cross-view spatial correspondence between source and target views. However, all existing analyses focus exclusively on tar-get RGB view appearance. Whether the learned implicit correspondence extends to signals beyond appearance and can thus serve tasks beyond view synthesis remains unexplored. We investigate this question by analyzing the implicit correspondence of a large view synthesis model [45] fine-tuned only for target RGB reconstruction via gradient-based saliency analysis [42]. We find that the model attends to geo-metrically corresponding regions in source views regardless of whether the input is RGB format or non-photorealistic per-pixel label encodings. The model thus learns geometric relationships between views rather than appearance-specific features, and arbitrary per-pixel signals can transfer to novel views through the same large view synthesis model. We present the first work to extend large view synthesis models beyond appearance rendering to 3D scene understanding. We propose a panoptic seg-Extending LVSM for Panoptic Seg 3
+
+mentation pipeline that bootstraps a large view synthesis model [45] trained solely for RGB image reconstruction. We first segment the input views using a shared query decoder to obtain cross-view-consistent panoptic labels, because the propagation stage preserves the labels provided as input, and instance iden-tities must be consistent before encoding. The target RGB rendering path re-constructs the novel target-view image from source views, and the segmentation path encodes the panoptic labels as binary channel encodings and passes them through the same novel view synthesis model to produce target-view segmenta-tion. Our method achieves 33.56 PSNR and 0.5949 mIoU on novel views in the ScanNet dataset [13], higher than the baseline SIU3R [52] (25.88 PSNR, 0.5894 mIoU), which trains explicit 3D Gaussians with dedicated segmentation objec-tives. Because the rendering transformer remains frozen, our pipeline preserves full rendering quality, exceeding Gaussian-based methods by more than 7 dB. Our contributions are as follows. 
+
+– To our knowledge, this is the first work to extend large view synthesis mod-els beyond appearance rendering to 3D scene understanding, demonstrating that explicit 3D reconstruction is not a prerequisite for multi-view panoptic segmentation. 
+
+– We demonstrate, through gradient-based saliency analysis, that a large view synthesis model trained only for RGB reconstruction propagates panoptic labels to novel views. The view synthesis model receives no segmentation-specific supervision. 
+
+– We present a modular pipeline that decouples novel view rendering and segmentation, allowing independent replacement of either component as the respective fields advance. 
+
+## 2 Related Work 
+
+Scene Understanding and Reconstruction. Panoptic segmentation in 3D assigns semantic labels and instance identities to every element of a scene. Some methods directly segment pre-scanned point clouds [27, 34, 40], but they assume the 3D geometry is already available. When only images are given, the domi-nant paradigm lifts 2D predictions into a 3D representation through per-scene optimization. NeRF-based approaches [4, 15, 28, 41, 58] fuse noisy 2D labels into a consistent volumetric model, while Gaussian Splatting variants [23] embed semantic or instance features directly into primitives [35, 49, 51, 54, 59, 61, 62]. A related direction distills open-vocabulary features from 2D foundation models into radiance fields [5,21,24]. All of these approaches require posed images, dense captures, and minutes to hours of optimization per scene. Recent feed-forward methods remove per-scene optimization by predicting labeled 3D representations in a single forward pass without pose information [14,52,63]. However, they still depend on explicit 3D intermediates such as pixel-aligned Gaussians [14, 52] or dense point maps [63]. As a result, reconstruction quality directly constrains seg-mentation quality, and the two components cannot be upgraded independently. Our approach passes encoded panoptic labels through a large view synthesis 4 K. Ryu et al. 
+
+model that has never been trained on segmentation. This requires no 3D recon-struction, no task-specific training, and no architectural modification. 
+
+Large View Synthesis Models. Novel view synthesis has traditionally relied on explicit 3D representations optimized per scene, such as volumetric fields [2, 3, 31, 32] or Gaussian primitives [18, 23, 56]. Feed-forward variants predict these representations from sparse inputs in a single pass, with some requiring posed images [7, 9, 17, 47, 55, 57] and others jointly recovering geometry and cameras from unposed images [29, 43, 46, 48, 53]. Despite their diversity, all assume that an explicit geometric intermediate must be recovered before rendering. Another line of work synthesizes views directly through learned token-to-token mappings without explicit 3D structure [20,22,37–39,45]. Early models in this line require ground-truth camera poses [22, 37], but subsequent work pro-gressively removes this dependency through self-supervised pose prediction [20] and by eliminating pose representations entirely [45]. These models use cross-view attention to model correspondence between source and target views, and recent analyses [20,45] show that this correspondence reflects 3D scene structure. Yet they have been explored exclusively for appearance synthesis. Whether the implicit correspondence extends to other per-pixel signals has not been investi-gated. We build upon Less3Depend [45] and show through gradient attribution analysis that its learned implicit correspondence is input-agnostic, propagating panoptic labels to novel views without any task-specific adaptation. 
+
+2D Panoptic Segmentation. Our pipeline uses off-the-shelf 2D panoptic seg-mentation as a modular source-view component. The task was introduced as a unification of semantic and instance segmentation [25], with early solutions build-ing on detection [16] or encoder-decoder [8] architectures. The dominant modern formulation treats panoptic segmentation as mask classification via transformer decoders [11, 12, 19], and has been further extended toward open-vocabulary ca-pabilities [26] and unified multi-task frameworks [19]. In parallel, self-supervised vision transformers [6, 33] serve as dense-prediction backbones, bridged to seg-mentation heads via adapter modules [10]. We combine these components to extract panoptic labels from each input view and propagate them through the large view synthesis model. Since no part of our pipeline is trained on 3D data, the 2D segmentation model can be replaced with any improved future method without modifying the rest of the system. 
+
+## 3 Method 
+
+In this section, we briefly review large view synthesis models (Sec. 3.1) and their inherent implicit correspondence capability (Sec. 3.2). We then present our approach to bootstrapping the view synthesis model for multi-view panoptic segmentation (Sec. 3.3), introduce a panoptic encoding and decoding scheme (Sec. 3.4), and discuss training (Sec. 3.5) and design properties (Sec. 3.6). Extending LVSM for Panoptic Seg 5Target 
+
+> View
+> Input
+> Views
+> Input
+> Instance
+> Logits
+
+Fig. 2: Visualization of gradient saliency from target to source views. The saliency maps highlight similar source regions whether the model receives RGB images or binary instance encodings. This indicates that the learned cross-view correspondence of the model is not limited to appearance. Row 1 shows the rendered target view, with each column indicating the location of a different query patch in red. For each query patch, Rows 2-3 and Rows 4-5 show the gradient saliency over the same two source views, using RGB inputs and binary instance encodings, respectively. 
+
+3.1 Preliminaries : Large View Synthesis Models 
+
+Novel view synthesis aims to render images from unobserved viewpoints given a set of source images. Given N source views {Is 
+
+> i
+
+}Ni=1 with Is 
+
+> i
+
+∈ RH×W ×3, the goal is to produce a target image ˆIt ∈ RH×W ×3 at a novel viewpoint. Recent large view synthesis models such as Less3Depend [45] and RayZer [20] achieve strong performance even in the unposed sparse-view setting, where neither source nor target camera poses are provided. These models take N source images as input and directly synthesize the target view by inferring relative geometry internally, without constructing any explicit 3D representation. In this paper, we adopt Less3Depend [45], which builds upon LVSM [22], a transformer-based renderer that tokenizes source views via a frozen DINOv2 [33] encoder and synthesizes the target view through joint attention across all source and target tokens. Un-like LVSM, Less3Depend [45] does not require camera poses, enabling novel view synthesis from unposed sparse views. This formulation exposes a learned source-to-target correspondence through attention, which we later reuse to propagate panoptic labels without modifying the renderer. We examine whether this cor-respondence can also transfer non-RGB signals across views. 6 K. Ryu et al. 
+
+3.2 Implicit Correspondence in a Large View Synthesis Model 
+
+In this section, we analyze whether the geometric correspondence learned by feed-forward large view synthesis models generalizes beyond RGB inputs, and show that this property enables panoptic label propagation to novel views. To examine whether this correspondence is specific to RGB inputs, we visualize gradient saliency [42] of the large view synthesis model [45]. For a single target patch, we backpropagate through the decoder and encoder and record the abso-lute gradient magnitude at each source token. This directly measures how much each source region causally influences the target output. For both input types, we provide the target-view latent Plücker estimated from RGB inputs. As shown in Fig. 2, the gradient saliency reveals spatial correspondence be-tween the target and source views. For each query patch on the target view, the saliency concentrates on geometrically corresponding regions in the source views (Rows 2,3). To test whether this correspondence depends on the input modality, we replace the source RGB inputs with binary instance encodings while keeping the same pose conditioning from the RGB rendering path. The correspondence persists under this change (Rows 4,5). The consistent saliency patterns across both modalities indicate that the model resolves spatial correspondence from geometric pose rather than input content, which enables panoptic label propa-gation through the rendering path. 
+
+3.3 Bootstrapping NVS for Panoptic Understanding Overall Pipeline. As illustrated in Fig. 3(a), our method operates in two par-allel paths through the same large view synthesis model. Given N unposed input views {Is 
+
+> i
+
+}Ni=1 with Is 
+
+> i
+
+∈ RH×W ×3 and a target image It, the model first encodes the input views into a scene latent z and estimates the target camera embedding: 
+
+z = E(Is1, . . . , I s 
+
+> N
+
+, z0), ˆet = P(It, z), (1) where z0 is a learnable latent refined by attending to source-view tokens, E is the scene encoder, R is the render decoder, and ˆet is a latent Plücker embedding estimated by the pose estimator P from the unposed target image It and the scene latent z following [45]. The rendering path synthesizes the target-view image through the decoding stage as follows, 
+
+ˆIt = R(z, ˆet). (2) For the segmentation path, a shared query decoder D first extracts cross-view consistent panoptic labels from the input views. As shown in Fig. 3(b), the labels are then encoded into binary channel representations bi ∈ { 0, 1}H×W ×3. These encodings are then passed through the same encoder and decoder as follows. 
+
+zseg = E(bs1, . . . , bs 
+
+> N
+
+, z0), ˆbt = R(zseg , ˆet), (3) where ˆet and z0 are reused from the rendering path and all weights of E and R are trained with RGB reconstruction only. The continuous output ˆbt ∈ [0 , 1] H×W ×3Extending LVSM for Panoptic Seg 7Scene Encoder  
+
+> Scene latent
+> Render Decoder
+> View Synthesis Model
+> Input View Images Target View Latent Plücker
+> Rendered RGB
+> Input View Images
+> Source view Segmenter
+> Input View Panoptic
+> Scene Encoder (shared)
+> Render Decoder (shared)
+> Frozen RGB-pretrained View Synthesis Model
+> Target View Latent Plücker
+> Input View Panoptic
+> Seg latent
+> Rendered Panoptic
+> Panoptic Decoding
+> Panoptic Encoding
+> Rendering Path
+> Segmentation Path
+
+(a) RGB NVS training and source-view segmentation (b) Novel View Panoptic Inference 
+
+!
+
+> (trainable or off-the-shelf model )
+> !/
+> Trainable / Frozen !/
+
+Fig. 3: Overall pipeline. (a) RGB NVS training and source-view segmentation: the view synthesis model (blue) is trained to encode input-view images into a scene la-tent and render the target-view RGB image from the target-view latent Plücker em-bedding. A source-view segmenter (red), implemented either as our trainable shared query decoder or an off-the-shelf model, predicts panoptic labels for the input views. (b) Novel-view panoptic inference: the input-view panoptic labels produced in (a) are encoded and passed through the frozen RGB-pretrained view synthesis model to prop-agate them to the target view. The resulting target-view binary output is converted into the final panoptic map by panoptic decoding. The view synthesis model is trained only for novel-view RGB synthesis, not for semantic or panoptic segmentation. 
+
+is then decoded into the final panoptic map P t. As shown in Sec. 3.2, the corre-spondence learned by the view synthesis model remains stable when RGB inputs are replaced with binary instance encodings. Since the model is trained solely for RGB image reconstruction, panoptic propagation requires only lightweight processing around the existing rendering path. 
+
+Multi-view Panoptic Segmentation. Since our pipeline propagates input-view panoptic labels through the large view synthesis model, instance identities must be consistent across all input views. Conflicting labels for the same object would lead to ambiguous propagation. To this end, we adopt a shared query decoder D following Mask2Former [11], built on a frozen DINOv2 [33] encoder with ViT-Adapter [10]. A shared set of learnable object queries Q is fed into the decoder along with features from all input views simultaneously as follows. 
+
+{(mj , c j )}Qj=1 = D(Q, I 1, . . . , I N ), (4) where Q = {qj }Qj=1 is a set of Q learnable object queries, mj ∈ [0 , 1] N ×H×W
+
+is the predicted mask, and cj ∈ C is the predicted semantic class for the j-th query. Since each query attends to all views jointly, it explicitly represents 8 K. Ryu et al. 
+
+a potential object instance across views, ensuring consistent instance identities without requiring explicit cross-view matching. 
+
+3.4 Panoptic Encoding and Decoding 
+
+The large view synthesis model transfers implicit correspondence through three output channels. Given a panoptic map with semantic labels S(p) and instance IDs I(p) ∈ { 0, . . . , K −1} for each pixel p, we encode each pixel as b(p) = 
+
+B(I(p)) ∈ { 0, 1}3, where B denotes the 3-bit binary encoding ( K ≤ 8). We also store a look-up table L mapping each instance index to its semantic class. At inference, the model outputs ˆbt ∈ [0 , 1] H×W ×3 for the target view, and we recover the panoptic map as, 
+
+ˆIt(p) = B−1 round( ˆbt(p)) , St(p) = L  ˆIt(p). (5) Pixels where any channel k satisfies |ˆb:,:,k (p) − 0.5| ≤ τ are marked as uncertain and left unlabeled. We set τ = 0 .2 for the best performance. We choose binary over continuous encoding for robustness to rendering ar-tifacts. When the model blends two binary codewords at instance boundaries, the interpolated values converge toward 0.5, which is maximally distant from both valid states and reliably rejected by thresholding. A finer encoding would narrow the inter-codeword gaps, causing boundary interpolation to alias into valid but incorrect codewords and introduce phantom instances that cannot be filtered out. A single 3-bit propagation pass represents at most eight active in-stance IDs. We handle scenes with more instances through a multi-pass decoding scheme, described in the supplementary (Appendix.B). 
+
+3.5 Training Scheme 
+
+The default variant fine-tunes the NVS model ( E, P, R) with the photometric loss of Less3Depend [45], using RGB reconstruction only. We train the shared query decoder D with the standard Mask2Former [11] objective on the input-view labels. The NVS model receives no segmentation-specific loss, so panoptic propagation relies entirely on the correspondence learned from photometric su-pervision. The segmentation path runs only a forward pass through E and R,and no gradient flows into the rendering weights from the binary encodings. This keeps the rendering transformer identical to the frozen view synthesis model. The modular variants take source-view labels from an off-the-shelf segmenter such as SAM2 [36] or PanSt3R [63], and require no training within our pipeline. The propagation also holds when we replace Less3Depend [45] with RayZer [20] as the NVS backbone, showing that it applies across different large view synthesis models. We report the segmentation loss terms and weights, together with the RayZer results, in the supplementary (Appendix.A and D). Extending LVSM for Panoptic Seg 9
+
+3.6 Discussion 
+
+A key reason the label propagation works is that panoptic labels are view-independent. The semantic class and instance identity of a surface point do not change with the viewpoint of the observer. The model only needs to es-tablish accurate spatial correspondence between views, and the labels transfer directly. This design separates source-view segmentation from target-view prop-agation. The large view synthesis model and the source-view segmenter can be replaced without changing the propagation stage, without retraining the rest of the pipeline. Replacing the source-view segmenter with PanSt3R [63] transfers to Replica [44] zero-shot and outperforms a reconstruction-based baseline on every metric, without any fine-tuning of the rest of the pipeline (Sec. 4.5). 
+
+## 4 Experiments 
+
+In this section, we evaluate rendering quality, novel-view segmentation accuracy, low-overlap behavior, and cross-dataset transfer. We evaluate whether panop-tic propagation through a frozen NVS model preserves rendering quality while reaching competitive segmentation accuracy, under standard overlap (Sec. 4.2) and sparse overlap (Sec. 4.3). We compare design alternatives that couple seg-mentation with the NVS model (Sec. 4.4). We then assess the decoupled de-sign through modular composition with an off-the-shelf segmenter and zero-shot transfer to a new dataset (Sec. 4.5). 
+
+4.1 Experimental Setup Implementation Details. We use ScanNet [13] for training and evaluation. Each training sample consists of 2 input views and 2 target novel views, all resized to 224 × 224 . Following SIU3R [52], view pairs are sampled with depth-based IoU in [0 .3, 0.8] for both training and evaluation. For evaluation, we use 2 input views and 4 target views on 1,860 selected view pairs in the same IoU range from the validation set. We train for 100 epochs on 8 NVIDIA RTX A6000 GPUs with a total batch size of 64, taking approximately 3 hours. 
+
+Baselines. We organize baselines into two groups to evaluate different aspects of our method. Per-view segmentation methods (Mask2Former [11], LSeg [30]) es-tablish upper bounds on input-view segmentation, since they are applied directly to ground-truth images without any rendering. Joint NVS and scene understand-ing methods (LSM [14], SIU3R [52]) are the most direct comparisons, as they also target novel view panoptic segmentation from sparse unposed views. Both construct explicit 3D Gaussian representations for label propagation, whereas our method propagates labels through the implicit correspondence in a frozen NVS model. All learning-based baselines are re-trained on the same ScanNet split. 
+
+Evaluation protocol. We evaluate segmentation on both input views and ren-dered novel views separately. Input view metrics measure source segmentation 10 K. Ryu et al.                                         
+
+> Table 1: Comparisons of RGB reconstruction and panoptic segmentation on ScanNet [13]. Input-view segmentation reflects the quality of the shared query decoder, and novel-view segmentation measures the combined effect of rendering and panoptic propagation. Novel View Synthesis Input Views (2D-only) Novel Views (3D-aware) PSNR ↑SSIM ↑LPIPS ↓mIoU ↑PQ ↑mIoU ↑PQ ↑
+> 2D segmentation
+> Mask2Former [11] ---0.6186 0.5925 --LSeg [30] ---0.3976 ---
+> Joint NVS and scene understanding
+> LSM [14] 20.96 0.7245 0.3176 0.2810 -0.2707 -SIU3R [52] 25.88 0.8220 0.1831 0.5899 0.6565 0.5894 0.6565 Ours 33.56 0.9109 0.1149 0.6186 0.5949 0.5949 0.6092
+
+quality independent of the rendering pipeline. Novel view metrics evaluate the full system including panoptic propagation. 
+
+Metrics. For novel view synthesis, we report PSNR, SSIM, and LPIPS. For scene understanding, we report semantic mIoU and panoptic quality (PQ) [25] defined as 
+
+PQ = 
+
+P 
+
+> (p,g )∈TP
+
+IoU( p, g )
+
+|TP |
+
+| {z }
+
+> SQ
+
+× |TP ||TP | + 12 |FP | + 12 |FN |
+
+| {z }
+
+> RQ
+
+, (6) where TP, FP, and FN denote matched, unmatched predicted, and unmatched ground-truth segments, respectively. SQ measures boundary precision of matched segments, and RQ measures instance-level recognition. We report metrics on in-put views and on novel target views. 
+
+4.2 Main Results: Novel View Reconstruction and Segmentation 
+
+Table 1 shows the evaluation results of our method against baselines on Scan-Net [13]. The results show that panoptic propagation preserves rendering qual-ity while achieving competitive segmentation with a frozen novel view synthesis model. 
+
+Panoptic propagation preserves rendering quality. Our method achieves 33.56 dB PSNR, the highest among all baselines. The segmentation path does not update the rendering weights, so RGB synthesis uses the same model as the original NVS path. The baselines SIU3R [52] and LSM [14] couple reconstruc-tion with understanding in a shared 3D Gaussian representation, reaching at most 25.88 dB. This separation preserves the rendering performance of the NVS backbone. Extending LVSM for Panoptic Seg 11 Input view  Target view  Mask2Former  SIU3R  Ours  Ground Truth  
+
+> Fig. 4: Qualitative results of novel-view panoptic segmentation on Scan-Net [13]. From left to right: Input view, Target view, Panoptic segmentation results from Mask2Former [11], SIU3R [52], ours, and ground truth.
+
+Frozen propagation achieves competitive segmentation. On input views, our method matches the per-view Mask2Former [11] baseline in mIoU (0.6186) at the first row of Table 1, as both share the same query-based decoder architecture. On novel views, our method reaches 0.5949 mIoU, achieving better results than SIU3R [52] (0.5894) despite requiring no joint training. At the last row, the mIoU drop from input views (0.6186) to novel views (0.5949) reflects propagation error. Binary channel encoding loses fine-grained boundary detail, and regions with low source-view overlap accumulate uncertainty. SIU3R [52] shows better results than our method in terms of PQ (0.6565 vs. 0.6092). We attribute this gap to their multi-view mask aggregation mech-anism, which rasterizes semantic attributes through 3D Gaussians and enforces cross-view instance consistency in 3D space. Our propagation operates in 2D token space without explicit geometric reasoning, making instance boundaries more susceptible to spatial ambiguity in the frozen attention. 
+
+Qualitative comparison. Fig. 4 compares novel-view panoptic segmentation across methods. Our method propagates panoptic labels through the same frozen 12 K. Ryu et al. 
+
+Table 2: Evaluation under different overlap ranges on ScanNet [13]. Under low overlap, the PQ gap between SIU3R and ours narrows from 0.0473 to 0.0011, indicating that attention-based propagation degrades more gracefully than geometry-dependent rasterization. All the results use the same model reported in Table 1. Overlap Method PSNR ↑ SSIM ↑ LPIPS ↓ mIoU ↑ PQ ↑
+
+High (0.3–0.8) SIU3R [52] 25.88 0.8220 0.1831 0.5894 0.6565 
+
+Ours 33.56 0.9109 0.1149 0.5949 0.6092 
+
+PQ gap 0.0473 Low (0.01–0.3) SIU3R [52] 21.33 0.7147 0.2934 0.5458 0.5737 
+
+Ours 26.47 0.7711 0.2544 0.5477 0.5726 
+
+PQ gap 0.0011 
+
+Table 3: Results of design alternatives. We evaluate several strategies in Fig. 5. Rows 1 and 2 correspond to the architecture in Fig. 5(a), where Row 1 does not freeze the parameters of the unposed NVS model but trainable. Row 3 corresponds to the design in Fig. 5(b), while Row 4 corresponds to our proposed model in Fig. 5(c). The column 2 (NVS) indicates whether the model parameters of the unposed NVS model were released for training (learnable) or kept frozen. Strategy Fig. NVS PSNR ↑ SSIM ↑ LPIPS ↓ mIoU ↑ PQ ↑
+
+Joint decoder features Fig. 5(a) Release 24.76 0.7502 0.2774 0.4146 0.4716 Joint decoder features Fig. 5(a) Freeze 33.56 0.9109 0.1149 0.2008 0.1816 Segment rendered image Fig. 5(b) Freeze 33.56 0.9109 0.1149 0.6239 0.5740 Ours (Propagation) Fig. 5(c) Freeze 33.56 0.9109 0.1149 0.5949 0.6092 
+
+rendering model used for RGB synthesis, so the segmentation boundaries align with the rendered image appearance. SIU3R [52] produces segmentation through 3D Gaussian rasterization separately from RGB rendering, which can misalign the predicted labels with the rendered image. Mask2Former segments the ren-dered image directly, so any rendering imperfection propagates into the segmen-tation. 
+
+4.3 Emerging Properties at Low-Overlap Scenarios 
+
+Table 2 evaluates robustness under sparse geometric overlap, using view pairs with depth-based IoU in [0 .01 , 0.3] following SIU3R [52]. This setting stresses la-bel propagation because large target regions are weakly observed or dis-occluded from the source views, making explicit geometry estimation less reliable. Our method maintains a 5.14 dB PSNR advantage and slightly higher mIoU under this setting. More importantly, the PQ gap to SIU3R shrinks from 0.0473 un-der standard overlap to 0.0011 under low overlap. This suggests that the frozen NVS transformer retains a learned extrapolation capability. Even when explicit Extending LVSM for Panoptic Seg 13 Unposed      
+
+> NVS
+> model
+> Mask
+> Decoder
+> Mask
+> Decoder
+> Unposed
+> NVS
+> model
+> Unposed
+> NVS
+> model
+> RGB Head
+> Mask
+> Decoder
+> Input view Images
+> Target view Seg
+> Target view RGB
+> Target view Seg
+> Target view Seg
+> Target view RGB Input view Images
+> Input view Images Input view Seg
+> (a) Joint training
+> (b) NVS →Segmentation
+> (c) Segmentation →NVS (Ours)
+> Rendering Path
+> Segmentation Path
+
+Fig. 5: Design alternatives. (a) Joint training attaches a segmentation head to in-termediate features of the NVS rendering decoder. (b) NVS →Segmentation applies a per-view segmenter, Mask2Former [11], to the rendered novel-view image. (c) Our method first segments the input views, encodes the panoptic maps into binary chan-nel representations, and propagates them through the frozen NVS model to produce target-view segmentation. Quantitative comparisons are reported in Table 3. 
+
+reconstruction becomes unreliable under sparse overlap, the token-level corre-spondence still transfers useful panoptic structure. 
+
+4.4 Design Alternatives for Novel-View Panoptic Segmentation 
+
+Table 3 compares three strategies for integrating panoptic segmentation with the NVS model [45], validating the design of our decoupled propagation approach. The three strategies, illustrated in Fig. 5, differ in how segmentation is integrated with the rendering pipeline. The first strategy (Fig. 5(a)) attaches a segmentation head to intermediate features of the frozen rendering decoder. As shown in the second row of Table 3, these features are optimized for appearance reconstruction rather than semantic discrimination, causing segmentation performance to collapse to 0.2008 mIoU and 0.1816 PQ. In the first row of Table 3, allowing the NVS model to be jointly optimized with the segmentation head partially recovers segmentation accuracy, but introduces interference between photometric and segmentation objectives. This joint training degrades both rendering quality (24.76 dB) and segmentation performance (0.4146 mIoU, 0.4716 PQ). The second strategy (Fig. 5(b)) applies a per-view segmenter [11] to each rendered novel-view image independently. While this avoids modifying the NVS model, the third row of Table 3 shows that PQ drops to 0.5740 due to inconsistent 14 K. Ryu et al. 
+
+Table 4: Modular composition and cross-dataset transfer. The Segmenter col-umn lists the source-view segmenter and its encoder. SIU3R and our M2F variant share a Mask2Former [11] head but differ in encoder, CroCo [50] for SIU3R and DINOv2 [33] for ours. PanSt3R [63] is an off-the-shelf predictor that adds no segmentation-loss train-ing. “Pose” indicates whether the target view uses the ground-truth pose (GT) or the estimated latent Plücker embedding (latent). We evaluate Replica [44] zero-shot, with-out any Replica fine-tuning. Method Segmenter Pose ScanNet [13] Replica [44] (zero-shot) PSNR ↑ SSIM ↑ PQ ↑ mIoU ↑ PSNR ↑ SSIM ↑ PQ ↑ mIoU ↑                                        
+
+> SIU3R [52] M2F (CroCo) GT 25.88 0.822 0.657 0.589 14.05 0.527 0.186 0.171 Ours M2F (DINOv2) latent 33.56 0.911 0.609 0.595 ––––PanSt3R [63] GT 25.02 0.782 0.510 0.366 21.89 0.751 0.246 0.256 latent 28.28 0.850 0.580 0.593 23.52 0.786 0.394 0.454 Input Mask 1 Input Image 1 Input Image 2 GT Image Rendered Image Input Mask 2 Propagated Mask
+> Mask from Rendered Image
+
+Fig. 6: Replacing the input view segmentation model. The novel view synthesis model propagates SAM2 [36] predictions (Input Mask 1 and 2) to the novel viewpoint (Propagated Mask) while preserving instance identity across views. 
+
+instance IDs across views, indicating that high rendering quality alone does not ensure cross-view panoptic consistency. Finally, our method (Fig. 5(c)) propagates panoptic logits decoded from the source views through the frozen NVS model. As shown in the fourth row of Ta-ble 3, this decoupled design preserves the full rendering quality (33.56 dB) while achieving the best panoptic quality (0.6092 PQ), outperforming joint-training alternatives without compromising rendering fidelity. 
+
+4.5 Modular Composition and Cross-Dataset Transfer 
+
+Our decoupled design lets us replace the source-view segmenter with an off-the-shelf predictor without retraining the rest of the system. We choose PanSt3R [63] because it produces source-view panoptic labels that transfer across datasets, which lets us test propagation under cross-dataset evaluation. We replace our shared query decoder with it to supply source-view labels, testing whether the frozen propagation path generalizes beyond our trained segmentation module, and report the results in Table 4. On ScanNet, Ours(PanSt3R) stays compet-itive without any ScanNet fine-tuning of the segmenter, and Ours(M2F) keeps Extending LVSM for Panoptic Seg 15 
+
+the rendering advantage over SIU3R [52]. On Replica, Ours(PanSt3R) outper-forms SIU3R [52] on every RGB and segmentation metric (23.52 vs. 14.05 dB PSNR, 0.394 vs. 0.186 PQ, 0.454 vs. 0.171 mIoU). The higher ScanNet PQ of SIU3R [52] thus partly reflects in-domain specialization, while reconstruction-free propagation transfers better across datasets. We therefore frame our con-tribution as reconstruction-free label propagation with high rendering quality and transferable segmentation, not as overall PQ superiority. The latent-query variant matches or exceeds the GT-pose variant on both datasets. The esti-mated latent Plücker embedding therefore carries enough view information for instance-level propagation. The same modularity holds for a class-agnostic segmenter. As the source-view segmenter, we replace Mask2Former [11] with SAM2 [36] and propagate its masks through the same frozen NVS model. Fig. 6 shows that the propagated masks preserve instance identity across views with comparable visual quality. These results show that the propagation stage can take labels from different source-view segmenters without retraining. 
+
+## 5 Conclusion 
+
+This work demonstrates that a view synthesis model, trained for novel view RGB image reconstruction, propagates panoptic labels to novel viewpoints with quality comparable to methods that build explicit 3D representations with ded-icated segmentation objectives. The only learned segmentation component is a shared query decoder that produces source-view labels, and the frozen rendering transformer performs the cross-view propagation. The implicit correspondence inside the transformer thus generalizes beyond appearance and already encodes enough geometric structure to transfer arbitrary per-pixel signals. This result suggests that large view synthesis models can serve as an alternative propaga-tion mechanism to explicit 3D reconstruction for novel-view panoptic labels. As long as the transferred signal stays valid across viewpoints, large view synthesis models may also be applicable to other view-consistent dense prediction signals. 
+
+Limitation. Our pipeline requires a full forward pass of the view synthesis model for every target view, which becomes a bottleneck when only segmenta-tion at a known viewpoint is needed. The propagation also assumes that the transferred signal stays valid across viewpoints. This holds for semantic classes and instance identities. View-dependent quantities such as depth do not sat-isfy this assumption, and extending the propagation to them would require a camera-aware transformation within the propagation path. 
+
+Acknowledgement. This work was supported by IITP grant (RS-2021-II211343: AI Graduate School Program at Seoul National Univ. (5%), RS-2025-25442338: AI star Fellowship Support Program at Seoul National Univ. (20%), and RS-2026-25517417: Development of Compression, Reconstruction, and Rendering Technologies for Free-viewpoint Media. (75%)). POSCO DX Company, Ltd. pro-vided generous support for this research. Supplementary Material for Extending a Large View Synthesis Model for Multi-view Panoptic Segmentation 
+
+In this supplementary material, we provide additional experiments and anal-yses that complement the main paper. Specifically, we present the following additional results. 1. Experimental setup details including depth-based IoU for view pair sampling and architecture configurations (Sec. A). 2. Multi-pass decoding for scenes with more than eight instances (Sec. B). 3. Ablation on instance encoding strategies and the effect of the uncertainty threshold τ (Sec. C). 4. Ablation on NVS backbone choice to validate our pipeline works with dif-ferent NVS backbones (Sec. D). 5. Generalization to more input views ( Vi=3 ) without architectural change (Sec. E). 6. Details and additional examples of gradient saliency analysis (Sec. F). 7. Additional qualitative results, including comparison under low overlap, SAM2 mask propagation, outdoor-scene generalization, and supplementary video (Sec. G). 
+
+## A Details for the Experimental setup 
+
+In this section we provide detailed experiment setup, specifically for the pair sampling. Following SIU3R [52], we train and evaluate on ScanNet [13] with image pairs sampled by depth-based IoU. For each view pair (i, j ), we unproject valid pixels into 3D using their depth maps and reproject onto the other view. The depth-based IoU is defined as follows, 
+
+IoU depth (i, j ) = |V i→j | + |V j→i||P i| + |P j | , (1) where Vi→j is the set of pixels in view i visible in view j, and Pi is the set of all valid pixels in view i. We sample pairs with IoU depth ∈ [0 .3, 0.8] for both training and evaluation. In low-overlapped scenario, we sample pairs with IoU depth ∈
+
+[0 .01 , 0.3] . We also provide the full architecture and training details in Tab. 1 for NVS model and input view segmentation model. 
+
+Training objective. We fine-tune the NVS model with the photometric loss 
+
+LMSE + λLperceptual and set λ = 0 .5 following Less3Depend [45]. We train the shared query decoder with the standard Mask2Former [11] objective on the input-view labels, 
+
+Lseg = λce Lce + λdice Ldice + λcls Lcls , (2) 2 K. Ryu et al.                
+
+> Table 1: Architecture and training details.
+> NVS model
+> Backbone DINOv2(ViT-B/14) Encoder / Pose Estimator / Decoder 6 / 4 / 14 layers Latent vectors dimension 1024
+> Input view segmenter
+> Seg encoder DINOv2(ViT-B/14) Seg adapter ViT-Adapter (12 blocks) Seg head VideoMask2Former (100 queries, 20 classes)
+> Training
+> Optimizer AdamW Base / Min LR 1e-4 / 1e-5 Scheduler Cosine annealing, 2 epoch warmup Weight decay 0.05
+> β1/β20.9 / 0.95 Gradient clipping 1.0 Precision bf16 (AMP)
+
+where Lce and Ldice are the cross-entropy and dice losses for mask prediction and Lcls is the classification loss, all computed over Hungarian-matched pairs. We set λce = 5 .0, λdice = 5 .0, λcls = 2 .0 following Mask2Former [11]. 
+
+## B Handling More Than Eight Instances 
+
+The 3-bit code represents at most eight active instance IDs in a single propa-gation pass, but this is a per-pass capacity rather than a hard scene-level limit. For a scene with K > 8 instances, we partition the IDs into M = ⌈K/ 8⌉ groups, encode each group with a local 3-bit lookup table, and propagate each group through the same frozen view synthesis model. We then map the decoded local IDs back to global IDs through the lookup table and merge them into a single panoptic map. This multi-pass strategy keeps the wide inter-codeword margin that makes binary encoding robust. It increases inference time linearly with M
+
+and needs no retraining or architectural change. Scenes with more than eight instances are rare in our evaluation, so a single pass suffices for most view pairs. 
+
+## C Ablation on Instance Encoding Strategies 
+
+We compare several strategies for encoding instance IDs into 3-channel images, including binary encoding, color grid encoding, and HSV color mapping. Let 
+
+G denote the number of grid intervals per channel, so that each channel takes 
+
+(G+1) discrete levels and up to (G+1) 3 instances can be represented. We refer readers to Sec. 3.4 in main paper for ablations justifying our encoding design. Extending LVSM for Panoptic Seg 3                                                
+
+> Table 2: Comparison of instance encoding strategies on ScanNet, using Ours (M2F) .NVS quality is identical across all methods (shared model). Binary ( G=1 ,τ=0 .2)achieves the best segmentation.
+> Shared NVS quality PSNR 33.56 / SSIM 0.9109 / LPIPS 0.1149 Method GτInput Views Novel Views mIoU PQ mIoU PQ
+> Binary 10.2 0.6186 0.5949 0.5949 0.6092
+> Binary 10.0 0.6104 0.5567 0.6045 0.5449 Grid 30.0 0.6037 0.5363 0.5977 0.5270 Grid 40.0 0.6004 0.5262 0.5939 0.5152 Grid 50.0 0.5968 0.5159 0.5898 0.5023 HSV --0.5740 0.4603 0.5642 0.4436
+
+Binary encoding. Our default encoding uses G=1 , mapping each channel to two levels (0.1 and 0.3). A threshold τ =0 .2 rejects rendered values in the am-biguous range [0 .3, 0.7] . As shown in Tab. 2, this simple rejection improves both mIoU and PQ over τ =0 .0.
+
+Color grid encoding. Subdividing each channel into G> 1 levels increases ca-pacity (up to (G+1) 3 instances), but reduces the color margin between adjacent levels. The NVS model blends colors at object boundaries, and with a finer grid these blended values easily cross into neighboring grid cells. This fragments con-tiguous instances into disconnected segments, a failure we call hollow instances .This differs from the phantom instances in Sec. 3.4, which arise when blended values alias into a valid but incorrect codeword. Tab. 2 confirms that PQ drops consistently as G increases from 3 to 5. 
+
+HSV encoding. Encoding instance IDs via uniformly spaced hues is a common visualization choice, but the circular and nonlinear nature of the hue channel makes it fragile. A small color shift after rendering can map to a completely different instance ID, making hollow instances far more frequent. HSV yields the lowest PQ among all methods (Tab. 2). We choose binary encoding because with G=1 the two levels are maximally separated, and ambiguous values cluster near 0.5, making them easy to reject with τ .
+
+C.1 Effect of the Uncertainty Threshold 
+
+The threshold τ controls how aggressively we reject ambiguous boundary pixels, where any channel satisfying |ˆb:,:,k (p) − 0.5| ≤ τ is left unlabeled. We sweep 
+
+τ using Ours (PanSt3R, latent) on ScanNet and report metrics both including (i) and excluding ( e) uncertain pixels from evaluation in Tab. 3. At our default 
+
+τ =0 .20 , only 3.4% of pixels are marked uncertain, and across the practical range 
+
+τ ∈ [0 .10 , 0.30] the uncertain fraction stays below 6% and the conclusion remains stable. PQ and mIoU respond to uncertain-pixel rejection in opposite ways. Increasing τ improves PQ by removing noisy boundary segments, but lowers mIoU once a large fraction of pixels is left unlabeled. Our default τ =0 .20 balances 4 K. Ryu et al.                                                          
+
+> Table 3: Effect of the uncertainty threshold τon ScanNet, using Ours (PanSt3R, latent) . “uncert.%” is the fraction of pixels left unlabeled. Subscripts iand einclude and exclude uncertain pixels from evaluation. †marks our default.
+> τuncert.% PQ iPQ emIoU imIoU e
+> 0.10 1.6 0.560 0.559 0.599 0.609 0.20 †3.4 0.580 0.578 0.593 0.612 0.30 6.0 0.606 0.599 0.577 0.612 0.40 21.2 0.657 0.626 0.419 0.526 0.45 41.2 0.727 0.657 0.189 0.338
+> Table 4: Ablation on NVS backbone on ScanNet [13]. NVS Quality Seg. Propagation NVS Backbone PSNR ↑SSIM ↑LPIPS ↓mIoU ↑PQ ↑
+> RayZer [20] 28.47 0.8578 0.2018 0.4916 0.5523 Less3Depend [45] (Ours) 33.56 0.9109 0.1149 0.5949 0.6092
+
+this asymmetry, and the include/exclude policy (PQ i vs. PQ e) does not change the ranking. 
+
+## D Ablation on NVS Backbone 
+
+We also validate whether our pipeline works with a different NVS backbone by swapping Less3Depend [45] with RayZer [20]. Both handle sparse, unposed images, so they are drop-in replacements. Tab. 4 shows that Less3Depend [45] achieves higher rendering quality on ScanNet, which directly leads to better segmentation propagation. 
+
+## E Generalization to More Input Views 
+
+Since the underlying view synthesis model renders from a variable number of source views, our pipeline extends to more than two input views without any architectural change. We additionally evaluate a Vi=3 setting using the corre-sponding 3-view evaluation protocol on ScanNet [13]. As reported in Tab. 5, the pipeline operates across both view counts, showing that the same propaga-tion procedure runs with both two and three input views. Because the 3-view protocol differs from the default 2-view split ( e.g ., in sampled pairs and overlap distribution), the two rows reflect different evaluation settings rather than a con-trolled view-count ablation, and the score change should be read as compatibility evidence rather than a strict scaling trend. Extending LVSM for Panoptic Seg 5               
+
+> Table 5: Generalization to more input views on ScanNet [13]. The pipeline supports
+> Vi=3 without architectural modification. Setting mIoU ↑PQ ↑PSNR ↑SSIM ↑
+> Vi=2 (default) 0.5949 0.6092 33.56 0.9109
+> Vi=3 0.5440 0.5711 32.43 0.8959
+
+## F Details of Gradient Saliency 
+
+In Sec. 3.2, we analyze the implicit correspondence of the NVS transformer via gradient saliency. We provide the full formulation and additional visualization examples in Fig. 1. 
+
+F.1 Formulation 
+
+Let {Is 
+
+> i
+
+}Ni=1 denote N input views. The DINOv2 tokenizer in the scene encoder maps each view to patch tokens Zs ∈ RN ·Np×d, where Np = ( H/p )2 is the number of patches per view and d=768 .Given a target query patch at index q, the scene encoder E and render decoder 
+
+R produce the output ˆyq ∈ Rp2·3 as described in Sec. 3.1 of the main paper. We define the gradient saliency of source token (v, i ) as the average absolute gradient of the channel-summed output with respect to each feature dimension, 
+
+Sq (v, i ) = 1
+
+d
+
+> d
+
+X
+
+> k=1
+
+∂f q
+
+∂ z (v,i )
+
+> k
+
+, fq = X
+
+> c
+
+ˆyq,c , (3) where z(v,i ) 
+
+> k
+
+is the k-th feature of the source token at patch i in view v. Unlike attention rollout [1], which only captures attention weight propagation, gradi-ent saliency captures the full computational graph including value projections, MLPs, and residual connections. 
+
+F.2 Comparison in different modality 
+
+We compute saliency maps for two input modalities through the same NVS pipeline. Source images {Is 
+
+> i
+
+}Ni=1 are tokenized and processed through E and R
+
+for RGB saliency Srgb  
+
+> q
+
+. For binary saliency Sseg  
+
+> q
+
+, binary encoded instance maps 
+
+bs 
+
+> i
+
+= B(Ms 
+
+> i
+
+) are tokenized and processed through the same E and R with the segmentation latent zseg 0 .
+
+F.3 Observation 
+
+As shown in Fig. 1, the saliency concentrates on geometrically corresponding regions in the input views for a given target query q. As discussed in Sec. 3.2 of the main paper, the saliency maps show consistent patterns across RGB and 6 K. Ryu et al. 
+
+binary instance inputs, indicating that the model resolves correspondence based on geometric pose rather than input content. This is the key property that en-ables panoptic propagation through the frozen NVS model without segmentation training. We also observe that the saliency differs between the two input views, as the model selectively attends more to whichever view better observes the queried target region. 
+
+## G Additional Qualitative Results 
+
+In this section, we present qualitative comparisons with SIU3R under low over-lap, SAM2 mask propagation results, generalization to outdoor scenes, and a supplementary video. 
+
+G.1 Generalization to Outdoor Scenes 
+
+To probe whether the propagation mechanism is tied to the indoor geometry of ScanNet [13], we provide qualitative results on outdoor scenes from RealEstate10K [60] in Fig. 2. The frozen view synthesis model propagates the source-view panop-tic labels to novel viewpoints with consistent instance identities, despite the larger baselines and different scene statistics of outdoor captures. This indicates that the learned implicit correspondence, and thus our reconstruction-free prop-agation, is not specific to indoor scene types. 
+
+G.2 Comparison under Low Overlap 
+
+Figures 4 show qualitative comparisons between our method and SIU3R [52] on novel view panoptic segmentation in low overlapped scenarios. SIU3R [52] relies on MASt3R [29] for 3D point cloud estimation and constructs 3D Gaussians for rendering and segmentation. However, the point clouds from MASt3R [29] suf-fer from scale ambiguity, and the normalized poses used for Gaussian Splatting rendering do not accurately reflect the true camera geometry, directly degrad-ing both rendering and segmentation quality. The panoptic postprocessing ap-plies confidence thresholds to mask logits, and Gaussian-based methods produce noisier opacity from the accumulated pose errors, so many masks are discarded during this filtering step. 
+
+G.3 SAM2 Mask Propagation 
+
+Figures 3 present additional SAM2 [36] mask propagation results on ScanNet scenes, showing that SAM2 masks can be used as source-view labels for novel-view propagation. Note that we only run inference on the input views to obtain view-consistent masks. Extending LVSM for Panoptic Seg 7
+
+G.4 Supplementary Video 
+
+We provide a video file, supplement.mp4 , to showcase (1) Panoptic Propagation via Novel View Synthesis model, (2) SAM2 [36] Mask propagation on ScanNet dataset [13]. We render video sequences by mapping GT poses and Latent poses into our pipeline. Since Latent Plücker [45] encodes camera poses in a learned latent space without ground-truth pose supervision, the latent pose space does not directly correspond to the metric camera extrinsic space. To obtain smooth and controllable trajectories, we apply a lightweight test-time pose optimization. For each scene, we fit a small residual MLP to map GT poses to the correspond-ing latent poses using the available key frame views, then interpolate in the ground-truth pose space and convert each intermediate pose to the latent space via the learned mapping. This allows us to render temporally coherent videos that faithfully follow the intended camera path. 8 K. Ryu et al. Target 
+
+> view
+> Input
+> views
+> Input
+> Instance
+> logits
+> Target
+> view
+> Input
+> views
+> Input
+> Instance
+> logits
+> Target
+> view
+> Input
+> views
+> Input
+> Instance
+> logits
+
+Fig. 1: Additional visualization of gradient saliency from target to input views. Row 1 shows the rendered target view, with each column indicating the location of a different query patch in red. For each query patch, Rows 2 and 3 and Rows 4 and 5 show the gradient saliency over the same two input views, using RGB inputs and binary instance encodings, respectively. Extending LVSM for Panoptic Seg 9
+
+Fig. 2: Qualitative results on outdoor scenes from RealEstate10K [60]. Our pipeline propagates source-view panoptic labels to novel views with consistent instance identities beyond indoor ScanNet scenes. 10 K. Ryu et al. Input Mask 1 Input Image 1 Input Image 2 GT Image Rendered Image Input Mask 2 Propagated Mask 
+
+> Mask from Rendered Image
+
+Fig. 3: Additional qualitative for SAM2 propagation. Our method propagates SAM2 masks to novel views without additional training. Extending LVSM for Panoptic Seg 11 
+
+Fig. 4: Additional qualitative comparison with SIU3R [52] in low-overlapped scenario. Our method maintains both rendering and segmentation quality while SIU3R suffers from pose estimation errors. 12 K. Ryu et al. 
+
+## References 
+
+1. Abnar, S., Zuidema, W.: Quantifying attention flow in transformers. In: Proceed-ings of the 58th annual meeting of the association for computational linguistics. pp. 4190–4197 (2020) 2. Barron, J.T., Mildenhall, B., Tancik, M., Hedman, P., Martin-Brualla, R., Srini-vasan, P.P.: Mip-nerf: A multiscale representation for anti-aliasing neural radiance fields. In: Proceedings of the IEEE/CVF International Conference on Computer Vision. pp. 5855–5864 (2021) 3. Barron, J.T., Mildenhall, B., Verbin, D., Srinivasan, P.P., Hedman, P.: Zip-nerf: Anti-aliased grid-based neural radiance fields. In: Proceedings of the IEEE/CVF International Conference on Computer Vision. pp. 19697–19705 (2023) 4. Bhalgat, Y., Laina, I., Henriques, J.F., Zisserman, A., Vedaldi, A.: Contrastive lift: 3d object instance segmentation by slow-fast contrastive fusion. In: Advances in Neural Information Processing Systems (2023) 5. Bhalgat, Y., Laina, I., Henriques, J.F., Zisserman, A., Vedaldi, A.: N2f2: Hierarchi-cal scene understanding with nested neural feature fields. In: European Conference on Computer Vision. pp. 197–214. Springer (2024) 6. Caron, M., Touvron, H., Misra, I., Jégou, H., Mairal, J., Bojanowski, P., Joulin, A.: Emerging properties in self-supervised vision transformers. In: Proceedings of the IEEE/CVF International Conference on Computer Vision. pp. 9650–9660 (2021) 7. Charatan, D., Li, S., Tagliasacchi, A., Sitzmann, V.: pixelsplat: 3d gaussian splats from image pairs for scalable generalizable 3d reconstruction. In: Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (2024) 8. Chen, L.C., Papandreou, G., Kokkinos, I., Murphy, K., Yuille, A.L.: Semantic image segmentation with deep convolutional nets and fully connected crfs. In: International Conference on Learning Representations (2015) 9. Chen, Y., Xu, H., Zheng, C., Zhuang, B., Pollefeys, M., Geiger, A., Cham, T.J., Cai, J.: Mvsplat: Efficient 3d gaussian splatting from sparse multi-view images. In: European Conference on Computer Vision (2024) 10. Chen, Z., Duan, Y., Wang, W., He, J., Lu, T., Dai, J., Qiao, Y.: Vision transformer adapter for dense predictions. In: International Conference on Learning Represen-tations (2023) 11. Cheng, B., Misra, I., Schwing, A.G., Kirillov, A., Girdhar, R.: Masked-attention Mask Transformer for Universal Image Segmentation. In: Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (2022) 12. Cheng, B., Schwing, A., Kirillov, A.: Per-pixel classification is not all you need for semantic segmentation. In: Advances in Neural Information Processing Systems. vol. 34, pp. 17864–17875 (2021) 13. Dai, A., Chang, A.X., Savva, M., Halber, M., Funkhouser, T., Nießner, M.: Scan-Net: Richly-Annotated 3D Reconstructions of Indoor Scenes. In: Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (2017) 14. Fan, Z., Zhang, J., Cong, W., Wang, P., Li, R., Wen, K., Zhou, S., Kadambi, A., Wang, Z., Xu, D., Ivanovic, B., Pavone, M., Wang, Y.: Large spatial model: End-to-end unposed images to semantic 3d. In: Advances in Neural Information Processing Systems (2024) 15. Fu, X., Zhang, S., Chen, T., Lu, Y., Zhu, L., Zhou, X., Geiger, A., Liao, Y.: Panoptic nerf: 3d-to-2d label transfer for panoptic urban scene segmentation. In: International Conference on 3D Vision. pp. 1–11. IEEE (2022) Extending LVSM for Panoptic Seg 13 16. He, K., Gkioxari, G., Dollár, P., Girshick, R.: Mask r-cnn. In: Proceedings of the IEEE/CVF International Conference on Computer Vision. pp. 2961–2969 (2017) 17. Hong, Y., Zhang, K., Gu, J., Bi, S., Zhou, Y., Liu, D., Liu, F., Sunkavalli, K., Bui, T., Tan, H.: Lrm: Large reconstruction model for single image to 3d. In: International Conference on Learning Representations (2024) 18. Huang, B., Yu, Z., Chen, A., Geiger, A., Gao, S.: 2d gaussian splatting for geo-metrically accurate radiance fields. In: ACM SIGGRAPH 2024 conference papers. pp. 1–11 (2024) 19. Jain, J., Li, J., Chiu, M.T., Hassani, A., Orlov, N., Shi, H.: Oneformer: One trans-former to rule universal image segmentation. In: Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition. pp. 2989–2998 (2023) 20. Jiang, H., Tan, H., Wang, P., Jin, H., Zhao, Y., Bi, S., Zhang, K., Luan, F., Sunkavalli, K., Huang, Q., Pavlakos, G.: Rayzer: A self-supervised large view syn-thesis model. In: Proceedings of the IEEE/CVF International Conference on Com-puter Vision (2025) 21. Jiao, S., Dong, H., Yin, Y., Jie, Z., Qian, Y., Zhao, Y., Shi, H., Wei, Y.: Clip-gs: Unifying vision-language representation with 3d gaussian splatting. In: Proceedings of the IEEE/CVF International Conference on Computer Vision. pp. 4670–4680 (2025) 22. Jin, H., Jiang, H., Tan, H., Zhang, K., Bi, S., Zhang, T., Luan, F., Snavely, N., Xu, Z.: Lvsm: A large view synthesis model with minimal 3d inductive bias. In: International Conference on Learning Representations (2025) 23. Kerbl, B., Kopanas, G., Leimkuehler, T., Drettakis, G.: 3D Gaussian Splatting for Real-Time Radiance Field Rendering. ACM Transactions on Graphics 42 (4), 1–14 (2023) 24. Kerr, J., Kim, C.M., Goldberg, K., Kanazawa, A., Tancik, M.: Lerf: Language em-bedded radiance fields. In: Proceedings of the IEEE/CVF International Conference on Computer Vision. pp. 19729–19739 (October 2023) 25. Kirillov, A., He, K., Girshick, R., Rother, C., Dollár, P.: Panoptic segmentation. In: Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition. pp. 9404–9413 (2019) 26. Kirillov, A., Mintun, E., Ravi, N., Mao, H., Rolland, C., Gustafson, L., Xiao, T., Whitehead, S., Berg, A.C., Lo, W.Y., et al.: Segment anything. In: Proceedings of the IEEE/CVF International Conference on Computer Vision. pp. 4015–4026 (2023) 27. Kolodiazhnyi, M., Vorontsova, A., Konushin, A., Rukhovich, D.: Oneformer3d: One transformer for unified point cloud segmentation. In: Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition. pp. 20943– 20953 (2024) 28. Kundu, A., Genova, K., Yin, X., Fathi, A., Pantofaru, C., Guibas, L.J., Tagliasac-chi, A., Dellaert, F., Funkhouser, T.: Panoptic neural fields: A semantic object-aware neural scene representation. In: Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition. pp. 12871–12881 (2022) 29. Leroy, V., Cabon, Y., Revaud, J.: Grounding image matching in 3d with mast3r. In: European Conference on Computer Vision. pp. 71–91. Springer (2024) 30. Li, B., Weinberger, K.Q., Belongie, S., Koltun, V., Ranftl, R.: Language-driven semantic segmentation. In: International Conference on Learning Representations (2022) 31. Mildenhall, B., Srinivasan, P.P., Tancik, M., Barron, J.T., Ramamoorthi, R., Ng, R.: Nerf: Representing scenes as neural radiance fields for view synthesis. In: Eu-ropean Conference on Computer Vision (2020) 14 K. Ryu et al. 32. Müller, T., Evans, A., Schied, C., Keller, A.: Instant neural graphics primitives with a multiresolution hash encoding. ACM transactions on graphics (TOG) 41 (4), 1–15 (2022) 33. Oquab, M., Darcet, T., Moutakanni, T., Vo, H., Szafraniec, M., Khalidov, V., Fernandez, P., Haziza, D., Massa, F., El-Nouby, A., Assran, M., Ballas, N., Galuba, W., Howes, R., Huang, P.Y., Li, S.W., Misra, I., Rabbat, M., Sharma, V., Synnaeve, G., Xu, H., Jegou, H., Mairal, J., Labatut, P., Joulin, A., Bojanowski, P.: DINOv2: Learning Robust Visual Features without Supervision. Transactions on Machine Learning Research 3(1) (2024) 34. Peng, S., Genova, K., Jiang, C.M., Tagliasacchi, A., Pollefeys, M., Funkhouser, T.: Openscene: 3d scene understanding with open vocabularies. In: Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (2023) 35. Qin, M., Li, W., Zhou, J., Wang, H., Pfister, H.: Langsplat: 3d language gaussian splatting. In: Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (2024) 36. Ravi, N., Gabeur, V., Hu, Y.T., Hu, R., Ryali, C., Ma, T., Khedr, H., Rädle, R., Rolland, C., Gustafson, L., Mintun, E., Pan, J., Alwala, K.V., Carion, N., Wu, C.Y., Girshick, R., Dollár, P., Feichtenhofer, C.: Sam 2: Segment anything in images and videos. In: International Conference on Learning Representations (2025) 37. Sajjadi, M.S.M., Meyer, H., Pot, E., Bergmann, U., Greff, K., Radwan, N., Vora, S., Lučić, M., Duckworth, D., Dosovitskiy, A., Uszkoreit, J., Funkhouser, T., Tagliasacchi, A.: Scene representation transformer: Geometry-free novel view syn-thesis through set-latent scene representations. In: Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition. pp. 6229–6238 (June 2022) 38. Sajjadi, M.S., Duckworth, D., Mahendran, A., Van Steenkiste, S., Pavetic, F., Lu-cic, M., Guibas, L.J., Greff, K., Kipf, T.: Object scene representation transformer. In: Advances in Neural Information Processing Systems. vol. 35, pp. 9512–9524 (2022) 39. Sajjadi, M.S., Mahendran, A., Kipf, T., Pot, E., Duckworth, D., Lučić, M., Greff, K.: Rust: Latent neural scene representations from unposed imagery. In: Proceed-ings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition. pp. 17297–17306 (2023) 40. Schult, J., Engelmann, F., Hermans, A., Litany, O., Tang, S., Leibe, B.: Mask3D: Mask Transformer for 3D Semantic Instance Segmentation. In: IEEE International Conference on Robotics and Automation (2023) 41. Siddiqui, Y., Porzi, L., Bulò, S.R., Müller, N., Nießner, M., Dai, A., Kontschieder, P.: Panoptic Lifting for 3D Scene Understanding With Neural Fields. In: Proceed-ings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (2023) 42. Simonyan, K., Vedaldi, A., Zisserman, A.: Deep inside convolutional networks: Visualising image classification models and saliency maps. In: International Con-ference on Learning Representations Workshop (2014) 43. Smart, B., Zheng, C., Laina, I., Prisacariu, V.A.: Splatt3r: Zero-shot gaussian splatting from uncalibrated image pairs. arXiv preprint arXiv:2408.13912 (2024) 44. Straub, J., Whelan, T., Ma, L., Chen, Y., Wijmans, E., Green, S., Engel, J.J., Mur-Artal, R., Ren, C., Verma, S., Clarkson, A., Yan, M., Budge, B., Yan, Y., Pan, X., Yon, J., Zou, Y., Leon, K., Carter, N., Briales, J., Gillingham, T., Mueggler, E., Pesqueira, L., Savva, M., Batra, D., Strasdat, H.M., Nardi, R.D., Goesele, M., Extending LVSM for Panoptic Seg 15 Lovegrove, S., Newcombe, R.: The Replica Dataset: A Digital Replica of Indoor Spaces. In: Proceedings of the IEEE/CVF International Conference on Computer Vision (2019) 45. Wang, H., Ye, K., Li, Y., Chen, W., Chen, B.: The less you depend, the more you learn: Synthesizing novel views from sparse, unposed images without any 3d knowledge. In: International Conference on Learning Representations (2026) 46. Wang, J., Chen, M., Karaev, N., Vedaldi, A., Rupprecht, C., Novotny, D.: Vggt: Visual geometry grounded transformer. In: Proceedings of the IEEE/CVF Confer-ence on Computer Vision and Pattern Recognition. pp. 5294–5306 (2025) 47. Wang, Q., Wang, Z., Genova, K., Srinivasan, P.P., Zhou, H., Barron, J.T., Martin-Brualla, R., Snavely, N., Funkhouser, T.: Ibrnet: Learning multi-view image-based rendering. In: Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition. pp. 4690–4699 (2021) 48. Wang, S., Leroy, V., Cabon, Y., Chidlovskii, B., Revaud, J.: Dust3r: Geometric 3d vision made easy. In: Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition. pp. 20697–20709 (2024) 49. Wang, Y., Wei, X., Lu, M., Kang, G.: Plgs: Robust panoptic lifting with 3d gaussian splatting. IEEE Transactions on Image Processing (2025) 50. Weinzaepfel, P., Leroy, V., Lucas, T., Brégier, R., Cabon, Y., Arora, V., Antsfeld, L., Chidlovskii, B., Csurka, G., Jérôme, R.: CroCo: Self-Supervised Pre-training for 3D Vision Tasks by Cross-View Completion. In: Advances in Neural Information Processing Systems (2022) 51. Wu, Y., Meng, J., Li, H., Wu, C., Shi, Y., Cheng, X., Zhao, C., Feng, H., Ding, E., Wang, J., Zhang, J.: Opengaussian: Towards point-level 3d gaussian-based open vocabulary understanding. In: Advances in Neural Information Processing Systems. pp. 19114–19138 (2024) 52. Xu, Q., Wei, D., Zhao, L., Li, W., Huang, Z., Ji, S., Liu, P.: SIU3R: Simultane-ous Scene Understanding and 3D Reconstruction Beyond Feature Alignment. In: Advances in Neural Information Processing Systems (2025) 53. Ye, B., Liu, S., Xu, H., Xueting, L., Pollefeys, M., Yang, M.H., Songyou, P.: No pose, no problem: Surprisingly simple 3d gaussian splats from sparse unposed im-ages. In: International Conference on Learning Representations (2025) 54. Ye, M., Danelljan, M., Yu, F., Ke, L.: Gaussian grouping: Segment and edit any-thing in 3d scenes. In: European Conference on Computer Vision (2024) 55. Yu, A., Ye, V., Tancik, M., Kanazawa, A.: pixelnerf: Neural radiance fields from one or few images. In: Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition. pp. 4578–4587 (2021) 56. Yu, Z., Chen, A., Huang, B., Sattler, T., Geiger, A.: Mip-splatting: Alias-free 3d gaussian splatting. In: Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition. pp. 19447–19456 (2024) 57. Zhang, K., Bi, S., Tan, H., Xiangli, Y., Zhao, N., Sunkavalli, K., Xu, Z.: Gs-lrm: Large reconstruction model for 3d gaussian splatting. In: European Conference on Computer Vision. pp. 1–19. Springer (2024) 58. Zhi, S., Laidlow, T., Leutenegger, S., Davison, A.J.: In-place scene labelling and un-derstanding with implicit scene representation. In: Proceedings of the IEEE/CVF International Conference on Computer Vision (2021) 59. Zhou, S., Chang, H., Jiang, S., Fan, Z., Zhu, Z., Xu, D., Chari, P., You, S., Wang, Z., Kadambi, A.: Feature 3dgs: Supercharging 3d gaussian splatting to enable distilled feature fields. In: Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition. pp. 21676–21685 (2024) 16 K. Ryu et al. 60. Zhou, T., Tucker, R., Flynn, J., Fyffe, G., Snavely, N.: Stereo magnification: Learn-ing view synthesis using multiplane images. In: ACM SIGGRAPH (2018) 61. Zhu, R., Qiu, S., Wu, Q., Hui, K.H., Heng, P.A., Fu, C.W.: Pcf-lift: Panoptic lifting by probabilistic contrastive fusion. In: European Conference on Computer Vision. pp. 92–108. Springer (2024) 62. Zuo, X., Samangouei, P., Zhou, Y., Di, Y., Li, M.: Fmgs: Foundation model em-bedded 3d gaussian splatting for holistic 3d scene understanding. International Journal of Computer Vision 133 (2), 611–627 (2025) 63. Zust, L., Cabon, Y., Marrie, J., Antsfeld, L., Chidlovskii, B., Revaud, J., Csurka, G.: Panst3r: Multi-view consistent panoptic segmentation. In: Proceedings of the IEEE/CVF International Conference on Computer Vision (2025)
