@@ -1,0 +1,41 @@
+{
+  "date": "20260728",
+  "date_label": "",
+  "generated_at": "2026-07-28 21:09:51 UTC",
+  "recommend_exists": true,
+  "run_count": 1,
+  "papers": [
+    {
+      "paper_id": "2607.24298v1",
+      "route": "202607/28/2607.24298v1-umi3d-robust-3d-generation-on-unconstrained-multi-image-inputs-via-simultaneous-focus-cross-attention-routing",
+      "title": "UMI3D: Robust 3D Generation on Unconstrained Multi-Image Inputs via Simultaneous Focus Cross-Attention Routing",
+      "section": "deep",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "sketch-to-d"
+        }
+      ],
+      "score": 8.0,
+      "evidence": "提升多图像三维生成的多视图一致性，可应用于艺术绘画输入",
+      "first_seen_at": "2026-07-28 21:09:51 UTC",
+      "updated_at": "2026-07-28 21:09:51 UTC"
+    },
+    {
+      "paper_id": "2607.20813v1",
+      "route": "202607/28/2607.20813v1-subsplat-high-resolution-pixel-aligned-3dgs-via-sub-pixel-gaussian-reparameterization",
+      "title": "SubSplat: High-Resolution Pixel-aligned 3DGS via Sub-pixel Gaussian Reparameterization",
+      "section": "quick",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "sketch-to-d"
+        }
+      ],
+      "score": 6.0,
+      "evidence": "增强三维高斯散点以实现高分辨率重建，可用于草图到3DGS管线",
+      "first_seen_at": "2026-07-28 21:09:51 UTC",
+      "updated_at": "2026-07-28 21:09:51 UTC"
+    }
+  ]
+}

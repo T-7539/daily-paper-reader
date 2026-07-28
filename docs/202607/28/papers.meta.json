@@ -1,0 +1,39 @@
+{
+  "label": "2026-07-28",
+  "date": "2026-07-28",
+  "generated_at": "2026-07-28T21:09:59",
+  "count": 2,
+  "papers": [
+    {
+      "paper_id": "202607/28/2607.24298v1-umi3d-robust-3d-generation-on-unconstrained-multi-image-inputs-via-simultaneous-focus-cross-attention-routing",
+      "section": "deep",
+      "title_en": "UMI3D: Robust 3D Generation on Unconstrained Multi-Image Inputs via Simultaneous Focus Cross-Attention Routing",
+      "authors": "Zefan Qu, Zhenwei Wang, Gerhard Petrus Hancke, Rynson W. H. Lau",
+      "date": "2026-07-27",
+      "pdf": "https://arxiv.org/pdf/2607.24298v1",
+      "score": "8.0",
+      "evidence": "提升多图像三维生成的多视图一致性，可应用于艺术绘画输入",
+      "tldr": "近期3D基础模型虽能基于单图生成高质量资产，但面对无约束多图输入时，常出现几何扭曲、纹理模糊和色彩混乱等退化现象。我们认为问题并非模型容量不足，而是缺少原则性的注意力路由机制来决定每个体素在去噪时应信任哪张图像。为此，我们提出UMI3D框架，其核心是同时聚焦交叉注意力，使每个体素动态聚焦最相关的图像，并利用模型内在的体素参考分数度量亲和度，无需外部模型。实验表明，UMI3D无需训练即可即插即用，有效解锁了单图生成框架的多图潜力，显著提升多图3D生成质量。",
+      "tags": "query:sketch-to-d",
+      "abstract_en": "Recent 3D foundation models can generate high-quality assets from a single image, but degrade markedly on unconstrained multi-image inputs, often producing distorted geometry, over-smoothed textures, and chaotic colors. We argue that this failure stems not from limited model capacity, but from a mismatch between single-image cross-attention and the multi-image setting: existing models lack a principled way to decide which image each 3D voxel should trust at each denoising step. Revisiting recent single-image 3D foundation models, we show that explicitly routing each voxel to its most informative image is sufficient to unlock strong performance on inconsistent multi-image inputs. Based on this observation, we propose UMI3D, a training-free and plug-and-play framework that restructures cross-attention for unconstrained multi-image 3D generation. Its core, Simultaneous Focus Cross-Attention (SFC-Attn), activates all conditioning images at each denoising step while allowing each voxel to focus on the single image that best explains it. To enable this routing, we derive the Voxel Reference Score (VRS), a model-intrinsic metric for voxel--image affinity that requires no external matching, segmentation, or correspondence models. Extensive experiments show that UMI3D unlocks the multi-image potential of single-image 3D generation frameworks across diverse tasks. Project Page: UMI3D-Project.github.io.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/28/2607.20813v1-subsplat-high-resolution-pixel-aligned-3dgs-via-sub-pixel-gaussian-reparameterization",
+      "section": "quick",
+      "title_en": "SubSplat: High-Resolution Pixel-aligned 3DGS via Sub-pixel Gaussian Reparameterization",
+      "authors": "Jiun Lee, Jaekwang Kim, Sangmin Lee",
+      "date": "2026-07-23",
+      "pdf": "https://arxiv.org/pdf/2607.20813v1",
+      "score": "6.0",
+      "evidence": "增强三维高斯散点以实现高分辨率重建，可用于草图到3DGS管线",
+      "tldr": "像素对齐高斯溅射（3DGS）可实现高效新视图合成，但高分辨率渲染中细节提升与计算成本平方级增长构成尖锐矛盾，低分辨率输入虽控制成本却导致高斯密度不足和伪影。SubSplat提出亚像素高斯重参数化器（SPGR），将主高斯细分为细粒度基元，直接由低分辨率特征恢复结构密度，并通过多视图特征聚合捕捉高频细节。在RealEstate10K和ACID数据集上，该方法实现了高保真渲染且计算效率优越，成功化解了保真度与网络成本间的固有权衡，为高效高分辨率新视图合成开辟了新路径。",
+      "tags": "query:sketch-to-d",
+      "abstract_en": "Pixel-aligned Gaussian splatting enables efficient and generalizable novel-view synthesis. However, high-resolution rendering faces a critical trade-off where increasing input resolution improves detail at the expense of quadratically rising network computational cost. Conversely, maintaining low-resolution inputs stabilizes this cost but results in insufficient Gaussian density and artifacts. To address this, we propose SubSplat, which introduces Sub-pixel Gaussian Reparameterizer(SPGR) to subdivide primary Gaussians into fine-grained primitives, restoring structural density directly from low-resolution features. We further enhance the reparameterization quality through feature aggregation, which effectively captures high-frequency details across multiple views. Experiments on RealEstate10K and ACID demonstrate that SubSplat achieves high-fidelity rendering with superior efficiency. Our results validate that the proposed framework successfully resolves the trade-off between reparameterization fidelity and network computational cost inherent in pixel-aligned Gaussian Splatting.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

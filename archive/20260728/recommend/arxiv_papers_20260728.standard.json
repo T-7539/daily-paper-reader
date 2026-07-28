@@ -1,0 +1,92 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-28T21:06:44.441231+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [
+    {
+      "id": "2607.24298v1",
+      "source": "arxiv",
+      "title": "UMI3D: Robust 3D Generation on Unconstrained Multi-Image Inputs via Simultaneous Focus Cross-Attention Routing",
+      "abstract": "Recent 3D foundation models can generate high-quality assets from a single image, but degrade markedly on unconstrained multi-image inputs, often producing distorted geometry, over-smoothed textures, and chaotic colors. We argue that this failure stems not from limited model capacity, but from a mismatch between single-image cross-attention and the multi-image setting: existing models lack a principled way to decide which image each 3D voxel should trust at each denoising step. Revisiting recent single-image 3D foundation models, we show that explicitly routing each voxel to its most informative image is sufficient to unlock strong performance on inconsistent multi-image inputs. Based on this observation, we propose UMI3D, a training-free and plug-and-play framework that restructures cross-attention for unconstrained multi-image 3D generation. Its core, Simultaneous Focus Cross-Attention (SFC-Attn), activates all conditioning images at each denoising step while allowing each voxel to focus on the single image that best explains it. To enable this routing, we derive the Voxel Reference Score (VRS), a model-intrinsic metric for voxel--image affinity that requires no external matching, segmentation, or correspondence models. Extensive experiments show that UMI3D unlocks the multi-image potential of single-image 3D generation frameworks across diverse tasks. Project Page: UMI3D-Project.github.io.",
+      "authors": [
+        "Zefan Qu",
+        "Zhenwei Wang",
+        "Gerhard Petrus Hancke",
+        "Rynson W. H. Lau"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-07-27T11:44:05+00:00",
+      "link": "https://arxiv.org/pdf/2607.24298v1",
+      "tags": [
+        "keyword:sketch-to-D",
+        "query:sketch-to-D"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "Improves multi-view consistency in 3D generation from multiple images, applicable to artistic inputs",
+      "llm_evidence_cn": "提升多图像三维生成的多视图一致性，可应用于艺术绘画输入",
+      "llm_evidence": "提升多图像三维生成的多视图一致性，可应用于艺术绘画输入",
+      "canonical_evidence": "提升多图像三维生成的多视图一致性，可应用于艺术绘画输入",
+      "llm_tldr_en": "Existing 3D foundation models degrade on unconstrained multi-image inputs. UMI3D routes each voxel to the most informative image during denoising, achieving robust geometry and texture consistency. The approach is general and can handle artistic multi-view sketches.",
+      "llm_tldr_cn": "针对三维基础模型在无约束多图像输入下性能下降的问题，提出同步聚焦交叉注意力路由，为每个体素动态选择最相关图像，从而获得一致的几何和纹理。该方法不依赖特定输入类型，可有效处理多视角艺术草图等非真实感图像，在艺术三维生成中提升多视图一致性。",
+      "llm_tldr": "针对三维基础模型在无约束多图像输入下性能下降的问题，提出同步聚焦交叉注意力路由，为每个体素动态选择最相关图像，从而获得一致的几何和纹理。该方法不依赖特定输入类型，可有效处理多视角艺术草图等非真实感图像，在艺术三维生成中提升多视图一致性。",
+      "llm_tags": [
+        "query:sketch-to-d"
+      ],
+      "matched_query_tag": "query:sketch-to-d",
+      "matched_query_text": "maintaining multi-view consistency in artistic 3D generation",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2607.20813v1",
+      "source": "arxiv",
+      "title": "SubSplat: High-Resolution Pixel-aligned 3DGS via Sub-pixel Gaussian Reparameterization",
+      "abstract": "Pixel-aligned Gaussian splatting enables efficient and generalizable novel-view synthesis. However, high-resolution rendering faces a critical trade-off where increasing input resolution improves detail at the expense of quadratically rising network computational cost. Conversely, maintaining low-resolution inputs stabilizes this cost but results in insufficient Gaussian density and artifacts. To address this, we propose SubSplat, which introduces Sub-pixel Gaussian Reparameterizer(SPGR) to subdivide primary Gaussians into fine-grained primitives, restoring structural density directly from low-resolution features. We further enhance the reparameterization quality through feature aggregation, which effectively captures high-frequency details across multiple views. Experiments on RealEstate10K and ACID demonstrate that SubSplat achieves high-fidelity rendering with superior efficiency. Our results validate that the proposed framework successfully resolves the trade-off between reparameterization fidelity and network computational cost inherent in pixel-aligned Gaussian Splatting.",
+      "authors": [
+        "Jiun Lee",
+        "Jaekwang Kim",
+        "Sangmin Lee"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-07-23T00:56:18+00:00",
+      "link": "https://arxiv.org/pdf/2607.20813v1",
+      "tags": [
+        "keyword:sketch-to-D",
+        "query:sketch-to-D"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Enhances 3D Gaussian splatting for high-resolution reconstruction, useful for sketch-to-3DGS pipelines",
+      "llm_evidence_cn": "增强三维高斯散点以实现高分辨率重建，可用于草图到3DGS管线",
+      "llm_evidence": "增强三维高斯散点以实现高分辨率重建，可用于草图到3DGS管线",
+      "canonical_evidence": "增强三维高斯散点以实现高分辨率重建，可用于草图到3DGS管线",
+      "llm_tldr_en": "High-resolution 3DGS rendering suffers from high compute cost or insufficient Gaussian density. SubSplat proposes a sub-pixel Gaussian reparameterizer to subdivide primitives, restoring structural density from low-res features. This can improve detail in sketch-to-3DGS methods.",
+      "llm_tldr_cn": "高分辨率三维高斯散点渲染面临计算成本与高斯密度不足的权衡。SubSplat提出子像素高斯重参数化器，对基本高斯体进行细分，从低分辨率特征中恢复结构密度并捕获高频细节。该方法可集成至草图到3DGS的重建流程，提升输出模型的几何和纹理精细度。",
+      "llm_tldr": "高分辨率三维高斯散点渲染面临计算成本与高斯密度不足的权衡。SubSplat提出子像素高斯重参数化器，对基本高斯体进行细分，从低分辨率特征中恢复结构密度并捕获高频细节。该方法可集成至草图到3DGS的重建流程，提升输出模型的几何和纹理精细度。",
+      "llm_tags": [
+        "query:sketch-to-d"
+      ],
+      "matched_query_tag": "query:sketch-to-d",
+      "matched_query_text": "3D Gaussian splatting reconstruction from drawing",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
