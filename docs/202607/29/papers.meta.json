@@ -1,0 +1,24 @@
+{
+  "label": "2026-07-29",
+  "date": "2026-07-29",
+  "generated_at": "2026-07-29T21:47:26",
+  "count": 1,
+  "papers": [
+    {
+      "paper_id": "202607/29/2607.24721v1-dreamstyle3d-efficient-3d-stylized-asset-generation-via-dual-attention-disentanglement",
+      "section": "deep",
+      "title_en": "DreamStyle3D: Efficient 3D Stylized Asset Generation via Dual-Attention Disentanglement",
+      "authors": "Kai Wang, Ziheng Ouyang, Xuying Zhang, Ming-Ming Cheng, Qibin Hou",
+      "date": "2026-07-27",
+      "pdf": "https://arxiv.org/pdf/2607.24721v1",
+      "score": "8.0",
+      "evidence": "生成风格化三维资产，解耦几何与风格，可直接用于将二维插图转换为三维",
+      "tldr": "在游戏、动画和VR行业，高效生成风格化3D资产的需求迫切，但现有方法难以兼顾风格保真、几何一致和效率。DreamStyle3D通过解耦双交叉注意力机制，原生分离几何与风格特征，实现快速风格注入与结构保持。仅需10秒即可生成高保真风格化3D资产，显著提升生成效率和质量，为3D内容创作提供了新方案。",
+      "tags": "query:sketch-to-d",
+      "abstract_en": "With the growth of gaming, animation, and virtual reality industries, the demand for efficient generation of stylized 3D assets is rapidly increasing. However, existing approaches still struggle to jointly preserve style fidelity, geometric consistency, and generation efficiency, as most of them still rely on indirect 2D-to-3D stylization pipelines. This motivates a native 3D stylization framework that can explicitly disentangle style from geometry while remaining efficient. To this end, we propose DreamStyle3D, an efficient framework for stylized 3D asset generation built on a Decoupled Dual Cross-Attention mechanism. Our method explicitly separates geometric and stylistic features to enable efficient style injection while preserving structural consistency, and further adopts a lightweight training strategy to enhance style consistency and model generalization. In addition, we build an automated data pipeline and construct a dataset of about 15K content-style-stylized triplets for training and evaluation. Extensive experiments demonstrate that our DreamStyle3D can generate high-fidelity, geometrically consistent stylized 3D assets within 10 seconds, substantially improving efficiency while maintaining superior style quality and offering a new solution for 3D content creation. The code and data are available at https://github.com/HVision-NKU/DreamStyle3D.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

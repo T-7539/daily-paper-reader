@@ -1,0 +1,55 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-29T21:45:45.142919+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 0,
+    "quick_skim_target": 11,
+    "quick_selected": 0
+  },
+  "deep_dive": [
+    {
+      "id": "2607.24721v1",
+      "source": "arxiv",
+      "title": "DreamStyle3D: Efficient 3D Stylized Asset Generation via Dual-Attention Disentanglement",
+      "abstract": "With the growth of gaming, animation, and virtual reality industries, the demand for efficient generation of stylized 3D assets is rapidly increasing. However, existing approaches still struggle to jointly preserve style fidelity, geometric consistency, and generation efficiency, as most of them still rely on indirect 2D-to-3D stylization pipelines. This motivates a native 3D stylization framework that can explicitly disentangle style from geometry while remaining efficient. To this end, we propose DreamStyle3D, an efficient framework for stylized 3D asset generation built on a Decoupled Dual Cross-Attention mechanism. Our method explicitly separates geometric and stylistic features to enable efficient style injection while preserving structural consistency, and further adopts a lightweight training strategy to enhance style consistency and model generalization. In addition, we build an automated data pipeline and construct a dataset of about 15K content-style-stylized triplets for training and evaluation. Extensive experiments demonstrate that our DreamStyle3D can generate high-fidelity, geometrically consistent stylized 3D assets within 10 seconds, substantially improving efficiency while maintaining superior style quality and offering a new solution for 3D content creation. The code and data are available at https://github.com/HVision-NKU/DreamStyle3D.",
+      "authors": [
+        "Kai Wang",
+        "Ziheng Ouyang",
+        "Xuying Zhang",
+        "Ming-Ming Cheng",
+        "Qibin Hou"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-07-27T17:55:21+00:00",
+      "link": "https://arxiv.org/pdf/2607.24721v1",
+      "tags": [
+        "keyword:sketch-to-D",
+        "query:sketch-to-D"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "generates stylized 3D assets with decoupled geometry and style, directly applicable to converting 2D illustrations into 3D",
+      "llm_evidence_cn": "生成风格化三维资产，解耦几何与风格，可直接用于将二维插图转换为三维",
+      "llm_evidence": "生成风格化三维资产，解耦几何与风格，可直接用于将二维插图转换为三维",
+      "canonical_evidence": "生成风格化三维资产，解耦几何与风格，可直接用于将二维插图转换为三维",
+      "llm_tldr_en": "DreamStyle3D efficiently generates stylized 3D assets by disentangling geometry and style via a Decoupled Dual Cross-Attention mechanism, enabling direct conversion of 2D illustrations into 3D models with preserved style and geometry.",
+      "llm_tldr_cn": "针对风格化三维资产生成效率低、风格保真度与几何一致性难以兼顾的问题，DreamStyle3D通过解耦双交叉注意力机制显式分离几何和风格特征，实现高效风格注入，可从二维插画直接生成高质量三维资产。",
+      "llm_tldr": "针对风格化三维资产生成效率低、风格保真度与几何一致性难以兼顾的问题，DreamStyle3D通过解耦双交叉注意力机制显式分离几何和风格特征，实现高效风格注入，可从二维插画直接生成高质量三维资产。",
+      "llm_tags": [
+        "query:sketch-to-d"
+      ],
+      "matched_query_tag": "query:sketch-to-d",
+      "matched_query_text": "converting 2D illustrations into 3D assets",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": []
+}
