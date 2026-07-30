@@ -1,0 +1,39 @@
+{
+  "label": "2026-07-30",
+  "date": "2026-07-30",
+  "generated_at": "2026-07-30T21:56:41",
+  "count": 2,
+  "papers": [
+    {
+      "paper_id": "202607/30/2607.22738v1-nova3d-code-native-generation-of-programmable-3d-assets",
+      "section": "deep",
+      "title_en": "Nova3D: Code-Native Generation of Programmable 3D Assets",
+      "authors": "Nimra Noor, Muhammad Bilal, Abdullah Hussain, Hassan Baig",
+      "date": "2026-07-22",
+      "pdf": "https://arxiv.org/pdf/2607.22738v1",
+      "score": "9.0",
+      "evidence": "从图像直接生成可编辑三维资产，适用于插画和草图转三维",
+      "tldr": "当前3D生成模型产出缺乏语义结构的不透明网格，难以用于交互式世界。Nova3D提出代码原生生成方法，直接输出Blender源码，使资产天生具备命名部件、装配树和关节。在54项Nova3D-Bench测试中，全部生成有效可编程资产，满足51/52约束，局部编辑保真度18/18，关节几何有效性达98.3%。这标志着从表面到可编程资产的范式转变。",
+      "tags": "query:sketch-to-d",
+      "abstract_en": "Current 3D generative models mostly produce a final surface: a visually strong but largely opaque mesh. Interactive 3D worlds need more than a surface. They need named parts, an assembly hierarchy, measurable constraints, local edit handles, and joints for articulation. We present Nova3D, a system that generates 3D assets as executable Blender source code; the compiled mesh, a binary glTF (GLB), is treated as the artifact, not the asset. Because the output is a program, semantic handles exist at generation time rather than being recovered afterward by segmentation or rigging. We evaluate on Nova3D-Bench, a frozen, spec-grounded benchmark of 54 items across six domains and three difficulty levels with text and image inputs, against eleven baselines in four families (mesh-native, part-structured, code-native, and CAD) plus a same-LLM ablation. Nova3D produces an executable program and a valid artifact for 54/54 items. Every asset exposes named parts organized in a parent-child assembly tree; no mesh-native, CAD, or segmentation baseline exposes either. It satisfies 51/52 prompt-stated numeric and count constraints (best baseline: 11/52), passes 14/18 blinded local edits with locality preserved in 18/18, and articulates 59 joints across 12 assets at 98.3% geometric validity, where every baseline exposes zero native joints. Its geometry is competitive: it wins the structured domains in a pairwise shape-quality tournament and is second only to the strongest mesh-native model, while conceding texture realism to baked-PBR systems. The central result is representational: code-native generation turns a generated 3D object from an opaque surface into a programmable asset that downstream systems can inspect, measure, edit, and animate.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/30/2607.21848v2-closing-the-loop-training-free-revisit-consistency-for-autoregressive-generative-rendering",
+      "section": "quick",
+      "title_en": "Closing the Loop: Training-Free Revisit Consistency for Autoregressive Generative Rendering",
+      "authors": "Wenchao Ma, Changran Liu, Sharon X. Huang, Haomiao Jiang",
+      "date": "2026-07-23",
+      "pdf": "https://arxiv.org/pdf/2607.21848v2",
+      "score": "6.0",
+      "evidence": "解决自回归生成式渲染中的重访不一致问题，确保生成帧外观一致性。",
+      "tldr": "条件视频生成模型能将深度图等3D渲染转化为逼真视频，但自回归生成在相机回访时因KV缓存上下文丢失而产生外观不一致。我们提出免训练的重访一致性方法：利用3D引擎提供的时间对应检索历史潜块作为回环记忆，并通过相机位姿和深度重投影实现空间对应的注意力偏置。在TartanAir与TartanGround的回环轨迹上，本方法显著超越基线，重访画面一致且整体视频质量无损，为游戏与沉浸式内容的长程稳定生成提供有效方案。",
+      "tags": "query:sketch-to-d",
+      "abstract_en": "Recent conditional video generation models have shown promising potentials to transform 3D engine renderings, such as depth maps and untextured geometry, into photorealistic videos for gaming and immersive content creation. These applications require long-horizon auto-regressive generation that continuously synthesizes new frames while preserving a persistent 3D world. Auto-regressive generators synthesize video chunk by chunk with a bounded KV cache, so when the camera revisits a location after its context has been evicted, the model often regenerates inconsistent appearance, even though the conditioning renderings (e.g., depth) remain perfectly aligned with the underlying geometry. We address this revisit inconsistency without any post-training by exploiting correspondences the 3D engine already provides: temporal correspondence retrieves pose-matched historical latent chunks into the KV cache as loop-closure memory, while spatial correspondence from camera pose and depth reprojection biases token-level attention toward geometrically corresponding regions of the retrieved chunks. We demonstrate our method on loop-closure trajectories mined from TartanAir and TartanGround dataset to mirror complicate real-world application scenarios, where it outperforms existing training-free baselines on revisit consistency without losing overall video quality. Project Page: https://wenchao-m.github.io/ClosetheLoop.github.io/",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

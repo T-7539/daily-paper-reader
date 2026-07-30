@@ -1,0 +1,94 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-30T21:52:43.653765+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [
+    {
+      "id": "2607.22738v1",
+      "source": "arxiv",
+      "title": "Nova3D: Code-Native Generation of Programmable 3D Assets",
+      "abstract": "Current 3D generative models mostly produce a final surface: a visually strong but largely opaque mesh. Interactive 3D worlds need more than a surface. They need named parts, an assembly hierarchy, measurable constraints, local edit handles, and joints for articulation. We present Nova3D, a system that generates 3D assets as executable Blender source code; the compiled mesh, a binary glTF (GLB), is treated as the artifact, not the asset. Because the output is a program, semantic handles exist at generation time rather than being recovered afterward by segmentation or rigging. We evaluate on Nova3D-Bench, a frozen, spec-grounded benchmark of 54 items across six domains and three difficulty levels with text and image inputs, against eleven baselines in four families (mesh-native, part-structured, code-native, and CAD) plus a same-LLM ablation. Nova3D produces an executable program and a valid artifact for 54/54 items. Every asset exposes named parts organized in a parent-child assembly tree; no mesh-native, CAD, or segmentation baseline exposes either. It satisfies 51/52 prompt-stated numeric and count constraints (best baseline: 11/52), passes 14/18 blinded local edits with locality preserved in 18/18, and articulates 59 joints across 12 assets at 98.3% geometric validity, where every baseline exposes zero native joints. Its geometry is competitive: it wins the structured domains in a pairwise shape-quality tournament and is second only to the strongest mesh-native model, while conceding texture realism to baked-PBR systems. The central result is representational: code-native generation turns a generated 3D object from an opaque surface into a programmable asset that downstream systems can inspect, measure, edit, and animate.",
+      "authors": [
+        "Nimra Noor",
+        "Muhammad Bilal",
+        "Abdullah Hussain",
+        "Hassan Baig"
+      ],
+      "primary_category": "cs.GR",
+      "categories": [
+        "cs.GR",
+        "cs.CV"
+      ],
+      "published": "2026-07-22T16:33:54+00:00",
+      "link": "https://arxiv.org/pdf/2607.22738v1",
+      "tags": [
+        "keyword:sketch-to-D",
+        "query:sketch-to-D"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "generates editable 3D assets from image inputs, directly applicable to converting illustrations and sketches into 3D",
+      "llm_evidence_cn": "从图像直接生成可编辑三维资产，适用于插画和草图转三维",
+      "llm_evidence": "从图像直接生成可编辑三维资产，适用于插画和草图转三维",
+      "canonical_evidence": "从图像直接生成可编辑三维资产，适用于插画和草图转三维",
+      "llm_tldr_en": "Nova3D generates programmable 3D assets as Blender code from text and images, providing semantic handles and editability, ideal for turning concept art and sketches into game-ready 3D objects.",
+      "llm_tldr_cn": "现有三维生成模型多输出不可编辑的网格，难以直接用于交互式环境。Nova3D通过生成可执行的Blender源代码，从文本和图像输入产生包含命名部件、装配层次和可编辑关节的三维资产。在涵盖54个测试项的基准上，其生成质量与编辑灵活性超越十一种已有方法，特别适用于将概念艺术、手绘草图转化为游戏或动画中直接可用的三维内容。",
+      "llm_tldr": "现有三维生成模型多输出不可编辑的网格，难以直接用于交互式环境。Nova3D通过生成可执行的Blender源代码，从文本和图像输入产生包含命名部件、装配层次和可编辑关节的三维资产。在涵盖54个测试项的基准上，其生成质量与编辑灵活性超越十一种已有方法，特别适用于将概念艺术、手绘草图转化为游戏或动画中直接可用的三维内容。",
+      "llm_tags": [
+        "query:sketch-to-d:composite"
+      ],
+      "matched_query_tag": "query:sketch-to-d:composite",
+      "matched_query_text": "Papers central to 检索以绘画类二维内容为输入，生成或重建三维内容的学术论文，重点关注：从草图、线稿、插画、角色原画、概念设定图、漫画或动漫场景帧生成三维内容；输出包括 Mesh、点云、NeRF、3D Gaussian、三维角色、三维物体、三维场景、多视角图像、三维动画或可进行新视角渲染的表示；重点收录专门针对非真实感绘画输入设计的方法；同时收录能够应用于绘画输入的通用单图生成三维方法；关注几何质量、纹理质量、多视角一致性、语义或部件分解、可编辑性、风格保持和生成效率；优先检索 CVPR、ICCV、ECCV、SIGGRAPH、SIGGRAPH Asia、NeurIPS、ICLR、AAAI、ACM MM 等重要会议及 arXiv 最新论文；时间范围以 2017 年至今为主。, especially work that connects or combines: reconstructing 3D models from hand-drawn sketches; converting 2D illustrations into 3D assets; reconstructing 3D models from concept art drawings; single-image 3D reconstruction for artistic paintings; 3D Gaussian splatting reconstruction from drawing; maintaining multi-view consistency in artistic 3D generation; methods for generating 3D models from hand drawn sketches and line art; papers on 3D reconstruction from anime illustrations and concept art; single image 3D generation techniques applicable to paintings; non photorealistic sketch based 3D modeling with neural radiance fields.",
+      "matched_requirement_id": "req-composite-sketch-to-d",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2607.21848v2",
+      "source": "arxiv",
+      "title": "Closing the Loop: Training-Free Revisit Consistency for Autoregressive Generative Rendering",
+      "abstract": "Recent conditional video generation models have shown promising potentials to transform 3D engine renderings, such as depth maps and untextured geometry, into photorealistic videos for gaming and immersive content creation. These applications require long-horizon auto-regressive generation that continuously synthesizes new frames while preserving a persistent 3D world. Auto-regressive generators synthesize video chunk by chunk with a bounded KV cache, so when the camera revisits a location after its context has been evicted, the model often regenerates inconsistent appearance, even though the conditioning renderings (e.g., depth) remain perfectly aligned with the underlying geometry. We address this revisit inconsistency without any post-training by exploiting correspondences the 3D engine already provides: temporal correspondence retrieves pose-matched historical latent chunks into the KV cache as loop-closure memory, while spatial correspondence from camera pose and depth reprojection biases token-level attention toward geometrically corresponding regions of the retrieved chunks. We demonstrate our method on loop-closure trajectories mined from TartanAir and TartanGround dataset to mirror complicate real-world application scenarios, where it outperforms existing training-free baselines on revisit consistency without losing overall video quality. Project Page: https://wenchao-m.github.io/ClosetheLoop.github.io/",
+      "authors": [
+        "Wenchao Ma",
+        "Changran Liu",
+        "Sharon X. Huang",
+        "Haomiao Jiang"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-07-23T22:33:52+00:00",
+      "link": "https://arxiv.org/pdf/2607.21848v2",
+      "tags": [
+        "keyword:sketch-to-D",
+        "query:sketch-to-D"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Addresses revisit inconsistency in auto-regressive generative rendering, ensuring consistent appearance across generated frames.",
+      "llm_evidence_cn": "解决自回归生成式渲染中的重访不一致问题，确保生成帧外观一致性。",
+      "llm_evidence": "解决自回归生成式渲染中的重访不一致问题，确保生成帧外观一致性。",
+      "canonical_evidence": "解决自回归生成式渲染中的重访不一致问题，确保生成帧外观一致性。",
+      "llm_tldr_en": "Proposes a training-free method to enforce revisit consistency in auto-regressive generative rendering, crucial for persistent 3D world generation.",
+      "llm_tldr_cn": "针对自回归生成式渲染中摄像机重访时外观不一致的问题，提出一种无需训练的方法，通过在KV缓存中保持一致性实现闭环。实验表明其能有效维持生成帧间的三维一致性，对需要持久三维世界的沉浸式内容创作有重要贡献。",
+      "llm_tldr": "针对自回归生成式渲染中摄像机重访时外观不一致的问题，提出一种无需训练的方法，通过在KV缓存中保持一致性实现闭环。实验表明其能有效维持生成帧间的三维一致性，对需要持久三维世界的沉浸式内容创作有重要贡献。",
+      "llm_tags": [
+        "query:sketch-to-d"
+      ],
+      "matched_query_tag": "query:sketch-to-d",
+      "matched_query_text": "maintaining multi-view consistency in artistic 3D generation",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

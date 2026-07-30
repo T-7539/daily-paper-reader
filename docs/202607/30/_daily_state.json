@@ -1,0 +1,41 @@
+{
+  "date": "20260730",
+  "date_label": "",
+  "generated_at": "2026-07-30 21:56:35 UTC",
+  "recommend_exists": true,
+  "run_count": 1,
+  "papers": [
+    {
+      "paper_id": "2607.22738v1",
+      "route": "202607/30/2607.22738v1-nova3d-code-native-generation-of-programmable-3d-assets",
+      "title": "Nova3D: Code-Native Generation of Programmable 3D Assets",
+      "section": "deep",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "sketch-to-d"
+        }
+      ],
+      "score": 9.0,
+      "evidence": "从图像直接生成可编辑三维资产，适用于插画和草图转三维",
+      "first_seen_at": "2026-07-30 21:56:35 UTC",
+      "updated_at": "2026-07-30 21:56:35 UTC"
+    },
+    {
+      "paper_id": "2607.21848v2",
+      "route": "202607/30/2607.21848v2-closing-the-loop-training-free-revisit-consistency-for-autoregressive-generative-rendering",
+      "title": "Closing the Loop: Training-Free Revisit Consistency for Autoregressive Generative Rendering",
+      "section": "quick",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "sketch-to-d"
+        }
+      ],
+      "score": 6.0,
+      "evidence": "解决自回归生成式渲染中的重访不一致问题，确保生成帧外观一致性。",
+      "first_seen_at": "2026-07-30 21:56:35 UTC",
+      "updated_at": "2026-07-30 21:56:35 UTC"
+    }
+  ]
+}

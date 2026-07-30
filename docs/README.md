@@ -41,17 +41,17 @@
 <section class="dpr-home-dashboard-card dpr-home-report-card">
   <div class="dpr-home-dashboard-header">
     <div>
-      <span class="dpr-home-dashboard-kicker">2026-07-29</span>
+      <span class="dpr-home-dashboard-kicker">2026-07-30</span>
       <h3 class="dpr-home-dashboard-title">今日汇总</h3>
     </div>
-    <strong class="dpr-home-dashboard-count">共 1 篇</strong>
+    <strong class="dpr-home-dashboard-count">共 2 篇</strong>
   </div>
   <dl class="dpr-home-dashboard-stats">
     <div class="dpr-home-dashboard-stat"><dt>累计更新</dt><dd>1 次</dd></div>
     <div class="dpr-home-dashboard-stat"><dt>精读</dt><dd>1</dd></div>
-    <div class="dpr-home-dashboard-stat"><dt>速读</dt><dd>0</dd></div>
+    <div class="dpr-home-dashboard-stat"><dt>速读</dt><dd>1</dd></div>
   </dl>
-  <p class="dpr-home-dashboard-body">最近更新：2026-07-29 21:47:21 UTC<br>状态：成功</p>
+  <p class="dpr-home-dashboard-body">最近更新：2026-07-30 21:56:35 UTC<br>状态：成功</p>
 </section>
 <section class="dpr-home-dashboard-card dpr-home-brief-card">
   <div class="dpr-home-dashboard-header">
@@ -62,9 +62,9 @@
     <strong class="dpr-home-dashboard-count">AI</strong>
   </div>
   <div class="dpr-home-dashboard-body">
-<p>今日精读《DreamStyle3D：基于双注意力解耦的高效3D风格化资产生成》</p>
-<p>通过内容与风格双注意力解耦，在保留几何结构的前提下实现干净、可控的多风格迁移</p>
-<p>建议关注该解耦机制能否推广到动态3D场景或实时风格编辑场景</p>
+<p>今天精读了一篇满分潜力的“代码生3D”工作，并速览了提升自回归渲染一致性的新方案。</p>
+<p>Nova3D 用扩散模型生成可编程3D资产的几何和材质代码，颠覆了传统网格生成；而闭环重访一致性无需训练就让生成式渲染画面更连贯。</p>
+<p>建议开发者关注“代码原生”3D管线，同时普通读者可期待更稳定的AI实时渲染效果。</p>
   </div>
 </section>
 <section class="dpr-home-dashboard-card dpr-home-deep-card">
@@ -76,7 +76,7 @@
     <strong class="dpr-home-dashboard-count">1 篇</strong>
   </div>
   <div class="dpr-home-dashboard-body">
-<ul class="dpr-home-dashboard-paper-list"><li><span class="dpr-home-dashboard-paper-title" title="DreamStyle3D: Efficient 3D Stylized Asset Generation via Dual-Attention Disentanglement">DreamStyle3D: Efficient 3D Stylized Asset Generation via Dual-Attention Disentanglement</span></li></ul>
+<ul class="dpr-home-dashboard-paper-list"><li><span class="dpr-home-dashboard-paper-title" title="Nova3D: Code-Native Generation of Programmable 3D Assets">Nova3D: Code-Native Generation of Programmable 3D Assets</span></li></ul>
   </div>
   <div class="dpr-home-dashboard-tags"><span class="dpr-home-dashboard-tag">sketch-to-d <strong>1</strong></span></div>
 </section>
@@ -86,12 +86,12 @@
       <span class="dpr-home-dashboard-kicker">今日累计</span>
       <h3 class="dpr-home-dashboard-title">速读推荐</h3>
     </div>
-    <strong class="dpr-home-dashboard-count">0 篇</strong>
+    <strong class="dpr-home-dashboard-count">1 篇</strong>
   </div>
   <div class="dpr-home-dashboard-body">
-<p class="dpr-home-dashboard-empty">今日暂无推荐。</p>
+<ul class="dpr-home-dashboard-paper-list"><li><span class="dpr-home-dashboard-paper-title" title="Closing the Loop: Training-Free Revisit Consistency for Autoregressive Generative Rendering">Closing the Loop: Training-Free Revisit Consistency for Autoregressive Generative Rendering</span></li></ul>
   </div>
-
+  <div class="dpr-home-dashboard-tags"><span class="dpr-home-dashboard-tag">sketch-to-d <strong>1</strong></span></div>
 </section>
 </div>
 
