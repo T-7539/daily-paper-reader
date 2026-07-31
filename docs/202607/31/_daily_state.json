@@ -1,0 +1,41 @@
+{
+  "date": "20260731",
+  "date_label": "",
+  "generated_at": "2026-07-31 21:18:44 UTC",
+  "recommend_exists": true,
+  "run_count": 1,
+  "papers": [
+    {
+      "paper_id": "2607.23491v1",
+      "route": "202607/31/2607.23491v1-plancraft-sketch-refine-and-furnish-for-architect-inspired-progressive-3d-residential-scene-generation",
+      "title": "PlanCraft: Sketch, Refine, and Furnish for Architect-Inspired Progressive 3D Residential Scene Generation",
+      "section": "deep",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "sketch-to-d"
+        }
+      ],
+      "score": 9.0,
+      "evidence": "从粗略草图笔触渐进生成三维场景",
+      "first_seen_at": "2026-07-31 21:18:44 UTC",
+      "updated_at": "2026-07-31 21:18:44 UTC"
+    },
+    {
+      "paper_id": "2607.27348v1",
+      "route": "202607/31/2607.27348v1-bunraku-turning-a-single-illustration-into-an-editable-live2d-character",
+      "title": "Bunraku: Turning a Single Illustration into an Editable Live2D Character",
+      "section": "deep",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "sketch-to-d"
+        }
+      ],
+      "score": 9.0,
+      "evidence": "从单张插图生成Live2D角色",
+      "first_seen_at": "2026-07-31 21:18:44 UTC",
+      "updated_at": "2026-07-31 21:18:44 UTC"
+    }
+  ]
+}

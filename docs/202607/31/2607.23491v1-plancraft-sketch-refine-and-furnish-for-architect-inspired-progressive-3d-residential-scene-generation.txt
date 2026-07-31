@@ -1,0 +1,325 @@
+Title: PlanCraft: Sketch, Refine, and Furnish for Architect-Inspired Progressive 3D Residential Scene Generation
+
+URL Source: https://arxiv.org/pdf/2607.23491v1
+
+Published Time: Tue, 28 Jul 2026 01:10:16 GMT
+
+Number of Pages: 9
+
+Markdown Content:
+# PlanCraft: Sketch, Refine, and Furnish for Architect-Inspired Progressive 3D Residential Scene Generation 
+
+## Pengyu Zeng *, Yuqin Dai *, Jun Yin *, Ziyang Han, Ng Cheuk Hei, Jing Zhong, Chaoyang Shi, ZhanXiang Jin, Maowei Jiang, Yuxing Han, Shuai Lu †
+
+Tsinghua University 
+
+Abstract 
+
+Two structural insights have been overlooked in automated residential floor plan generation. First, design is inherently progressive. Architects begin with rough strokes and refine them over time, whereas existing methods typically require their conditioning representation to be fully specified before generation, a fundamental mismatch with how design actu-ally works. Second, the 2D floor plan is not an optional in-termediate but an irreplaceable spatial contract. Once room boundaries, doors, and windows are fixed, furnishing reduces from open-ended spatial reasoning to bounded constraint sat-isfaction. Bypassing this contract, as existing 3D systems do by delegating layout to language models, yields over-lapping rooms and implausible proportions; directly calling general-purpose language models likewise produces geomet-rically invalid layouts. Guided by these insights, we present 
+
+PlanCraft . SketchPlan supplies the missing training sig-nal by replaying the architect’s drawing process on 80K real floor plans, producing partial sketches at every completeness level. PlanCraft-Diff progressively sharpens an incomplete sketch into a geometrically precise, vectorizable floor plan through a coarse-to-fine strategy. With the spatial contract es-tablished, PlanCraft-Agent then furnishes the scene within well-defined room boundaries. Experiments show that Plan-Craft achieves a 61.1% lower FID than the best existing 2D method and surpasses existing 3D systems by 15 points in expert-rated spatial rationality, with a sketch at only 25% com-pletion already outperforming all fully specified baselines. 
+
+## Introduction 
+
+The design of residential living spaces follows an inherently iterative workflow (Sacks et al. 2018). Architects typically begin with incomplete sketches or partial geometric inten-tions and gradually refine them into explicit floor plans that specify room types, walls, doors, and windows (Hu et al. 2020; Wu et al. 2019). These floor plans then sup-port downstream 3D visualization for client presentation and design evaluation (Yigitbas, Nowosad, and Engels 2023). This pipeline lies at the heart of architectural practice (Sacks et al. 2018), yet remains almost entirely manual and time-intensive (Chaillou 2020). Recent advances in generative models have brought progress to individual stages of this workflow. Floor plan 
+
+> ∗
+
+Equal contribution. 
+
+> †
+
+Corresponding author. E-mail: shuai.lu@sz.tsinghua.edu.cn Copyright © 2027, Association for the Advancement of Artificial Intelligence (www.aaai.org). All rights reserved. Graph Text Prompt       
+
+> Generative Model
+> Valid layout
+> From
+> incomplete sketch Non-overlapping
+> results
+> Invalid layout
+> b) Existing 3D Methods
+> Progressive Generation
+> a) Existing 2D Methods
+> I want
+> 3bedrooms,
+> 1living room,
+> 1toilet,
+> 1kitchen, and
+> 1balcony.
+> LLM Agent
+> c) PlanCraft
+> Overlapping toilets
+> Numbers not match
+> LLM Agent
+> Expert-Guided Placement
+> 2D Spatial Prior
+> Coarse stage
+> Fine
+> stage
+
+Figure 1: (a) Existing 2D methods take a graph or text prompt as input and use generative models to produce a 2D floor plan; they require a fully specified input and may still output an in-valid layout (black circle). (b) Existing 3D methods take a text prompt and use an LLM agent to generate a 3D scene directly, without a dedicated data-driven floor-plan generation stage; this can produce incorrect room counts and overlapping ob-jects (red box). (c) PlanCraft takes an incomplete sketch as input. A coarse-to-fine progressive generation stage produces a valid 2D floor plan, which serves as a 2D spatial prior . An LLM agent then performs expert-guided placement within the verified room boundaries, yielding non-overlapping 3D results. generation methods, including adversarial approaches (Nau-ata et al. 2020, 2021), denoising-based methods (Shabani, Hosseini, and Furukawa 2023), and language model-based approaches (Yin et al. 2025; Leng et al. 2023), can produce 2D layouts from graph or text inputs. Separately, 3D in-door scene generation systems such as Holodeck (Yang et al. 2024b) use language model agents to populate virtual envi-ronments with furniture. However, these two lines of work remain fundamentally disconnected, as 2D methods stop at floor plans while 3D systems generate their own floor plans internally and do so poorly. Moreover, existing 2D methods typically require their conditioning representation to be fully specified upfront, whether a complete adjacency graph or a detailed text description, a fundamental mismatch with how design actually works. arXiv:2607.23491v1 [cs.CV] 26 Jul 2026 However, we argue that two structural insights have been overlooked (Fig. 1). Design is progressive . An architect be-gins with rough strokes and sharpens them over time, yet ev-ery existing method demands a fully specified input upfront. 
+
+The floor plan is a spatial prior . Once room boundaries, doors, and windows are fixed, furnishing reduces from open-ended spatial reasoning to bounded constraint satisfaction. Bypassing this prior, as existing 3D systems do by delegat-ing layout to language models, yields pathological configu-rations such as a bedroom reachable only by passing through a bathroom, a kitchen twice the size of the living room, or rooms with no accessible entrance. These layouts would be unsellable in practice; directly calling mainstream com-mercial LLMs (OpenAI 2026; Alibaba Cloud 2026; Google DeepMind 2025; ByteDance Seed 2026) likewise produces geometrically invalid layouts. To address the fact that design is progressive , SketchPlan 
+
+supplies the missing training signal by replaying the archi-tect’s drawing process on 80K real floor plans, producing partial sketches at every completeness level. Building on this, PlanCraft-Diff progressively sharpens an incomplete sketch into a geometrically precise, vectorizable floor plan through a coarse-to-fine strategy. To address the fact that 
+
+floor plans act as spatial priors , PlanCraft-Agent furnishes the scene within these verified room boundaries via expert-guided placement. Specifically, a language model generates symbolic spatial constraints from interior design conven-tions. These constraints are then expanded into geometric form and resolved by a collision-aware solver, replacing un-constrained spatial hallucination with verifiable layout com-pliance. Experiments show that PlanCraft reduces FID by 2.6–11 × against representative 2D baselines and surpasses Holodeck (Yang et al. 2024b) by 15 points in expert-rated spatial rationality, with a sketch at only 25% completion al-ready outperforming all fully specified baselines. Ablations further show that the full PlanCraft-Diff configuration re-duces FID by 3.4 × relative to the one-stage DDPM baseline. We make the following contributions. 
+
+• We identify two overlooked structural insights, design is progressive and the floor plan is a spatial prior , and propose PlanCraft , the first unified system that bridges incomplete design sketches to fully furnished 3D residen-tial scenes. 
+
+• We introduce SketchPlan , an automated data pipeline that produces partial-sketch training pairs at every com-pleteness level by replaying the architect’s drawing pro-cess, and PlanCraft-Diff , a unified image-domain dif-fusion model with two-stage coarse-to-fine training and connectivity-based candidate filtering, which together re-duce FID by 2.6–11 × against 2D baselines. 
+
+• We design PlanCraft-Agent , a grounded 3D assembly stage that combines a language model for constraint gen-eration with rule-based expansion and a collision-aware solver for placement, anchored to verified room bound-aries, and show through expert evaluation that it surpasses the prior language model-based 3D system (Yang et al. 2024b) in rationality, practicality, and personalization. 
+
+## Related Work 
+
+Residential Floor Plan Generation 
+
+Automated floor plan generation has progressed through sev-eral paradigms. GAN-based methods treat rooms as spatial units arranged from input topological graphs (Nauata et al. 2020, 2021). Diffusion-based methods formulate generation as denoising over polygon coordinates (Shabani, Hosseini, and Furukawa 2023) or image-domain pixels (Zeng et al. 2024, 2025). Language model-based methods generate lay-outs from natural language (Leng et al. 2023; Yin et al. 2025). However, all existing paradigms require a fully spec-ified input upfront , whether a complete adjacency graph, a bubble diagram, or a detailed text description, and all stop at 2D . We instead introduce incomplete design sketches as an input modality that reflects how architects actually work, embodying design is progressive , and extend the output to fully furnished 3D scenes. 
+
+3D Indoor Scene Generation 
+
+3D indoor scene generation targets embodied AI, interior design, and virtual reality. Most prior work arranges furni-ture within a single predefined room (Feng et al. 2023; Yang et al. 2024a; Çelen et al. 2024; Lin and Mu 2024), assum-ing the floor plan is already given . Generating complete multi-room scenes is far less explored. ProcTHOR (Deitke et al. 2022) relies on procedural rules with limited diversity ,while Holodeck (Yang et al. 2024b) uses language model agents to generate scenes from text but bypasses trained floor plan generation , producing spatially incoherent lay-outs . More recent systems have extended language-guided generation toward scalable agentic scenes, multi-floor envi-ronments, and traversable interactive worlds (Xia et al. 2026; Che et al. 2026; Wang et al. 2026). These studies broaden the scope of text-conditioned 3D environment generation, but they do not explicitly study progressive completion from incomplete residential sketches. PlanCraft instead focuses on coupling progressive floor-plan completion with geomet-rically grounded furnishing. 
+
+## Method 
+
+Overview 
+
+PlanCraft is a progressive pipeline (Fig. 2) with four stages. 
+
+SketchPlan supplies partial-sketch supervision, PlanCraft-Diff refines incomplete inputs into floor plans, Rule-Based Post-Processing converts raster outputs into verified vec-tors, and PlanCraft-Agent furnishes 3D scenes within ver-ified room boundaries. Natural-language programs are first converted by an off-the-shelf LLM into coarse graph-plus-block conditions before entering PlanCraft-Diff. PlanCraft supports two input modalities encoded as H × H multi-channel tensors. A graph-plus-block input concatenates a room adjacency graph with per-room-type block maps (Sha-bani, Hosseini, and Furukawa 2023; Nauata et al. 2021). A 
+
+partial vector input rasterizes the user’s incomplete sketch and pads it to the same tensor shape; the completeness ratio 
+
+τ ∈ [0 , 1] is discretized as c = ⌊τ × 100 ⌋ and used as the conditioning signal for progressive refinement. PlanCraft-Agent   
+
+> Re-rendering and Verification Boundary Refinement Contour Extraction and Vectorization
+> Color Segmentation Contour Extraction Polygon Vectorization Vertex Optimization and Grid Snapping
+
+Curate SketchPlan Dataset 
+
+> Residential Plan Parameterization (RPP)
+
+User Input  
+
+> Step-by-step Design
+
+Progressions (SDP) N-Graph and Gaussian-Perturbed Block Construction   
+
+> Structured Vector plan νRPLAN Raster Plan
+> {"semantic": "living_room", "path": [[8,10], [42,10], …]
+> }
+
+Wall continuity and Door/Window dependency    
+
+> 25% 50% 75% 100%
+
+τ-labeled Training Pairs   
+
+> Graph-conditioned Training Pairs
+> N-Graph Gaussian-Perturbed Blocks Block-Graph Condition
+
+PlanCraft-Diff Rule-Based Post-Processing 3D Scene Output  
+
+> Partial Sketch
+> +
+> Completeness c
+> or Coarse Stage Gated Router
+> Block Path
+> fblk
+> Vector Path
+> fvec
+> Two-Stage Training Strategy Fine Stage
+> DDPM-UNet
+> Block Graph
+> Semantic Extraction
+> Vector JSON
+> Furniture Asset Placement
+> Spatial Structure Construction
+> Training
+
+Figure 2: Overview of PlanCraft. During training, SketchPlan constructs partial-sketch and graph-plus-block supervision for 
+
+PlanCraft-Diff . At inference, a natural-language program is first converted by an LLM into a coarse graph-plus-block condition, while a partial vector sketch is directly rasterized as an alternative condition. PlanCraft-Diff then generates a complete floor plan, which is vectorized and furnished by PlanCraft-Agent .
+
+SketchPlan Dataset 
+
+To supply the missing partial-sketch supervision, we con-struct SketchPlan from RPLAN (Wu et al. 2019). Three au-tomated pipelines produce paired inputs (graph-plus-block inputs or incomplete vectors) and complete floor plans for training PlanCraft-Diff. 
+
+Residential Plan Parameterization (RPP). Each raster-ized RPLAN floor plan is converted into a structured vector representation V = {(pi, s i)}Ni=1 , where pi is a polygon path and si ∈ S its semantic label (room type, door, or window). Color-based segmentation extracts per-category masks, con-tour detection yields polygon paths, and a vertex optimiza-tion step removes collinear points and snaps coordinates to a shared grid. The vectorized plans serve as the source for the two pipelines below. 
+
+Step-by-step Design Progressions (SDP). From each V,we generate a sequence V(0) ⊂ V (1) ⊂ · · · ⊂ V (K) = V
+
+that simulates progressive drafting. An element vi is eligi-ble at step k only if its prerequisite walls already appear in 
+
+V(k); we then sample eligible walls with probability λ and doors/windows with 1 − λ, yielding training pairs (V(k), V)
+
+at diverse completeness levels τ = |V (k)|/|V| . Randomized drawing orders and λ values provide multiple sequences per plan. 
+
+N-Graph and Gaussian-Perturbed Block Construction. 
+
+For graph-conditioned inputs, we build two complementary representations. The N-graph enriches the conventional at-tributed graph with room position and wall connectivity, where each room is a node at position pi ∼ U (bbox i),with edges encoding wall-sharing adjacency. Gaussian-perturbed room blocks extract each room-type spatial ex-tent as a block image whose center is displaced by δ ∼N (0 , σ 2
+
+> block
+
+I2). The N-graph and room-type block maps are concatenated into the graph-plus-block conditional in-put consumed by PlanCraft-Diff. 
+
+PlanCraft-Diff: Progressive Floor Plan Refinement 
+
+Armed with SketchPlan’s training pairs, PlanCraft-Diff uses a conditional denoising diffusion probabilistic model (DDPM) (Ho, Jain, and Abbeel 2020) with a coarse-to-fine strategy to balance global plausibility and geometric preci-sion. 
+
+Forward Process. Given a clean floor plan image x0, the forward process produces a noisy version at timestep t,
+
+xt = √¯αt x0 + √1 − ¯αt ϵ, (1) where ϵ ∼ N (0 , I), αt = 1 − βt, and ¯αt = Qts=1 αs; the variance schedule {βt}Tt=1 increases linearly from β1 to βT .
+
+Conditional Reverse Process. A noise prediction net-work ϵθ is conditioned on the noisy image xt, timestep t,the conditional input xcond , and the completeness signal c.The backbone is a UNet (Ronneberger, Fischer, and Brox 2015) with four resolution levels at base width C. Because graph-plus-block inputs and partial vectors encode different structures, we use modality-specific entry convolutions, 
+
+h0 =
+
+fvec (xt, xcond ) if c is present, 
+
+fblk (xt, xcond ) otherwise, (2) where fvec and fblk both map the conditional tensor to width 
+
+C. The timestep t is encoded via sinusoidal positional em-beddings (Vaswani et al. 2017) and injected into each residual block as an additive bias, and c is encoded with a learnable embedding table and injected in the same way. This design lets one unified model handle both modalities without col-lapsing them into the same low-level representation, while still sharing most parameters in deeper layers. 
+
+Training Objective. The model minimizes the standard 
+
+ℓ2 noise prediction loss, 
+
+L = Ex0,ϵ,t 
+
+∥ϵ − ϵθ (xt, t, xcond , c )∥2 . (3) 
+
+Two-Stage Training Strategy. We train in two stages. Stage 1 pretrains for E1 epochs on coarse blurred layouts (using Gaussian perturbation with scale σblur over ground-truth room blocks and graphs) to learn global spatial distri-butions, and Stage 2 fine-tunes for E2 epochs on high-fidelity floor plans to sharpen boundary precision. This strategy re-duces FID from 13.810 to 11.674 (15.5% improvement) over single-stage training (Tab. 2). 
+
+Inference and Quality Filtering. At inference, the model denoises from Gaussian noise over T steps and generates Ns
+
+candidates per input. For the natural-language route, an off-the-shelf LLM converts each program into a coarse graph-plus-block condition. Candidates whose floor plan region is not a single connected component (after removing door/win-dow markings) are discarded. This connectivity check re-duces FID from 11.674 to 4.026 (Tab. 2); only verified plans proceed to post-processing. 
+
+From Image to Vector: Rule-Based Post-Processing 
+
+The generated raster floor plan is converted into a structured vector representation for downstream 3D asset placement. We apply color-range thresholding in BGR space to extract per-category masks, detect contours, and convert them into polygon paths. Room contours are dilated by one pixel so that adjacent rooms share boundaries, and coordinates are snapped to a shared grid to enforce wall alignment. The refined paths are saved as JSON and re-rendered for verifica-tion; only verified vectors are forwarded to PlanCraft-Agent. 
+
+PlanCraft-Agent: Grounded 3D Scene Assembly 
+
+With a verified vector floor plan as a 2D spatial prior ,
+
+PlanCraft-Agent performs expert-guided placement within verified room boundaries, yielding a +15-point advantage in expert-rated Rationality over Holodeck (Yang et al. 2024b). Given the verified vector floor plan, PlanCraft-Agent as-sembles the 3D scene in two phases. In Spatial Structure Construction , room polygons are converted from pixel to metric coordinates at resolution r pixels per meter, while spe-cialized agents build wall meshes, place door assets retrieved from Objaverse (Deitke et al. 2023) via CLIP (Radford et al. 2021), and determine window types and sizes. In Furniture Asset Selection and Placement , an object-selection agent retrieves room-specific furniture via CLIP (Radford et al. 2021) and Sentence-BERT (Reimers and Gurevych 2019), a constraint-generation agent emits spatial constraints, and a placement engine solves for collision-free 3D positions and orientations within room boundaries. The final scene is serialized and deployed in AI2-THOR (Kolve et al. 2017). Additional details of the agent roles, spatial constraints, and placement procedure are provided in the supplementary ma-terial. 
+
+## Experiments 
+
+Experimental Setup 
+
+Datasets. For 2D generation, we build training and evalua-tion data from RPLAN (Wu et al. 2019), a corpus of over 80K real residential floor plans. To simulate incomplete de-sign sketches, our automated pipeline progressively masks structural elements from complete plans, producing inputs at 25%, 50%, 75%, and 100% vector completeness. Our system also supports graph-plus-block inputs, enabling a system-level comparison with prior graph- and language-conditioned floor-plan generation methods. For 3D furniture placement, we adopt the same publicly available asset database used by Holodeck (Yang et al. 2024b). 
+
+Baselines. We compare against representative GAN-based methods (HouseGAN (Nauata et al. 2020), House-GAN++ (Nauata et al. 2021)), diffusion-based methods (HouseDiffusion (Shabani, Hosseini, and Furukawa 2023)), language model-based methods (Floorplan-LLaMA (Yin et al. 2025), Tell2Design (Leng et al. 2023)), and the 3D system Holodeck (Yang et al. 2024b). 
+
+Evaluation Metrics. For 2D evaluation, we follow prior work (Zeng et al. 2025; Shabani, Hosseini, and Furukawa 2023; Nauata et al. 2021) and report FID (Heusel et al. 2017), IoU (Rezatofighi et al. 2019), PSNR (Hore and Ziou 2010), and SSIM (Wang et al. 2004). For 3D evaluation, we conduct expert assessment because no automatic metric adequately captures furnished residential scene quality. 
+
+Implementation Details. PlanCraft-Diff is a conditional DDPM (Ho, Jain, and Abbeel 2020) with a UNet (Ron-neberger, Fischer, and Brox 2015) backbone at base width 
+
+C = 64 , trained on images resized to H × H with H = 64 .We use a linear noise schedule with T = 1000 steps, 
+
+β1 = 1 × 10 −4, and βT = 0 .02 . We use Adam (Kingma and Ba 2015) with initial learning rate η = 2 × 10 −4 annealed to ηmin = 2 × 10 −6 via cosine schedule (Loshchilov and Hutter 2017), Adam momenta (0 .9, 0.999) , no weight decay, and batch size B = 64 . We pretrain for E1=1000 epochs on coarse-grained blurred images and fine-tune for E2=500 
+
+epochs on high-fidelity images. At inference, Ns = 12 can-didates are generated per input. All experiments run on an NVIDIA A100 (80GB) GPU using PyTorch. For 3D de-ployment, the scene JSON is loaded into AI2-THOR (Kolve et al. 2017) (v5.0.0), in which all 3D evaluations are also Table 1: Quantitative comparison against 2D floor plan generation methods and 3D generation methods. Holodeck vector floor plans are mapped to RPLAN semantic labels prior to evaluation. PlanCraft-Diff achieves the best reported performance across all metrics in this system-level comparison. ↑ / ↓ indicate higher-is-better / lower-is-better. Green annotations show PlanCraft’s improvement over the strongest 2D baseline (HouseDiffusion).                                             
+
+> Method Venue FID ↓IoU ↑PSNR ↑SSIM ↑
+> 2D Floor Plan Generation Methods
+> HouseGAN (Nauata et al. 2020) ECCV 2020 44.45 0.220 10.264 0.621 HouseGAN++ (Nauata et al. 2021) CVPR 2021 32.05 0.319 11.528 0.685 HouseDiffusion (Shabani, Hosseini, and Furukawa 2023) CVPR 2023 10.35 0.412 12.847 0.743 Floorplan-LLaMA (Yin et al. 2025) ACL 2025 22.61 0.285 11.105 0.662 Tell2Design (Leng et al. 2023) ACL 2023 11.754 0.395 12.563 0.721
+> 3D Generation Methods
+> Holodeck (Yang et al. 2024b) CVPR 2024 47.82 0.089 8.952 0.583 PlanCraft-Diff (Block Graph) Ours 4.026 (↓61.1%) 0.510 (↑23.8%) 13.758 (↑7.1%) 0.830 (↑11.7%)
+
+conducted. 
+
+Quantitative Comparison on Floor Plan Generation 
+
+Tab. 1 presents the quantitative comparison of 2D floor plan generation. 
+
+PlanCraft outperforms all baselines across all metrics. 
+
+PlanCraft-Diff achieves the best FID, IoU, PSNR, and SSIM. The largest gain appears on FID, indicating more faithful global floor-plan distributions, while the gains on IoU and SSIM show that the improvement also extends to structural coherence and perceptual quality. This pattern is consistent with our design goal, where coarse-to-fine training first cap-tures plausible global spatial organization and then sharpens local geometry. 
+
+Explicit 2D constraints remain necessary for geometric va-lidity. GAN, diffusion, and language-model baselines all un-derperform PlanCraft-Diff, and Holodeck (Yang et al. 2024b) ranks last, as it bypasses principled 2D floor-plan generation. This result supports our claim that language-model reason-ing alone is insufficient for coherent residential layout gen-eration without an explicit 2D constraint stage. The results suggest that combining room-topology information with ap-proximate spatial blocks provides an effective structural con-dition for residential floor-plan generation. 
+
+Effect of Vector Completeness 
+
+Beyond the standard graph-plus-block comparison above, PlanCraft’s distinctive input modality is partial design sketches at arbitrary completeness. Fig. 3 traces all four met-rics as vector completeness increases from 25% to 100%, with the graph-plus-block setting included as a zero-vector reference point. 
+
+Additional vectors mainly sharpen geometry. Fig. 3 shows that PSNR and IoU respond most strongly at 25–50% com-pleteness, while SSIM changes more gradually. This suggests that sparse sketches already establish coarse room zoning, and later vectors mainly refine wall placement. Even at 25% completeness, PlanCraft surpasses all fully specified baselines in Tab. 1, showing that sparse sketches already support strong completion. The slower SSIM growth indicates that early vectors establish coarse zoning while later vectors mainly sharpen geometry. 
+
+Expert Evaluation on 3D Scene Generation 
+
+Holodeck (Yang et al. 2024b) is the closest prior language-guided system that generates prompt-conditioned furnished multi-room scenes. We conduct a user study with 26 par-ticipants with architectural training, including 20 master’s-level and six doctoral-level participants. Each participant used both PlanCraft and Holodeck to complete 20 prompt-matched residential scene-generation tasks. After interacting with each system, participants rated it on a 100-point scale along three dimensions of Rationality, Practicality, and Per-sonalization. The reported scores are averaged over all tasks and participants. Detailed evaluation criteria are provided in the supplementary material. As shown in Fig. 4, PlanCraft outperforms Holodeck (Yang et al. 2024b) across all three dimen-sions, with the largest gap in Rationality. The gap arises because PlanCraft establishes verified room boundaries before furniture placement, whereas Holodeck relies on un-constrained language-model reasoning. The Personalization advantage indicates stronger alignment with the prompt-specific spatial and furnishing requirements; the Practicality gap is smaller because both systems accept natural language and produce deployable 3D scenes. Importantly, the expert study shows that improvements in 2D floor-plan validity propagate to the user-visible 3D scene rather than remaining confined to intermediate representations. 
+
+Qualitative Comparison 
+
+Comparison across floor plan generation methods (Fig. 5). Baselines exhibit paradigm-specific failure modes, including fragmented rooms, distorted proportions, or geo-metrically invalid layouts. PlanCraft avoids these failures by combining image-domain generation with a coarse-to-fine strategy and an explicit 2D constraint stage. The compari-son also highlights that architectural plausibility depends on enforcing both room topology and geometric closure rather than optimizing text-image consistency alone. Figure 3: Effect of vector completeness on generation quality. All four metrics improve monotonically, but at different rates: PSNR and IoU respond most steeply to additional structural vectors, while SSIM improves more gradually, indicating that perceptual layout quality is already well captured at low completeness. Even at 25%, PlanCraft-Diff outperforms all fully specified baselines in Tab. 1. 
+
+Figure 4: Expert evaluation on 3D scene generation. Scores are on a 100-point scale across three dimensions. PlanCraft outperforms Holodeck (Yang et al. 2024b) across all dimen-sions, with the largest gap in Rationality (+15). 
+
+Qualitative evidence across 3D generation, sketch com-pleteness, and language models (Fig. 6). The three compar-isons converge on the same bottleneck. Without an explicit 2D spatial prior, both Holodeck and standalone language models (Doubao (ByteDance Seed 2026), ChatGPT (OpenAI 2026), Qwen (Alibaba Cloud 2026), Gemini (Google Deep-Mind 2025)) produce layouts with invalid geometry, while PlanCraft preserves coherent room structure from sparse sketches to complete reconstructions. Fig. 6(c) shows that Doubao, ChatGPT, Qwen, and Gemini all produce invalid geometry, whereas PlanCraft maintains coherent room structure after grounding the request in a 2D sketch prior. This contrast confirms that 2D spatial priors are necessary for high-quality 3D scene generation. 
+
+Editability 
+
+PlanCraft supports two editing modalities. In Natural Lan-guage Editing , the generated floor plan is abstracted into a graph-plus-block representation, edited from natural lan-guage instructions, then regenerated and refurnished. For partial-sketch editing, the LLM directly updates the vector Blurry boundaries Fragmented Rooms    
+
+> HouseGAN
+> Graph
+> HouseGAN++
+> Graph
+> HouseDiffusion
+> Floorplan-LLaMA
+> Tell2Design
+> Ours
+> Input Output
+> Graph
+> I want a 2-bedroom, 1-living room apartment.
+> Text Prompt
+> I want a 3 bedrooms, 1 living room, 1 bathroom, 1 kitchen, and 1 balcony.
+> Sketch(25%)
+> I want a 3 bedrooms, 1
+> living room, 1 bathroom,
+> 1 kitchen, and 1 balcony
+> Text Prompt
+> +
+> Text Prompt
+> Valid Result
+> Input Output
+> Overlapping regions Distorted proportions Disordered layout
+
+Figure 5: Representative outputs and failure cases across floor plan generation methods. Each panel shows a method’s input (left) and output (right), with baseline failure modes anno-tated in red. HouseGAN and HouseGAN++ take bubble dia-grams, HouseDiffusion takes room connectivity graphs, and Floorplan-LLaMA and Tell2Design accept natural language. PlanCraft supports language-guided editing of incomplete vector sketches: an LLM first updates the sketch according to the text instruction, and the resulting vector representation is then rasterized as the input to PlanCraft-Diff. primitives; for editing a generated plan, it operates on the abstracted graph-plus-block representation. In CAD Vector Editing , the plan is exported as CAD-compatible vectors, manually edited, and fed back as updated conditional inputs. 
+
+Ablation Study 
+
+We conduct ablation experiments to validate our key design choices. Tab. 2 summarizes the main results; additional anal-yses are provided in the supplementary material. 
+
+Generative Architecture: DDPM vs. MeanFlow. DDPM dramatically outperforms MeanFlow (Geng et al. 2025) un-der matched training conditions (Tab. 2). We attribute the gap to the structured, discrete nature of floor plans, where iterative denoising better preserves aligned walls and closed polygons. By contrast, direct transport in flow matching is less robust when tiny local errors can break topological va-Figure 6: Qualitative comparison from three perspectives. (a) End-to-end comparison with Holodeck (Yang et al. 2024b). Given the same natural language description, PlanCraft generates spatially coherent floor plans that translate into realistic 3D scenes, while Holodeck suffers from invalid geometry: bedrooms accessible only via bathrooms, and disproportionate spaces (kitchens as the largest room, exceeding living rooms). (b) PlanCraft under varying vector completeness (25%, 50%, 75%, 100%). Even with only 25% of structural vectors provided, PlanCraft infers a plausible complete layout. (c) Comparison with language models. All four models produce layouts with significant deficiencies (annotated in red), while PlanCraft generates well-organized layouts. Table 2: Ablation study under the graph-plus-block input setting. We validate each key design choice of PlanCraft-Diff. The full model (bold) consistently achieves the best performance across all four metrics.                         
+
+> Variant FID ↓IoU ↑PSNR ↑SSIM ↑
+> MeanFlow backbone 30.643 0.318 10.892 0.654 DDPM (one-stage) 13.810 0.423 12.106 0.742 DDPM (no filtering) 11.674 0.498 13.521 0.815
+> PlanCraft-Diff (full) 4.026 (↓65.5%) 0.510 (↑2.4%) 13.758 (↑1.8%) 0.830 (↑1.8%)
+
+lidity. 
+
+Training Strategy: Two-Stage vs. One-Stage. Removing coarse pretraining substantially degrades FID while affect-ing IoU, PSNR, and SSIM less. This indicates that two-stage training primarily improves population-level distribu-tion learning before fine-grained geometric refinement. The result is important because it shows that better floor-plan generation requires not only a stronger backbone but also a curriculum aligned with progressive design. 
+
+Effect of Candidate Filtering. Candidate filtering sharply improves FID while leaving other metrics nearly unchanged, because it removes disconnected outliers rather than altering the spatial layout of already valid samples. This confirms that the candidate-filtering stage serves mainly as a reliability filter instead of a hidden source of geometric improvement. 
+
+## Conclusion 
+
+We present PlanCraft, a unified system that bridges incom-plete design sketches to fully furnished 3D residential scenes. Grounded in two structural insights, design is progres-sive and the floor plan is a spatial prior , PlanCraft inte-grates SketchPlan, PlanCraft-Diff, rule-based vector post-processing, and PlanCraft-Agent into a unified workflow. SketchPlan supplies partial-sketch training data, PlanCraft-Diff sharpens an incomplete sketch into a geometrically valid floor plan via coarse-to-fine diffusion, and PlanCraft-Agent performs expert-guided placement within verified room boundaries. PlanCraft reduces FID over 2D baselines and surpasses the prior 3D system in expert-rated rationality. 
+
+## References 
+
+Alibaba Cloud. 2026. Qwen3.7-Plus Model Documentation. Alibaba Cloud Model Studio. ByteDance Seed. 2026. Seed2.0 Model Card: Towards Intel-ligence Frontier for Real-World Complexity. arXiv preprint arXiv:2607.00248 .Çelen, A.; Han, G.; Schindler, K.; Van Gool, L.; Armeni, I.; Obukhov, A.; and Wang, X. 2024. I-Design: Personalized LLM Interior Designer. Chaillou, S. 2020. Archigan: Artificial intelligence x archi-tecture. In Architectural intelligence: Selected papers from the 1st international conference on computational design and robotic fabrication (CDRF 2019) , 117–127. Springer. Che, L.; Wen, S.; Huang, S.; Wang, C.; Yang, Y.; Dudek, G.; Wang, X.; and Su, J. 2026. MANSION: Multi-floor lANguage-to-3D Scene generatIOn for loNg-horizon Tasks. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition .Deitke, M.; Schwenk, D.; Salvador, J.; Weihs, L.; Michel, O.; VanderBilt, E.; Schmidt, L.; Ehsani, K.; Kembhavi, A.; and Farhadi, A. 2023. Objaverse: A Universe of Annotated 3D Objects. In Proceedings of the IEEE/CVF conference on computer vision and pattern recognition , 13142–13153. Deitke, M.; Vander Bilt, E.; Herrasti, A.; Weihs, L.; Sal-vador, J.; Ehsani, K.; Han, W.; Kolve, E.; Farhadi, A.; Kem-bhavi, A.; et al. 2022. ProcTHOR: Large-Scale Embodied AI Using Procedural Generation. In Proceedings of the 36th International Conference on Neural Information Processing Systems , 5982–5994. Feng, W.; Zhu, W.; Fu, T.-J.; Jampani, V.; Akula, A.; He, X.; Basu, S.; Wang, X. E.; and Wang, W. Y. 2023. Layout-GPT: Compositional Visual Planning and Generation with Large Language Models. In Advances in Neural Information Processing Systems , volume 36, 18225–18250. Geng, Z.; Deng, M.; Bai, X.; Kolter, Z.; and He, K. 2025. Mean Flows for One-step Generative Modeling. In 
+
+Advances in Neural Information Processing Systems , vol-ume 38, 75460–75482. Google DeepMind. 2025. Gemini 2.5 Pro Model Card. Google DeepMind. Heusel, M.; Ramsauer, H.; Unterthiner, T.; Nessler, B.; and Hochreiter, S. 2017. GANs Trained by a Two Time-Scale Update Rule Converge to a Local Nash Equilibrium. In 
+
+Advances in Neural Information Processing Systems , vol-ume 30, 6626–6637. Ho, J.; Jain, A.; and Abbeel, P. 2020. Denoising Diffusion Probabilistic Models. Advances in neural information pro-cessing systems , 33: 6840–6851. Hore, A.; and Ziou, D. 2010. Image quality metrics: PSNR vs. SSIM. In 2010 20th international conference on pattern recognition , 2366–2369. IEEE. Hu, R.; Huang, Z.; Tang, Y.; Van Kaick, O.; Zhang, H.; and Huang, H. 2020. Graph2Plan: Learning Floorplan Genera-tion from Layout Graphs. ACM Transactions on Graphics (TOG) , 39(4): 118–1. Kingma, D. P.; and Ba, J. 2015. Adam: A Method for Stochas-tic Optimization. In International Conference on Learning Representations (ICLR) .Kolve, E.; Mottaghi, R.; Han, W.; VanderBilt, E.; Weihs, L.; Herrasti, A.; Deitke, M.; Ehsani, K.; Gordon, D.; Zhu, Y.; Kembhavi, A.; Gupta, A.; and Farhadi, A. 2017. AI2-THOR: An Interactive 3D Environment for Visual AI. arXiv preprint arXiv:1712.05474 .Leng, S.; Zhou, Y.; Dupty, M. H.; Lee, W. S.; Joyce, S.; and Lu, W. 2023. Tell2design: A dataset for language-guided floor plan generation. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers) , 14680–14697. Lin, C.; and Mu, Y. 2024. InstructScene: Instruction-Driven 3D Indoor Scene Synthesis with Semantic Graph Prior. In 
+
+The Twelfth International Conference on Learning Repre-sentations .Loshchilov, I.; and Hutter, F. 2017. SGDR: Stochastic Gradi-ent Descent with Warm Restarts. In International Conference on Learning Representations (ICLR) .Nauata, N.; Chang, K.-H.; Cheng, C.-Y.; Mori, G.; and Fu-rukawa, Y. 2020. House-GAN: Relational Generative Adver-sarial Networks for Graph-Constrained House Layout Gener-ation. In Computer Vision – ECCV 2020 , 162–177. Springer. Nauata, N.; Hosseini, S.; Chang, K.-H.; Chu, H.; Cheng, C.-Y.; and Furukawa, Y. 2021. House-GAN++: Generative Adversarial Layout Refinement Network towards Intelligent Computational Agent for Professional Architects. In Pro-ceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition , 13632–13641. OpenAI. 2026. GPT-5.5 System Card. OpenAI. Radford, A.; Kim, J. W.; Hallacy, C.; Ramesh, A.; Goh, G.; Agarwal, S.; Sastry, G.; Askell, A.; Mishkin, P.; Clark, J.; Krueger, G.; and Sutskever, I. 2021. Learning Transferable Visual Models From Natural Language Supervision. In Pro-ceedings of the 38th International Conference on Machine Learning , 8748–8763. PMLR. Reimers, N.; and Gurevych, I. 2019. Sentence-BERT: Sen-tence Embeddings Using Siamese BERT-Networks. In Pro-ceedings of the 2019 conference on empirical methods in nat-ural language processing and the 9th international joint con-ference on natural language processing (EMNLP-IJCNLP) ,3982–3992. Rezatofighi, H.; Tsoi, N.; Gwak, J.; Sadeghian, A.; Reid, I.; and Savarese, S. 2019. Generalized Intersection over Union: A Metric and A Loss for Bounding Box Regression. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition , 658–666. Ronneberger, O.; Fischer, P.; and Brox, T. 2015. U-Net: Convolutional Networks for Biomedical Image Segmenta-tion. In Medical Image Computing and Computer-Assisted Intervention – MICCAI 2015 , 234–241. Springer. Sacks, R.; Eastman, C.; Lee, G.; and Teicholz, P. 2018. 
+
+BIM Handbook: A Guide to Building Information Modeling for Owners, Designers, Engineers, Contractors, and Facility Managers . Hoboken, NJ: John Wiley & Sons, 3rd edition. ISBN 9781119287537. Shabani, M. A.; Hosseini, S.; and Furukawa, Y. 2023. HouseDiffusion: Vector Floorplan Generation via a Diffu-sion Model with Discrete and Continuous Denoising. In 
+
+Proceedings of the IEEE/CVF conference on computer vi-sion and pattern recognition , 5466–5475. Vaswani, A.; Shazeer, N.; Parmar, N.; Uszkoreit, J.; Jones, L.; Gomez, A. N.; Kaiser, Ł.; and Polosukhin, I. 2017. At-tention Is All You Need. In Advances in Neural Information Processing Systems , volume 30, 5998–6008. Wang, D.; Jung, H.; Monnier, T.; Sohn, K.; Zou, C.; Xi-ang, X.; Yeh, Y.-Y.; Liu, D.; Huang, Z.; Nguyen-Phuoc, T.; Fan, Y.; Oprea, S.; Wang, Z.; Shapovalov, R.; Sarafianos, N.; Groueix, T.; Toisoul, A.; Dhar, P.; Chu, X.; Chen, M.; Park, G. Y.; Gupta, M.; Azziz, Y.; Ranjan, R.; and Vedaldi, A. 2026. WorldGen: From Text to Traversable and Interactive 3D Worlds. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition .Wang, Z.; Bovik, A. C.; Sheikh, H. R.; and Simoncelli, E. P. 2004. Image quality assessment: from error visibility to structural similarity. IEEE transactions on image processing ,13(4): 600–612. Wu, W.; Fu, X.-M.; Tang, R.; Wang, Y.; Qi, Y.-H.; and Liu, L. 2019. Data-Driven Interior Plan Generation for Residential Buildings. ACM Transactions on Graphics (TOG) , 38(6): 1–12. Xia, H.; Li, X.; Li, Z.; Ma, Q.; Xu, J.; Liu, M.-Y.; Cui, Y.; Lin, T.-Y.; Ma, W.-C.; Wang, S.; Song, S.; and Wei, F. 2026. SAGE: Scalable Agentic 3D Scene Generation for Embodied AI. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition .Yang, Y.; Lu, J.; Zhao, Z.; Luo, Z.; Yu, J. J.; Sanchez, V.; and Zheng, F. 2024a. LLPlace: The 3D Indoor Scene Layout Generation and Editing via Large Language Model. Yang, Y.; Sun, F.-Y.; Weihs, L.; VanderBilt, E.; Herrasti, A.; Han, W.; Wu, J.; Haber, N.; Krishna, R.; Liu, L.; Callison-Burch, C.; Yatskar, M.; Kembhavi, A.; and Clark, C. 2024b. Holodeck: Language Guided Generation of 3D Embodied AI Environments. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition , 16227–16237. Yigitbas, E.; Nowosad, A.; and Engels, G. 2023. Supporting construction and architectural visualization through BIM and AR/VR: a systematic literature review. In Human-Computer Interaction – INTERACT 2023 , 145–166. Springer. Yin, J.; Zeng, P.; Sun, H.; Dai, Y.; Zheng, H.; Zhang, M.; Zhang, Y.; and Lu, S. 2025. FloorPlan-LLaMA: Aligning Ar-chitects’ Feedback and Domain Knowledge in Architectural Floor Plan Generation. In Proceedings of the 63rd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers) , 6640–6662. Zeng, P.; Gao, W.; Yin, J.; Xu, P.; and Lu, S. 2024. Resi-dential floor plans: Multi-conditional automatic generation using diffusion models. Automation in Construction , 162: 105374. Zeng, P.; Yin, J.; Gao, Y.; Li, J.; Jin, Z.; and Lu, S. 2025. Com-prehensive and dedicated metrics for evaluating AI-generated residential floor plans. Buildings , 15(10): 1674.

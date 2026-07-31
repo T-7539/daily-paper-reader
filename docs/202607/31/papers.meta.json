@@ -1,0 +1,39 @@
+{
+  "label": "2026-07-31",
+  "date": "2026-07-31",
+  "generated_at": "2026-07-31T21:18:49",
+  "count": 2,
+  "papers": [
+    {
+      "paper_id": "202607/31/2607.23491v1-plancraft-sketch-refine-and-furnish-for-architect-inspired-progressive-3d-residential-scene-generation",
+      "section": "deep",
+      "title_en": "PlanCraft: Sketch, Refine, and Furnish for Architect-Inspired Progressive 3D Residential Scene Generation",
+      "authors": "Pengyu Zeng, Yuqin Dai, Jun Yin, Ziyang Han, Ng Cheuk Hei, Jing Zhong, Chaoyang Shi, ZhanXiang Jin, Maowei Jiang, Yuxing Han, Shuai Lu",
+      "date": "2026-07-26",
+      "pdf": "https://arxiv.org/pdf/2607.23491v1",
+      "score": "9.0",
+      "evidence": "从粗略草图笔触渐进生成三维场景",
+      "tldr": "现有3D场景生成方法忽略设计渐进性和2D空间契约，导致布局不真实。PlanCraft模拟建筑师草图细化过程，先用SketchPlan生成多粒度草图，PlanCraft-Diff逐步锐化成精确平面图，再由PlanCraft-Agent在边界内布置家具。仅需25%完成度的草图，其空间合理性已超越所有全指定基线，FID大幅降低61.1%。该渐进式框架首次匹配实际设计流程，为可控制、可编辑的住宅场景生成奠定基础。",
+      "tags": "query:sketch-to-d",
+      "abstract_en": "Two structural insights have been overlooked in automated residential floor plan generation. First, design is inherently progressive. Architects begin with rough strokes and refine them over time, whereas existing methods typically require their conditioning representation to be fully specified before generation, a fundamental mismatch with how design actually works. Second, the 2D floor plan is not an optional intermediate but an irreplaceable spatial contract. Once room boundaries, doors, and windows are fixed, furnishing reduces from open-ended spatial reasoning to bounded constraint satisfaction. Bypassing this contract, as existing 3D systems do by delegating layout to language models, yields overlapping rooms and implausible proportions; directly calling general-purpose language models likewise produces geometrically invalid layouts. Guided by these insights, we present PlanCraft. SketchPlan supplies the missing training signal by replaying the architect's drawing process on 80K real floor plans, producing partial sketches at every completeness level. PlanCraft-Diff progressively sharpens an incomplete sketch into a geometrically precise, vectorizable floor plan through a coarse-to-fine strategy. With the spatial contract established, PlanCraft-Agent then furnishes the scene within well-defined room boundaries. Experiments show that PlanCraft achieves a 61.1\\% lower FID than the best existing 2D method and surpasses existing 3D systems by 15 points in expert-rated spatial rationality, with a sketch at only 25\\% completion already outperforming all fully specified baselines.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/31/2607.27348v1-bunraku-turning-a-single-illustration-into-an-editable-live2d-character",
+      "section": "deep",
+      "title_en": "Bunraku: Turning a Single Illustration into an Editable Live2D Character",
+      "authors": "Junhao Chen, Jingjia Mao, Dayong Li, Chenghai Li, Saining Zhang, Zhihao Li, Hao Zhao, Yufei Wang, Ruqi Huang",
+      "date": "2026-07-29",
+      "pdf": "https://arxiv.org/pdf/2607.27348v1",
+      "score": "9.0",
+      "evidence": "从单张插图生成Live2D角色",
+      "tldr": "Live2D 角色制作需数周手动工作，现有生成方法无法端到端产出结构化资产。Bunraku 首次从单张插图生成有序 RGBA 图层、变形网格及关键姿势偏移，阶段一用分层扩散完成图层分解与补全，阶段二联合预测各层顶点位移以保角色连贯性。在测试集上每顶点方向余弦中位数达 0.828，且支持服装重纹理与动画复用。同时发布了 Live2D-Bench 基准与 8,884 模型训练语料。",
+      "tags": "query:sketch-to-d",
+      "abstract_en": "Live2D is the dominant 2D character-animation format for anime characters and virtual avatars, representing each character as a stack of RGBA layers driven by per-layer mesh deformation. Despite its wide use in virtual streaming, mobile games, and interactive characters, authoring a Live2D model still demands weeks of manual layer separation, occlusion completion, mesh placement, and keyframing, and no prior generative method produces such a structured asset end-to-end. We present the first system that, from a single illustration, generates all the structured information a Live2D runtime consumes: ordered RGBA layers, a deformation mesh per layer, and the parameter-driven keypose vertex offsets that make the character move. Stage 1 casts layered decomposition as a layered diffusion process under a Live2D-aware organ-level taxonomy, producing an ordered RGBA stack with hidden-region completion. Stage 2 builds a content-conforming triangle mesh for each layer from its alpha channel alone, then predicts the keypose displacement field of all layers jointly: every vertex of every layer is one token, self-attention spans layer boundaries, and each displacement is factorised into a bounded direction and a log-magnitude. Joint rather than independent prediction is what makes the result a coherent character instead of separately plausible parts, and is our largest gain; scaling the network 112x yields none. On 50 held-out characters, under true generation with no teacher forcing, Stage 2 attains a per-vertex direction cosine of 0.768 (median 0.828). Because a layer's mesh derives from its alpha channel, a clothing layer can be re-textured from a natural-language instruction while the mesh and predicted animation are reused byte-for-byte. We further contribute Live2D-Bench, the first standardized benchmark for the task, and an 8,884-model Live2D corpus with layer and animation supervision.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

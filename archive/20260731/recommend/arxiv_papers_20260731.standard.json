@@ -1,0 +1,103 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-31T21:14:03.264785+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 2,
+    "deep_cap": 6,
+    "deep_selected": 2,
+    "quick_candidates": 0,
+    "quick_skim_target": 11,
+    "quick_selected": 0
+  },
+  "deep_dive": [
+    {
+      "id": "2607.23491v1",
+      "source": "arxiv",
+      "title": "PlanCraft: Sketch, Refine, and Furnish for Architect-Inspired Progressive 3D Residential Scene Generation",
+      "abstract": "Two structural insights have been overlooked in automated residential floor plan generation. First, design is inherently progressive. Architects begin with rough strokes and refine them over time, whereas existing methods typically require their conditioning representation to be fully specified before generation, a fundamental mismatch with how design actually works. Second, the 2D floor plan is not an optional intermediate but an irreplaceable spatial contract. Once room boundaries, doors, and windows are fixed, furnishing reduces from open-ended spatial reasoning to bounded constraint satisfaction. Bypassing this contract, as existing 3D systems do by delegating layout to language models, yields overlapping rooms and implausible proportions; directly calling general-purpose language models likewise produces geometrically invalid layouts. Guided by these insights, we present PlanCraft. SketchPlan supplies the missing training signal by replaying the architect's drawing process on 80K real floor plans, producing partial sketches at every completeness level. PlanCraft-Diff progressively sharpens an incomplete sketch into a geometrically precise, vectorizable floor plan through a coarse-to-fine strategy. With the spatial contract established, PlanCraft-Agent then furnishes the scene within well-defined room boundaries. Experiments show that PlanCraft achieves a 61.1\\% lower FID than the best existing 2D method and surpasses existing 3D systems by 15 points in expert-rated spatial rationality, with a sketch at only 25\\% completion already outperforming all fully specified baselines.",
+      "authors": [
+        "Pengyu Zeng",
+        "Yuqin Dai",
+        "Jun Yin",
+        "Ziyang Han",
+        "Ng Cheuk Hei",
+        "Jing Zhong",
+        "Chaoyang Shi",
+        "ZhanXiang Jin",
+        "Maowei Jiang",
+        "Yuxing Han",
+        "Shuai Lu"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.CL"
+      ],
+      "published": "2026-07-26T06:35:14+00:00",
+      "link": "https://arxiv.org/pdf/2607.23491v1",
+      "tags": [
+        "query:sketch-to-D"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "takes rough sketch strokes and progressively generates 3D scene",
+      "llm_evidence_cn": "从粗略草图笔触渐进生成三维场景",
+      "llm_evidence": "从粗略草图笔触渐进生成三维场景",
+      "canonical_evidence": "从粗略草图笔触渐进生成三维场景",
+      "llm_tldr_en": "PlanCraft introduces a progressive pipeline that generates 3D residential scenes from rough hand-drawn floor plan sketches, incorporating refinement and furnishing steps.",
+      "llm_tldr_cn": "针对现有住宅平面图生成方法需要预设完整条件、忽略设计渐进性的问题，提出PlanCraft，从建筑师草图中的粗略笔触开始，通过渐进式细化与家具布置，生成三维住宅场景，更贴近真实设计流程。",
+      "llm_tldr": "针对现有住宅平面图生成方法需要预设完整条件、忽略设计渐进性的问题，提出PlanCraft，从建筑师草图中的粗略笔触开始，通过渐进式细化与家具布置，生成三维住宅场景，更贴近真实设计流程。",
+      "llm_tags": [
+        "query:sketch-to-d"
+      ],
+      "matched_query_tag": "query:sketch-to-d",
+      "matched_query_text": "methods for generating 3D models from hand drawn sketches and line art",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2607.27348v1",
+      "source": "arxiv",
+      "title": "Bunraku: Turning a Single Illustration into an Editable Live2D Character",
+      "abstract": "Live2D is the dominant 2D character-animation format for anime characters and virtual avatars, representing each character as a stack of RGBA layers driven by per-layer mesh deformation. Despite its wide use in virtual streaming, mobile games, and interactive characters, authoring a Live2D model still demands weeks of manual layer separation, occlusion completion, mesh placement, and keyframing, and no prior generative method produces such a structured asset end-to-end. We present the first system that, from a single illustration, generates all the structured information a Live2D runtime consumes: ordered RGBA layers, a deformation mesh per layer, and the parameter-driven keypose vertex offsets that make the character move. Stage 1 casts layered decomposition as a layered diffusion process under a Live2D-aware organ-level taxonomy, producing an ordered RGBA stack with hidden-region completion. Stage 2 builds a content-conforming triangle mesh for each layer from its alpha channel alone, then predicts the keypose displacement field of all layers jointly: every vertex of every layer is one token, self-attention spans layer boundaries, and each displacement is factorised into a bounded direction and a log-magnitude. Joint rather than independent prediction is what makes the result a coherent character instead of separately plausible parts, and is our largest gain; scaling the network 112x yields none. On 50 held-out characters, under true generation with no teacher forcing, Stage 2 attains a per-vertex direction cosine of 0.768 (median 0.828). Because a layer's mesh derives from its alpha channel, a clothing layer can be re-textured from a natural-language instruction while the mesh and predicted animation are reused byte-for-byte. We further contribute Live2D-Bench, the first standardized benchmark for the task, and an 8,884-model Live2D corpus with layer and animation supervision.",
+      "authors": [
+        "Junhao Chen",
+        "Jingjia Mao",
+        "Dayong Li",
+        "Chenghai Li",
+        "Saining Zhang",
+        "Zhihao Li",
+        "Hao Zhao",
+        "Yufei Wang",
+        "Ruqi Huang"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-07-29T18:06:17+00:00",
+      "link": "https://arxiv.org/pdf/2607.27348v1",
+      "tags": [
+        "keyword:sketch-to-D",
+        "query:sketch-to-D"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "generates Live2D character from a single illustration",
+      "llm_evidence_cn": "从单张插图生成Live2D角色",
+      "llm_evidence": "从单张插图生成Live2D角色",
+      "canonical_evidence": "从单张插图生成Live2D角色",
+      "llm_tldr_en": "Bunraku is the first system that automatically generates all structured information for a Live2D model from a single illustration, including ordered RGBA layers, deformation meshes, and pose-dependent vertex offsets. It enables turning a static anime character into an editable and animatable 2.5D asset in hours rather than weeks.",
+      "llm_tldr_cn": "Bunraku是第一个从单张插图自动生成Live2D模型所有结构化信息的系统，包括有序RGBA图层、变形网格和姿态驱动的顶点偏移。该方法通过分层解构和参数化变形，将静态动漫角色转化为可编辑、可动画的2.5D资产，将传统数周的手工创作缩短至数小时，极大提升动漫角色动画制作效率，并为从2D绘画生成三维内容提供了端到端的自动化方案。",
+      "llm_tldr": "Bunraku是第一个从单张插图自动生成Live2D模型所有结构化信息的系统，包括有序RGBA图层、变形网格和姿态驱动的顶点偏移。该方法通过分层解构和参数化变形，将静态动漫角色转化为可编辑、可动画的2.5D资产，将传统数周的手工创作缩短至数小时，极大提升动漫角色动画制作效率，并为从2D绘画生成三维内容提供了端到端的自动化方案。",
+      "llm_tags": [
+        "query:sketch-to-d"
+      ],
+      "matched_query_tag": "query:sketch-to-d",
+      "matched_query_text": "papers on 3D reconstruction from anime illustrations and concept art",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": []
+}
