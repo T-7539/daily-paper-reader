@@ -1,0 +1,24 @@
+{
+  "label": "2026-08-02",
+  "date": "2026-08-02",
+  "generated_at": "2026-08-02T21:18:55",
+  "count": 1,
+  "papers": [
+    {
+      "paper_id": "202608/02/2607.27982v1-vip-rig-visual-prompted-controllable-rigging",
+      "section": "quick",
+      "title_en": "ViP-Rig: Visual-Prompted Controllable Rigging",
+      "authors": "Zihan Qin, Mingze Sun, Yifan Mao, Jialei Xu, Jingfeng Guo, Changrong Hu, Wenbo Zhao, Junjun Jiang, Xianming Liu",
+      "date": "2026-07-30",
+      "pdf": "https://arxiv.org/pdf/2607.27982v1",
+      "score": "6.0",
+      "evidence": "利用用户绘制的二维骨骼和刚性提示来控制三维角色绑定",
+      "tldr": "动画绑定任务高度依赖特定需求，同一网格常需不同骨架与变形，现有自动方法缺乏显式控制且人工编辑耗时。ViP-Rig提出视觉提示可控绑定框架，通过Dense-to-Compact编码将手绘骨架草图和刚性图转为紧凑标记，经门控适配器注入冻结的自回归骨架生成器和点云蒙皮网络，在保留几何先验的同时实现任务特定控制。骨架阶段控制关节位置与分支，蒙皮阶段对称注入点流与关节流以调制权重。在Articulation-XL2.0及ModelsResource上的提示引导评估中，骨架和蒙皮准确率显著优于几何基线，零样本泛化良好。定性结果展示局部编辑能力，支持先提示绑定与结果引导编辑，为绑定任务提供灵活高效的控制手段。",
+      "tags": "query:sketch-to-d",
+      "abstract_en": "Rigging is inherently task-dependent because the same mesh may require different skeletons and deformation behaviors across animation tasks. In practice, artists often inspect an initial rig and repeatedly edit its skeletal structure and deformation behavior to meet specific animation requirements. Existing automatic methods primarily generate a plausible rig from geometry, offering limited explicit control over the resulting skeleton and deformation behavior. In this work, we present ViP-Rig, a visual-prompted framework that supports both prompt-first rigging and result-guided editing by injecting features extracted from user-drawn or edited 2D skeletal and rigidity prompts into frozen pretrained backbones. Specifically, ViP-Rig consists of two stages, Skeleton Generation and Skinning Prediction. In the first stage, the skeletal sketch is processed by the Dense-to-Compact Visual Prompt Encoding to produce compact, fixed-length conditioning tokens. The resulting tokens are injected into a frozen pretrained autoregressive generator through gated adapters to control joint placement and branching structure while preserving the generator's geometric prior. In the second stage, the rigidity map is processed using the same visual encoding design, while the pretrained skinning backbone remains frozen. The resulting tokens are symmetrically injected into the point and joint streams to modulate point-joint compatibility and the resulting skinning weights. Experiments on Articulation-XL2.0 and zero-shot evaluation on ModelsResource show that ViP-Rig more accurately recovers target skeletons and skinning weights than geometry-conditioned baselines under prompt-guided evaluation. Qualitative results further demonstrate explicit and localized control in both prompt-first rigging and result-guided editing.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

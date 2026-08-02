@@ -1,0 +1,400 @@
+Title: ViP-Rig: Visual-Prompted Controllable Rigging
+
+URL Source: https://arxiv.org/pdf/2607.27982v1
+
+Published Time: Fri, 31 Jul 2026 01:00:56 GMT
+
+Number of Pages: 8
+
+Markdown Content:
+# ViP-Rig: Visual-Prompted Controllable Rigging 
+
+## Zihan Qin 1∗, Mingze Sun 2∗, Yifan Mao 1, Jialei Xu 1,Jingfeng Guo 3, Changrong Hu 4, Wenbo Zhao 1, Junjun Jiang 1, Xianming Liu 1†
+
+> 1
+
+Harbin Institute of Technology 
+
+> 2
+
+Tsinghua University 
+
+> 3
+
+Tencent 
+
+> 4
+
+University of Science and Technology of China 
+
+Abstract 
+
+Rigging is inherently task-dependent because the same mesh may require different skeletons and deformation behaviors across animation tasks. In practice, artists often inspect an initial rig and repeatedly edit its skeletal structure and de-formation behavior to meet specific animation requirements. Existing automatic methods primarily generate a plausible rig from geometry, offering limited explicit control over the re-sulting skeleton and deformation behavior. In this work, we present ViP-Rig, a visual-prompted framework that supports both prompt-first rigging and result-guided editing by inject-ing features extracted from user-drawn or edited 2D skele-tal and rigidity prompts into frozen pretrained backbones. Specifically, ViP-Rig consists of two stages, Skeleton Gener-ation and Skinning Prediction . In the first stage, the skeletal sketch is processed by the Dense-to-Compact Visual Prompt Encoding to produce compact, fixed-length conditioning to-kens. The resulting tokens are injected into a frozen pretrained autoregressive generator through gated adapters to control joint placement and branching structure while preserving the generator’s geometric prior. In the second stage, the rigid-ity map is processed using the same visual encoding design, while the pretrained skinning backbone remains frozen. The resulting tokens are symmetrically injected into the point and joint streams to modulate point–joint compatibility and the re-sulting skinning weights. Experiments on Articulation-XL2.0 and zero-shot evaluation on ModelsResource show that ViP-Rig more accurately recovers target skeletons and skinning weights than geometry-conditioned baselines under prompt-guided evaluation. Qualitative results further demonstrate ex-plicit and localized control in both prompt-first rigging and result-guided editing. 
+
+## 1 Introduction 
+
+Recent advances in 3D content generation have made high-quality static meshes increasingly accessible, but animation still requires rigging. Rigging comprises skeleton genera-tion, which determines joint locations and hierarchy, and skinning-weight prediction, which assigns each surface point an influence distribution over the joints. Both require substan-tial expertise and manual effort; artists commonly refine an initial rig until it meets the intended animation requirements. This has motivated extensive work on automatic rigging. 
+
+> ∗
+
+These authors contributed equally. 
+
+> †
+
+Corresponding author. 
+
+Early learning-based methods predict joints, connectiv-ity, and skinning weights from volumetric or surface ge-ometry (Xu et al. 2020, 2022; Sun et al. 2025). More re-cent generative approaches model complete hierarchies and point–joint relationships; autoregressive methods serialize skeletons so that joint placement and connectivity are pre-dicted jointly (Song et al. 2025b; Zhang et al. 2025; Song et al. 2025a). These advances substantially improve rig com-pleteness and plausibility. However, these methods seek a plausible rig rather than the particular rig required by a user. Rigging is underdeter-mined: the same mesh may need a fine-grained or compact hierarchy, with different local joint placements, branch con-nections, and parent–child relations. Skinning is likewise ambiguous because adjacent regions may require different deformation behavior, such as rigid armor beside a flexi-ble shoulder. UniRig allows users to edit a generated 3D hierarchy before continuing generation (Zhang et al. 2025), but requires professional 3D manipulation. Animator-Centric Skeleton Generation conditions on main bones and global bone density (Sun et al. 2026), which cannot specify arbi-trary local layouts or branches and does not control regional skinning. An intuitive interface for explicit control of both stages therefore remains missing. We introduce ViP-Rig, which specifies the desired rig through user-drawn or edited 2D skeletal and rigidity prompts over an aligned mesh rendering. This avoids direct manipulation of a 3D hierarchy or dense per-joint weight painting. Users may draw prompts from scratch for prompt-first rigging, or edit the projected skeleton and derived rigid-ity map of an existing result; the updated rig can initialize further editing rounds. ViP-Rig then performs Skeleton Gen-eration and Skinning Prediction . A frozen visual encoder and stage-specific Resampler convert each prompt into compact tokens. Zero-initialized gated adapters inject skeletal tokens into every layer of a frozen autoregressive generator, control-ling joint layout and branching while preserving its geometric prior. For skinning, symmetric adapters inject rigidity tokens into the point and joint streams before and after interaction, directly modulating point–joint compatibility. Our main contributions are summarized as follows: 
+
+• To the best of our knowledge, we present the first visual-arXiv:2607.27982v1 [cs.CV] 30 Jul 2026 1 INPUT CHARACTER          
+
+> Intention A
+> Highly Articulated
+> Intention B
+> Simplified
+> 2VISUAL-GUIDED
+> SKELETON GENERATION 3VISUAL-GUIDED
+> SKINNING PREDICTION
+> Visual Prompt ( Skin) Skinning Visual Prompt
+> (Skeleton) Skeleton
+> Rigid Transitional Flexible
+> 4ANIMATION RESULTS
+> Expressive Articulation
+> Simplified Mechanical Motion
+
+Figure 1: Overview of ViP-Rig. Given an input mesh, a 2D skeletal sketch controls joint layout and branching structure, while a color-coded rigidity map controls regional deformation behavior, enabling different task-specific rigs for the same geometry. prompted framework for controllable rigging of a given mesh, with localized control over skeletal structure and regional skinning in both prompt-first and iterative editing workflows. 
+
+• We introduce Dense-to-Compact Visual Prompt Encod-ing and task-specific injection: layer-wise gated adapters for prior-preserving skeleton control and symmetric adapters for rigidity-aware point–joint matching. 
+
+• Experiments on Articulation-XL2.0 and zero-shot Mod-elsResource evaluation show improved prompt-guided target recovery, while qualitative results demonstrate di-rect, localized control in both workflows. 
+
+## 2 Related Work 
+
+Skeleton Generation. Early methods construct skeletons through template fitting or medial-axis extraction (Baran and Popović 2007; Yan, Letscher, and Ju 2018), but are limited by predefined templates or handcrafted assumptions. Learning-based approaches predict joints from volumetric or surface representations (Xu et al. 2020, 2022; Sun et al. 2025). Au-toregressive methods then serialize complete hierarchies to model joint placement and connectivity jointly (Song et al. 2025b; Zhang et al. 2025; Song et al. 2025a), with later work adding preference alignment (Guo et al. 2025) or joint-density control (Sun et al. 2026). ViP-Rig instead uses a 2D skeletal prompt for spatially explicit control of joint layout and branching in both generation and iterative editing. 
+
+Skinning Weight Prediction. Traditional methods de-rive weights from geometric objectives such as heat diffusion, bounded biharmonic energies, or volumetric geodesics (Baran and Popović 2007; Jacobson et al. 2011; Dionne and de Lasa 2013). Learning-based methods learn deformation-aware features from meshes or point clouds (Liu et al. 2019; Xu et al. 2020; Pan et al. 2021). Recent ap-proaches use functional diffusion (Song et al. 2025b; Zhang and Wonka 2024) or point–joint interaction (Zhang et al. 2025; Song et al. 2025a), but remain conditioned mainly on geometry and skeleton structure. These inputs may not distinguish adjacent regions requiring rigid versus smooth deformation. ViP-Rig adds an image-space rigidity prompt to both point and joint representations, enabling explicit re-gional control and iterative editing. 
+
+## 3 Method 
+
+Given an input mesh M = ( V, F), our goal is to generate an animation-ready rig that follows user-specified structural and deformation requirements, which are represented by two visual prompts defined on a single-view rendering of M.A skeletal prompt Iskel specifies the desired joint layout and branching structure, while a color-coded rigidity prompt 
+
+Iskin marks visible regions as rigid, transitional, or flexi-ble. As illustrated in Figure 2, ViP-Rig employs a two-stage framework: Skeleton Generation and Skinning Prediction .Across both stages, ViP-Rig extracts and efficiently injects 2D prompt features while preserving the pretrained geomet-ric priors of the backbones, thereby enabling explicit control over the outputs. The two prompt-conditioned tasks are for-mulated as: 
+
+P (S | M , Iskel ) and P (W | M , S, Iskin ) . (1) We next describe the two stages in detail. 
+
+3.1 Skeleton Generation 
+
+Following UniRig (Zhang et al. 2025), the skeleton of M
+
+is represented as a graph S = ( J, P), where J ∈ RJ×3
+
+contains the joint positions and P defines their parent–child hierarchy. UniRig’s DFS-based skeleton-tree tokenization se-rializes S into a discrete token sequence s = ( s1, . . . , s T ) of length T , allowing skeleton generation to be formulated as a T -step autoregressive process. In this stage, we adopt the pretrained autoregressive Transformer from UniRig (Zhang et al. 2025) as the backbone, and use Dense-to-Compact Vi-sual Prompt Encoding to encode Iskel and Visual-Guided Autoregressive Decoding to inject the resulting tokens into the Transformer to guide skeleton generation. 
+
+Dense-to-Compact Visual Prompt Encoding. This mod-ule converts Iskel into compact, fixed-length conditioning tokens for efficient injection into the backbone. Consider-ing that the user-drawn or edited landmarks and connec-tions in Iskel are defined relative to the visible mesh, their interpretation requires both local prompt cues and the sur-rounding image context. We therefore use a frozen DINOv2 encoder (Oquab et al. 2023), denoted by Evis , to extract dense visual features. However, directly injecting the com-plete dense token set into the Transformer is unnecessarily Gated CrossAttn  
+
+> Gated CrossAttn
+> <EOS>
+> Input Mesh XYZ & Normal
+> Sample
+> Visual Prompt (Skeleton)
+> Visual
+> Encoder
+> Perceiver
+> Resampler
+> K,V
+> Learnable Queries
+> Q
+> 1st Gated CrossAttention Block
+> 1st Pretrained Skeleton Block
+> n-th Gated CrossAttention Block
+> n-th Pretrained Skeleton Block
+
+Auto-regressive Transformer             
+
+> Shape Encoder <BOS> <Branch> x 1y1z1... <Branch> x 1y1z1...
+> Visual-Guided Skeleton Adapter
+> Detokenize
+> Skeleton
+> Image Tokens Rigging Hidden States
+> K,V Q
+> SelfAttention
+> tanh gating
+> CrossAttention
+> FFN
+> tanh gating
+> FFN
+> Injected into each layer
+> Visual Prompt (Skin)
+> Visual
+> Encoder
+> Perceiver
+> Resampler
+> K,V
+> Learnable Queries
+> Q
+> Point Encoder
+> Joint Encoder
+> K,V
+> Image Tokens
+> Joint Features
+> Point Features
+> Q
+> Q
+> Joint-Point
+> Cross-Attention
+> Joint Features′
+> Point Features′ Gated CrossAttn
+> Gated CrossAttn
+> Image Tokens
+> K,V
+> Joint Features″
+> Point Features ″
+> Cos Similarity
+> & Softmax
+> Skinning Weights
+> Q
+> Q
+
+Figure 2: Architecture of ViP-Rig. Dense visual features are compressed into conditioning tokens and injected into frozen pretrained backbones. Layer-wise gated adapters guide skeleton generation, while symmetric pre- and post-interaction adapters condition point–joint matching for skinning prediction. costly and retains image content unrelated to skeleton con-trol. We further employ a trainable skeleton-stage Perceiver Resampler (Alayrac et al. 2022), denoted by Rskel , which uses a fixed set of learnable queries to select prompt-relevant structural cues and compress the dense features into K fixed-length conditioning tokens: 
+
+Zskel = Rskel (Evis (Iskel )) , Zskel ∈ RK×d. (2) Because the autoregressive backbone cannot directly pro-cess the mesh, we follow the sampling and encoding pipeline of 3DShape2VecSet (Zhang et al. 2023) to convert the input mesh M into geometry features FG. Once extracted, both 
+
+FG and Zskel remain fixed throughout the autoregressive decoding process. 
+
+Visual-Guided Autoregressive Decoding. After obtain-ing the geometry and visual features, autoregressive decod-ing proceeds as follows. At step t, the backbone uses previ-ous tokens s<t and FG to predict st, while prompt tokens 
+
+Zskel are injected into the Transformer to guide generation. To prevent visual injection from overriding the geometry-conditioned prior of the pretrained backbone, we freeze the backbone and insert a Visual-Guided Skeleton Adapter into every Transformer layer. Specifically, let H(ℓ) ∈ RL×d denote the hidden states pro-duced by pretrained layer ℓ before visual adaptation, where 
+
+L is the current sequence length. The adapter first applies gated cross-attention: 
+
+eH(ℓ) = H(ℓ) + tanh( αℓ) CrossAttn 
+
+
+
+H(ℓ), Zskel , Zskel 
+
+
+
+,
+
+(3) followed by a gated feed-forward update: 
+
+bH(ℓ) = eH(ℓ) + tanh( βℓ) FFN 
+
+ eH(ℓ)
+
+. (4) The layer-specific scalar gates αℓ and βℓ are initialized to zero, so each adapter initially performs an identity mapping and preserves the behavior of the pretrained generator. The conditioned states bH(ℓ) are then passed to the next pretrained layer, and the final layer predicts the next token. This process is formulated as: 
+
+P (s | M , Iskel ) = 
+
+> T
+
+Y
+
+> t=1
+
+P (st | s<t , FG, Zskel ) . (5) The completed sequence s is detokenized into joint positions 
+
+J and parent–child relations P to form skeleton S, which is passed to the skinning stage. 
+
+Training. For each mesh–skeleton pair (M, S), we render canonical candidate views and use a vision-language model to select the view that most clearly presents the ground-truth skeleton with minimal occlusion. The joints and parent–child connections are projected onto the selected mesh rendering and rasterized as 2D landmarks and line segments to form Iskel . Geometric and prompt perturbations are then applied to approximate the sparsity and imprecision of user-provided prompts; detailed rendering and perturbation settings are pro-vided in the supplementary material. The pretrained shape encoder, UniRig generator, and DINOv2 encoder remain frozen, while the skeleton-stage Perceiver Resampler and Visual-Guided Skeleton Adapters are optimized using the next-token prediction objective: 
+
+Lskel = −
+
+> T
+
+X
+
+> t=1
+
+log P (st | s<t , FG, Zskel ) . (6) 
+
+3.2 Skinning Prediction 
+
+Given the mesh M, skeleton S, and rigidity prompt Iskin , this stage predicts the skinning-weight matrix W ∈ [0 , 1] N ×J ,where each row wi represents the joint-influence distribu-tion of surface point i and satisfies PJj=1 wij = 1 . As shown in Figure 2, Iskin is a color-coded map painted on an aligned single-view rendering of the mesh, where red, yellow, and blue indicate rigid, transitional, and flexible de-formation behavior, respectively. Because the prompt spec-ifies only regional deformation tendency rather than exact per-joint weights, it cannot be directly converted into W. We therefore build upon the dual-stream point–joint matching ar-chitecture of Puppeteer (Song et al. 2025a), which computes a compatibility score for each point–joint pair and normalizes these scores over all joints to obtain the corresponding skin-ning weights. By injecting the rigidity condition into both feature streams, ViP-Rig modulates point–joint compatibil-ity and thereby controls the predicted weight distribution. 
+
+Feature preparation. We prepare the backbone inputs similarly to the previous stage. Because feature injection is also required, we adopt another Dense-to-Compact Visual Prompt Encoding module to extract prompt features Zskin 
+
+from Iskin :
+
+Zskin = Rskin (Evis (Iskin )) , Zskin ∈ RK×d. (7) We then reuse the joint and point encoders of the Puppeteer backbone to encode the skeleton S and the mesh M, pro-ducing joint features FJ ∈ RJ×d and surface-point features 
+
+FP ∈ RN ×d, respectively. 
+
+Symmetric Feature Injection. Similar to the previous stage, we freeze the backbone and inject the prompt fea-ture Zskin into both the point and joint streams, allowing user-specified regional behavior to alter point–joint compat-ibility. We refer to the frozen point–joint interaction block inherited from Puppeteer as the Joint–Point Cross-Attention module (JPCA), which exchanges geometric and skeletal context between the two streams. Because skinning weights are determined by matching point and joint features, we condition both sides of the compatibility function. Injec-tion before JPCA makes the exchanged point–joint context prompt-aware, while injection after JPCA directly refines the representations used for final matching. Specifically, we instantiate four independently parameter-ized copies of the gated cross-attention–FFN adapter defined in Eqs. 3–4: Gpre  
+
+> P
+
+, Gpre  
+
+> J
+
+, Gpost  
+
+> P
+
+, and Gpost  
+
+> J
+
+. Each adapter has separate parameters and zero-initialized scalar gates. Before point–joint interaction, the initial point and joint features are conditioned independently: 
+
+Fpre  
+
+> P
+
+= Gpre  
+
+> P
+
+(FP , Zskin ) ,
+
+Fpre  
+
+> J
+
+= Gpre  
+
+> J
+
+(FJ , Zskin ) . (8) The prompt-aware representations are passed to the frozen Joint–Point Cross-Attention module: 
+
+ FP , FJ
+
+ = JPCA( Fpre  
+
+> P
+
+, Fpre  
+
+> J
+
+) . (9) Here, FP contains surface representations informed by the skeleton, while FJ contains joint representations informed by the mesh surface. The exchanged features are conditioned again immediately before final matching: 
+
+bFP = Gpost 
+
+> P
+
+ FP , Zskin 
+
+ ,
+
+bFJ = Gpost 
+
+> J
+
+ FJ , Zskin 
+
+ . (10) Together, the injections allow the rigidity prompt to modify both sides of point–joint matching. Finally, following Puppeteer (Song et al. 2025a), we com-pute skinning weights by applying a joint-wise softmax to the cosine similarities between the final point and joint features: 
+
+wij = softmax j γ
+
+bf ⊤
+
+> P,i
+
+bfJ,j 
+
+∥bfP,i ∥2∥bfJ,j ∥2
+
+!
+
+, (11) where γ is the frozen similarity scale inherited from the pretrained matching operation. 
+
+Training. We train the skinning stage independently with ground-truth skeletons so that weight prediction is not af-fected by errors from the preceding skeleton stage. Existing rigging datasets provide ground-truth skinning weights but no rigidity prompts, so we derive the training prompt from the concentration of each ground-truth joint-influence distri-bution. Let qi = ( qi1, . . . , q iJ ) ∈ [0 , 1] J denote the ground-truth weights of point i, with PJj=1 qij = 1 . We compute its normalized Shannon entropy 
+
+Hi = − 1log J
+
+> J
+
+X
+
+> j=1
+
+qij log( qij + ϵ) , (12) where ϵ > 0 ensures numerical stability, and normalization by log J makes the measure comparable across skeletons with different numbers of joints. Low and high entropy in-dicate concentrated and distributed joint influences, respec-tively, which we use as proxies for rigid and flexible behavior. We discretize Hi into three rigidity levels and render the re-sulting field on the selected mesh view to obtain Iskin . The prompt encodes only regional influence concentration rather than the identities or exact weights of the influencing joints. We use the same VLM-selected view as in skeleton gen-eration and apply conservative perturbations that preserve point–joint correspondence; further details are provided in the supplementary material. The pretrained point and joint encoders, Joint–Point Cross-Attention module, matching operation, and DINOv2 encoder remain frozen. Only the skinning-stage Perceiver Resampler and four visual-guided adapters are optimized. We minimize the KL divergence between the target and pre-dicted joint-influence distributions: 
+
+Lskin =
+
+> N
+
+X
+
+> i=1
+
+DKL (qi ∥ wi) . (13) 
+
+## 4 Experiments 
+
+4.1 Experimental Setup 
+
+Datasets. We train and evaluate ViP-Rig on Articulation-XL2.0 (Art-XL2.0) (Song et al. 2025a), using 46K high-quality training samples and a held-out test set of 2K samples. To evaluate cross-dataset generalization, we additionally re-port zero-shot results on the 270 test characters of Model-sResource (Xu et al. 2019). No ModelsResource samples are used for training or model selection. 
+
+Data processing and training. Following prior proto-cols (Song et al. 2025a; Zhang et al. 2025), mesh surfaces are sampled and normalized to canonical coordinates. Detailed sampling and data-augmentation settings for both stages are provided in the supplementary material. Both stages are trained independently for 100 epochs with AdamW, a one-cycle schedule peaking at 1 × 10 −4, bf16 precision, and a per-GPU batch size of 64. The skeleton and skinning stages use eight and two NVIDIA H20 GPUs, respectively; all pre-trained backbones and the DINOv2 encoder remain frozen. 
+
+Evaluation protocol. We evaluate ViP-Rig from two com-plementary perspectives. For quantitative evaluation, bench-mark prompts are constructed from ground-truth annota-tions using the same projection and rendering procedures employed during training. They specify which valid rig is intended for an otherwise ambiguous input geometry, so the benchmark measures prompt-guided target recovery. Be-cause existing baselines do not accept visual prompts, they re-tain their standard inputs and serve as geometry-conditioned references. Skeleton metrics use predicted skeletons, while all skinning methods use ground-truth skeletons to isolate weight quality. For qualitative evaluation of controllability, we additionally use prompts drawn from scratch and prompts obtained by editing existing predictions, corresponding to prompt-first rigging and result-guided editing, respectively. These prompts are not derived from benchmark annotations. 
+
+4.2 Skeleton Generation Results 
+
+Baselines and metrics. We compare ViP-Rig with RigNet (Xu et al. 2020), the hierarchical and spatial seri-alization variants of MagicArticulate (Song et al. 2025b), UniRig (Zhang et al. 2025), and Puppeteer (Song et al. 2025a). The main paper reports joint-to-joint, joint-to-bone, and bone-to-bone Chamfer distances (CD-J2J, CD-J2B, and CD-B2B). CD-J2J measures joint-location alignment, whereas CD-J2B and CD-B2B are less sensitive to different joint sampling densities and evaluate the agreement of the underlying skeletal segments. All distances are normalized by object scale and reported as percentages. Table 1: Skeleton-generation results. Lower is better; MR denotes ModelsResource.                                              
+
+> Data Method J2J ↓J2B ↓B2B ↓
+> Art RigNet 7.587% 6.347% 6.366% Magic-hier 3.435% 2.757% 2.393% UniRig 3.232% 2.540% 2.124% Magic-spatial 3.041% 2.479% 2.099% Puppeteer 2.926% 2.193% 1.841% Ours 2.442% 1.825% 1.558%
+> MR RigNet 6.375% 5.115% 5.245% Magic-hier 4.119% 3.155% 2.780% UniRig 3.797% 2.888% 2.437% Magic-spatial 3.920% 3.138% 2.712% Puppeteer 3.760% 2.745% 2.189% Ours 3.281% 2.312% 1.916%
+
+Quantitative and qualitative comparison. Table 1 shows that ViP-Rig obtains the lowest three Chamfer distances on both Art-XL2.0 and ModelsResource. The qualitative com-parisons at the top of Figure 3 clarify where these improve-ments arise. In locally complex or geometrically ambiguous regions, geometry-conditioned baselines tend to simplify fine and peripheral structures, omit target joints and branches, or introduce spurious bones unrelated to the intended structure. In contrast, ViP-Rig follows the prompt-specified landmarks and connections while using the pretrained geometric prior to complete plausible 3D depths and hierarchies. Its consistent improvement on ModelsResource further indicates that the visual prompt remains effective in resolving target-specific skeletal ambiguity under zero-shot cross-dataset transfer. 
+
+4.3 Skinning Weight Prediction Results 
+
+Baselines and metrics. We compare ViP-Rig with Geodesic Voxel Binding (GVB) (Dionne and de Lasa 2013), RigNet (Xu et al. 2020), MagicArticulate (Song et al. 2025b), UniRig (Zhang et al. 2025), and Puppeteer (Song et al. 2025a). Every method is evaluated with the ground-truth skeleton. Following Puppeteer, an influence is considered nonzero when its weight exceeds 10 −4. Precision and re-call measure the overlap between predicted and ground-truth active joint influences, while ℓ1 error measures the average absolute difference of the complete weight vectors over all surface points. 
+
+Quantitative and qualitative comparison. Table 2 shows that ViP-Rig consistently outperforms all baselines across precision, recall, and ℓ1 error on both datasets. The weight visualizations and error maps at the bottom of Figure 3 show how these improvements translate into more accurate local influence assignments. Without explicit regional de-formation cues, geometry-conditioned methods may diffuse weights across nearby rigid or functionally unrelated parts. The rigidity prompt supplies complementary region-level deformation cues, allowing ViP-Rig to distinguish geomet-rically adjacent regions that should exhibit different behav-ior. Its predictions consequently align more closely with the artist-created references and exhibit weaker, more localized Artist-Created Visual-Prompt Ours Puppeteer UniRig Magic-Spatial 
+
+Artist-Created Visual Prompt Ours Puppeteer UniRig      
+
+> Skinning weights Error Map Skinning weights Error Map Skinning weights Error Map
+
+Figure 3: Qualitative comparisons under the benchmark protocol. Top: ViP-Rig better follows prompt-specified joint layouts and branches than geometry-conditioned baselines. Bottom: Skinning-weight predictions and error maps show that rigidity prompts improve local influence assignment in adjacent regions with different deformation behavior. Table 2: Skinning-weight prediction. Higher precision and recall are better; lower ℓ1 is better.                                                 
+
+> Art-XL2.0 MR Method P. ↑R. ↑ℓ1↓P. ↑R. ↑ℓ1↓
+> GVB 72.9% 65.5% 0.745 69.3% 79.2% 0.687 RigNet 73.7% 66.1% 0.729 65.7% 80.2% 0.707 MagicArti. 74.6% 71.3% 0.451 68.1% 80.7% 0.642 UniRig 78.7% 52.9% 0.790 72.3% 68.6% 0.703 Puppeteer 87.6% 74.0% 0.335 79.7% 81.6% 0.443 Ours 88.3% 76.6% 0.309 80.9% 81.9% 0.421
+
+errors. The consistent improvement on ModelsResource fur-ther indicates that these regional cues remain effective under zero-shot cross-dataset transfer. 
+
+4.4 Qualitative Evaluation of Controllability 
+
+Figure 4 complements the annotation-derived quantitative benchmark with prompts drawn from scratch and prompts obtained by editing existing predictions. These examples evaluate whether ViP-Rig follows user-specified changes be-yond recovering benchmark targets, covering both prompt-first rigging and result-guided editing. 
+
+Skeleton editing and prompt-first rigging. To assess whether ViP-Rig supports both direct specification and iter-ative editing of skeletal structures, we evaluate result-guided editing and prompt-first rigging in the left part of Figure 4. For result-guided editing, the frozen UniRig backbone first produces an unconditional skeleton with the visual adapters disabled. Users edit its projected structure to add joints and branches for a more detailed hierarchy or remove unnecessary structures for a simpler rig, and the edited projection is then used as the skeletal prompt for ViP-Rig. The resulting skele-ton can be projected again to initialize subsequent editing rounds. Alternatively, prompt-first rigging does not require an initial skeleton: users draw a skeletal blueprint directly over the rendering of an unrigged mesh, and ViP-Rig gener-ates a corresponding 3D skeleton by combining the prompt with the mesh geometry. The examples include meshes pro-Unconditional Result Visual Prompt (Edit) Guided Result Input Image Visual Prompt (Blueprint) Guided Result Visual Prompt Skinning Weights Deformations Figure 4: Controllable rigging applications. Left: Users edit the projected skeleton of an unconditional UniRig result obtained with the visual adapters disabled to elaborate or simplify its structure, or provide a skeletal blueprint to rig an unrigged mesh directly, including meshes generated by an off-the-shelf image-to-3D system. Right: Users edit a rigidity map derived from an unconditional Puppeteer prediction to modify local skinning weights and deformation behavior; green insets highlight local details. duced by an off-the-shelf image-to-3D system, illustrating the applicability of ViP-Rig to diverse AI-generated assets. 
+
+Localized rigidity control. To assess whether local rigid-ity edits produce corresponding changes in skinning weights and deformation behavior, we perform result-guided editing on selected regions in the right part of Figure 4. We first obtain an unconditional skinning prediction from the frozen Puppeteer backbone with the visual adapters disabled and convert its joint-influence distributions into an initial rigid-ity map using the same normalized-entropy mapping as in training. Users edit selected regions of this map to request greater rigidity or flexibility, and the edited map is used as the rigidity prompt for ViP-Rig. The updated skinning weights produce corresponding changes in local deformation during animation and can be converted into a new rigidity map for subsequent editing rounds. 
+
+4.5 Ablation Studies 
+
+Skeleton visual fusion. To verify whether skeletal prompts require persistent guidance throughout autoregressive de-coding, Table 3 compares visual-token prefixing with zero-initialized gated adapters at different insertion frequencies. Prefixing performs worse than the gated adapters, and accu-racy improves consistently as the adapters are inserted more frequently, from CA-4 to Full. This supports persistent visual guidance throughout autoregressive coordinate and branch prediction. 
+
+Rigidity-aware skinning injection. To verify whether rigidity control should modify point–joint compatibility in feature space and condition both matching streams, Table 4 compares dual-path injection with an explicit similarity-scale baseline and single-path variants. Such scalar modulation can only sharpen or flatten a distribution, whereas feature-space injection can change point–joint compatibility. Explicit mod-ulation is therefore weaker, and removing either the point Table 3: Skeleton-fusion ablation. CA-k denotes cross-attention every k layers; lower is better. 
+
+Art-XL2.0 MR Variant J2J ↓ J2B ↓ B2B ↓ J2J ↓ J2B ↓ B2B ↓
+
+Prefix 3.521% 2.813% 2.596% 3.825% 3.020% 2.571% CA-4 3.017% 2.154% 1.901% 3.541% 2.601% 2.112% CA-2 2.653% 1.915% 1.672% 3.401% 2.392% 2.053% Full 2.442% 1.825% 1.558% 3.281% 2.312% 1.916% 
+
+Table 4: Skinning-injection ablation. Higher precision and recall are better; lower ℓ1 is better. 
+
+Art-XL2.0 MR Variant P. ↑ R. ↑ ℓ1 ↓ P. ↑ R. ↑ ℓ1 ↓
+
+Explicit 86.1% 76.0% 0.331 79.4% 81.6% 0.439 w/o point 86.9% 75.8% 0.323 80.0% 81.5% 0.435 w/o joint 87.5% 76.1% 0.314 80.3% 81.4% 0.430 Full 88.3% 76.6% 0.309 80.9% 81.9% 0.421 
+
+or joint pathway also degrades all metrics. The full model performs best on both datasets, supporting symmetric con-ditioning of both feature streams. 
+
+## 5 Conclusion 
+
+ViP-Rig conditions frozen skeleton and skinning backbones on complementary structural and rigidity prompts through layer-wise gated adapters and symmetric pre- and post-interaction adapters. Under prompt-guided evaluation, it con-sistently improves target recovery over geometry-conditioned baselines on Art-XL2.0 and under zero-shot evaluation on ModelsResource. Qualitative results further demonstrate lo-calized control over skeletal topology and deformation be-havior in both prompt-first rigging and result-guided editing. References 
+
+Alayrac, J.-B.; Donahue, J.; Luc, P.; Miech, A.; Barr, I.; Hasson, Y.; Lenc, K.; Mensch, A.; Millican, K.; Reynolds, M.; et al. 2022. Flamingo: a visual language model for few-shot learning. Advances in neural information processing systems , 35: 23716–23736. Baran, I.; and Popović, J. 2007. Automatic rigging and an-imation of 3d characters. ACM Transactions on graphics (TOG) , 26(3): 72–es. Dionne, O.; and de Lasa, M. 2013. Geodesic voxel binding for production character meshes. In Proceedings of the 12th ACM SIGGRAPH/Eurographics Symposium on Computer Animation , 173–180. Guo, J.; Liu, J.; Chen, J.; Mao, S.; Hu, C.; Jiang, P.; Yu, J.; Xu, J.; Liu, Q.; Xu, L.; et al. 2025. Auto-connect: Connectivity-preserving rigformer with direct preference optimization. 
+
+arXiv preprint arXiv:2506.11430 .Jacobson, A.; Baran, I.; Popovic, J.; and Sorkine, O. 2011. Bounded biharmonic weights for real-time deformation. 
+
+ACM Trans. Graph. , 30(4): 78. Liu, L.; Zheng, Y.; Tang, D.; Yuan, Y.; Fan, C.; and Zhou, K. 2019. Neuroskinning: Automatic skin binding for production characters with deep graph networks. ACM Transactions on Graphics (ToG) , 38(4): 1–12. Oquab, M.; Darcet, T.; Moutakanni, T.; Vo, H.; Szafraniec, M.; Khalidov, V.; Fernandez, P.; Haziza, D.; Massa, F.; El-Nouby, A.; et al. 2023. Dinov2: Learning robust visual fea-tures without supervision. arXiv preprint arXiv:2304.07193 .Pan, X.; Huang, J.; Mai, J.; Wang, H.; Li, H.; Su, T.; Wang, W.; and Jin, X. 2021. HeterSkinNet: A heterogeneous net-work for skin weights prediction. In Proceedings of the ACM on computer graphics and interactive techniques , volume 4. Association for Computing Machinery. Song, C.; Li, X.; Yang, F.; Xu, Z.; Wei, J.; Liu, F.; Feng, J.; Lin, G.; and Zhang, J. 2025a. Puppeteer: Rig and animate your 3d models. arXiv preprint arXiv:2508.10898 .Song, C.; Zhang, J.; Li, X.; Yang, F.; Chen, Y.; Xu, Z.; Liew, J. H.; Guo, X.; Liu, F.; Feng, J.; et al. 2025b. Magicarticulate: Make your 3d models articulation-ready. In Proceedings of the Computer Vision and Pattern Recognition Conference ,15998–16007. Sun, M.; Chen, J.; Dong, J.; Chen, Y.; Jiang, X.; Mao, S.; Jiang, P.; Wang, J.; Dai, B.; and Huang, R. 2025. Drive: Diffusion-based rigging empowers generation of versatile and expressive characters. In Proceedings of the Computer Vision and Pattern Recognition Conference , 21170–21180. Sun, M.; Zeng, C.; Pei, J.; Chen, J.; Song, C.; Wang, S.; Chang, T.; Huang, B.; Zeng, Z.; and Huang, R. 2026. Animator-Centric Skeleton Generation on Objects with Fine-Grained Details. arXiv preprint arXiv:2604.20539 .Xu, Z.; Zhou, Y.; Kalogerakis, E.; Landreth, C.; and Singh, K. 2020. Rignet: Neural rigging for articulated characters. 
+
+arXiv preprint arXiv:2005.00559 .Xu, Z.; Zhou, Y.; Kalogerakis, E.; and Singh, K. 2019. Pre-dicting animation skeletons for 3d articulated models via volumetric nets. In 2019 international conference on 3D vision (3DV) , 298–307. IEEE. Xu, Z.; Zhou, Y.; Yi, L.; and Kalogerakis, E. 2022. Morig: Motion-aware rigging of character meshes from point clouds. In SIGGRAPH Asia 2022 conference papers , 1–9. Yan, Y.; Letscher, D.; and Ju, T. 2018. Voxel cores: Efficient, robust, and provably good approximation of 3d medial axes. 
+
+ACM Transactions on Graphics (TOG) , 37(4): 1–13. Zhang, B.; Tang, J.; Niessner, M.; and Wonka, P. 2023. 3dshape2vecset: A 3d shape representation for neural fields and generative diffusion models. ACM Transactions On Graphics (TOG) , 42(4): 1–16. Zhang, B.; and Wonka, P. 2024. Functional diffusion. In Pro-ceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition , 4723–4732. Zhang, J.-P.; Pu, C.-F.; Guo, M.-H.; Cao, Y.-P.; and Hu, S.-M. 2025. One model to rig them all: Diverse skeleton rigging with unirig. ACM Transactions on Graphics (TOG) , 44(4): 1–18.

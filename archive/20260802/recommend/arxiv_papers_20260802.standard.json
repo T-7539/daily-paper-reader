@@ -1,0 +1,60 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-08-02T21:17:04.557288+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2607.27982v1",
+      "source": "arxiv",
+      "title": "ViP-Rig: Visual-Prompted Controllable Rigging",
+      "abstract": "Rigging is inherently task-dependent because the same mesh may require different skeletons and deformation behaviors across animation tasks. In practice, artists often inspect an initial rig and repeatedly edit its skeletal structure and deformation behavior to meet specific animation requirements. Existing automatic methods primarily generate a plausible rig from geometry, offering limited explicit control over the resulting skeleton and deformation behavior. In this work, we present ViP-Rig, a visual-prompted framework that supports both prompt-first rigging and result-guided editing by injecting features extracted from user-drawn or edited 2D skeletal and rigidity prompts into frozen pretrained backbones. Specifically, ViP-Rig consists of two stages, Skeleton Generation and Skinning Prediction. In the first stage, the skeletal sketch is processed by the Dense-to-Compact Visual Prompt Encoding to produce compact, fixed-length conditioning tokens. The resulting tokens are injected into a frozen pretrained autoregressive generator through gated adapters to control joint placement and branching structure while preserving the generator's geometric prior. In the second stage, the rigidity map is processed using the same visual encoding design, while the pretrained skinning backbone remains frozen. The resulting tokens are symmetrically injected into the point and joint streams to modulate point-joint compatibility and the resulting skinning weights. Experiments on Articulation-XL2.0 and zero-shot evaluation on ModelsResource show that ViP-Rig more accurately recovers target skeletons and skinning weights than geometry-conditioned baselines under prompt-guided evaluation. Qualitative results further demonstrate explicit and localized control in both prompt-first rigging and result-guided editing.",
+      "authors": [
+        "Zihan Qin",
+        "Mingze Sun",
+        "Yifan Mao",
+        "Jialei Xu",
+        "Jingfeng Guo",
+        "Changrong Hu",
+        "Wenbo Zhao",
+        "Junjun Jiang",
+        "Xianming Liu"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-07-30T10:26:37+00:00",
+      "link": "https://arxiv.org/pdf/2607.27982v1",
+      "tags": [
+        "keyword:sketch-to-D",
+        "query:sketch-to-D"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Uses user-drawn 2D skeletal and rigidity prompts to control 3D character rigging",
+      "llm_evidence_cn": "利用用户绘制的二维骨骼和刚性提示来控制三维角色绑定",
+      "llm_evidence": "利用用户绘制的二维骨骼和刚性提示来控制三维角色绑定",
+      "canonical_evidence": "利用用户绘制的二维骨骼和刚性提示来控制三维角色绑定",
+      "llm_tldr_en": "ViP-Rig is a visual-prompted framework that enables controllable rigging by injecting features from user-drawn 2D skeletal and rigidity prompts into frozen pretrained backbones, supporting both prompt-first rigging and result-guided editing.",
+      "llm_tldr_cn": "自动绑定方法通常仅从几何生成骨骼，缺乏显式控制。ViP-Rig提出视觉提示框架，允许艺术家通过手绘二维骨骼和刚性提示图注入预训练模型来生成和编辑三维角色的骨骼和蒙皮。该方法支持先提示后绑定和结果引导编辑两种模式，实现了灵活可控的角色绑定。",
+      "llm_tldr": "自动绑定方法通常仅从几何生成骨骼，缺乏显式控制。ViP-Rig提出视觉提示框架，允许艺术家通过手绘二维骨骼和刚性提示图注入预训练模型来生成和编辑三维角色的骨骼和蒙皮。该方法支持先提示后绑定和结果引导编辑两种模式，实现了灵活可控的角色绑定。",
+      "llm_tags": [
+        "query:sketch-to-d"
+      ],
+      "matched_query_tag": "query:sketch-to-d",
+      "matched_query_text": "methods for generating 3D models from hand drawn sketches and line art",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
