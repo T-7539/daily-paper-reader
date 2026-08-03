@@ -41,7 +41,7 @@
 <section class="dpr-home-dashboard-card dpr-home-report-card">
   <div class="dpr-home-dashboard-header">
     <div>
-      <span class="dpr-home-dashboard-kicker">2026-08-02</span>
+      <span class="dpr-home-dashboard-kicker">2026-08-03</span>
       <h3 class="dpr-home-dashboard-title">今日汇总</h3>
     </div>
     <strong class="dpr-home-dashboard-count">共 1 篇</strong>
@@ -51,7 +51,7 @@
     <div class="dpr-home-dashboard-stat"><dt>精读</dt><dd>0</dd></div>
     <div class="dpr-home-dashboard-stat"><dt>速读</dt><dd>1</dd></div>
   </dl>
-  <p class="dpr-home-dashboard-body">最近更新：2026-08-02 21:18:51 UTC<br>状态：成功</p>
+  <p class="dpr-home-dashboard-body">最近更新：2026-08-03 21:42:39 UTC<br>状态：成功</p>
 </section>
 <section class="dpr-home-dashboard-card dpr-home-brief-card">
   <div class="dpr-home-dashboard-header">
@@ -62,9 +62,9 @@
     <strong class="dpr-home-dashboard-count">AI</strong>
   </div>
   <div class="dpr-home-dashboard-body">
-<p>今天速读了一篇探讨视觉提示可控骨骼绑定的论文《ViP-Rig》，分数6分足见其有一定启发性。</p>
-<p>核心发现是用视觉提示（如点、线）就能直观控制角色骨骼生成，省去繁琐手工调节。</p>
-<p>建议关注类似“多模态可控生成”的思路，普通人也能试试用简单画图驱动复杂结构。</p>
+<p>今日速读了一项从单张图片生成高精度3D头像的新研究，S-Avatar用扩散模型引导高斯泼溅，实现快速单图重建。</p>
+<p>它最值得关注的是把扩散先验和显式3D高斯表示结合，仅凭一张照片就能生成可驱动、多视角一致的头部化身。</p>
+<p>想尝试轻量级虚拟化身创作的话，可以留意扩散模型与3D高斯结合这条技术路线。</p>
   </div>
 </section>
 <section class="dpr-home-dashboard-card dpr-home-deep-card">
@@ -89,7 +89,7 @@
     <strong class="dpr-home-dashboard-count">1 篇</strong>
   </div>
   <div class="dpr-home-dashboard-body">
-<ul class="dpr-home-dashboard-paper-list"><li><span class="dpr-home-dashboard-paper-title" title="ViP-Rig: Visual-Prompted Controllable Rigging">ViP-Rig: Visual-Prompted Controllable Rigging</span></li></ul>
+<ul class="dpr-home-dashboard-paper-list"><li><span class="dpr-home-dashboard-paper-title" title="S-Avatar: Diffusion-Guided Gaussian Head Avatars from a Single Image">S-Avatar: Diffusion-Guided Gaussian Head Avatars from a Single Image</span></li></ul>
   </div>
   <div class="dpr-home-dashboard-tags"><span class="dpr-home-dashboard-tag">sketch-to-d <strong>1</strong></span></div>
 </section>

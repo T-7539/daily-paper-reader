@@ -1,0 +1,25 @@
+{
+  "date": "20260803",
+  "date_label": "",
+  "generated_at": "2026-08-03 21:42:39 UTC",
+  "recommend_exists": true,
+  "run_count": 1,
+  "papers": [
+    {
+      "paper_id": "2607.28164v1",
+      "route": "202608/03/2607.28164v1-s-avatar-diffusion-guided-gaussian-head-avatars-from-a-single-image",
+      "title": "S-Avatar: Diffusion-Guided Gaussian Head Avatars from a Single Image",
+      "section": "quick",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "sketch-to-d"
+        }
+      ],
+      "score": 7.0,
+      "evidence": "单图像三维头部化身重建，采用扩散引导的3D高斯喷溅",
+      "first_seen_at": "2026-08-03 21:42:39 UTC",
+      "updated_at": "2026-08-03 21:42:39 UTC"
+    }
+  ]
+}
