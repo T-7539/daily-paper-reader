@@ -1,0 +1,73 @@
+{
+  "date": "20260804",
+  "date_label": "",
+  "generated_at": "2026-08-04 20:59:42 UTC",
+  "recommend_exists": true,
+  "run_count": 1,
+  "papers": [
+    {
+      "paper_id": "2608.01335v1",
+      "route": "202608/04/2608.01335v1-partinteractor-intent-driven-part-aware-3d-authoring-for-continuous-co-creation-in-xr",
+      "title": "PartInteractor: Intent-Driven Part-Aware 3D Authoring for Continuous Co-Creation in XR",
+      "section": "deep",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "sketch-to-d"
+        }
+      ],
+      "score": 8.0,
+      "evidence": "支持手绘草图输入进行部件感知三维创作",
+      "first_seen_at": "2026-08-04 20:59:42 UTC",
+      "updated_at": "2026-08-04 20:59:42 UTC"
+    },
+    {
+      "paper_id": "2607.26646v1",
+      "route": "202608/04/2607.26646v1-genie-sim-panoworld-an-infinite-indoor-3d-world-generation-pipeline-via-panoramic-scene-modeling-and-simulation",
+      "title": "Genie Sim PanoWorld: An Infinite Indoor 3D World Generation Pipeline via Panoramic Scene Modeling and Simulation",
+      "section": "quick",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "sketch-to-d"
+        }
+      ],
+      "score": 7.0,
+      "evidence": "从单张360°全景图重建三维室内场景，可应用于绘画",
+      "first_seen_at": "2026-08-04 20:59:42 UTC",
+      "updated_at": "2026-08-04 20:59:42 UTC"
+    },
+    {
+      "paper_id": "2608.01186v1",
+      "route": "202608/04/2608.01186v1-querysplat-decoupling-geometry-and-appearance-representations-in-3dgs-prediction",
+      "title": "QuerySplat: Decoupling Geometry and Appearance Representations in 3DGS Prediction",
+      "section": "quick",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "sketch-to-d"
+        }
+      ],
+      "score": 7.0,
+      "evidence": "前馈式三维高斯泼溅预测，解耦几何与外观，可用于单图三维重建。",
+      "first_seen_at": "2026-08-04 20:59:42 UTC",
+      "updated_at": "2026-08-04 20:59:42 UTC"
+    },
+    {
+      "paper_id": "2608.02437v1",
+      "route": "202608/04/2608.02437v1-infinisplat-implicit-gaussian-decoding-for-large-baseline-monocular-view-synthesis",
+      "title": "InfiniSplat: Implicit Gaussian Decoding for Large-Baseline Monocular View Synthesis",
+      "section": "quick",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "sketch-to-d"
+        }
+      ],
+      "score": 6.0,
+      "evidence": "前馈单图像3DGS框架，可应用于艺术绘画输入",
+      "first_seen_at": "2026-08-04 20:59:42 UTC",
+      "updated_at": "2026-08-04 20:59:42 UTC"
+    }
+  ]
+}

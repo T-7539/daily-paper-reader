@@ -1,0 +1,415 @@
+Title: QuerySplat: Decoupling Geometry and Appearance Representations in 3DGS Prediction
+
+URL Source: https://arxiv.org/pdf/2608.01186v1
+
+Published Time: Tue, 04 Aug 2026 01:37:16 GMT
+
+Number of Pages: 16
+
+Markdown Content:
+# QuerySplat: Decoupling Geometry and Appearance Representations in 3DGS Prediction 
+
+# Yinglong Li 1,2 ∗, Donghui Shen 2∗, Xiaoyu Zhang 2, Zhichao Ye 2,Hongyu Wu 1†, Aimin Hao 1, Guofeng Zhang 2,3 †, Haomin Liu 2 
+
+> 1
+
+State Key Laboratory of Virtual Reality Technology and Systems, Beihang University  
+
+> 2
+
+InSpatio Research 3 State Key Lab of CAD&CG, Zhejiang University 
+
+Abstract 
+
+While feed-forward 3D Gaussian Splatting (3DGS) enables efficient 3D reconstruction, achieving high-fidelity rendering remains challenging. Existing pixel-aligned approaches suffer from spatial inflexibility and massive structural redundancy, whereas query-based methods lack 3D priors and entangle geometry with appearance, yielding blurry, pose-dependent results. To overcome these deficiencies, we propose QueryS-plat , a feed-forward 3DGS framework driven by geometric priors and explicit appearance decoupling. Specifically, we de-sign a dual-branch query-based decoder: the geometry branch leverages a pretrained Vision Geometric Model for spatial understanding, which intrinsically endows QuerySplat with pose-free modeling capabilities, while the appearance branch recovers high-frequency details through a dedicated pathway separated from geometric attribute regression. Extensive ex-periments demonstrate that QuerySplat mitigates the blurry rendering issues of early query-based models and consis-tently outperforms pixel-aligned approaches in rendering fi-delity. On the challenging DL3DV benchmark, it achieves state-of-the-art novel view synthesis performance, with aver-age PSNR gains of 2.30 dB and 1.04 dB over the best pose-free and pose-required baselines, respectively. Project Page: https://inspatio.github.io/querysplat. 
+
+# Introduction 
+
+Recently, Feed-Forward Reconstruction (FFR) of 3D Gaus-sian Splatting (3DGS) (Jiang et al. 2025; Ye et al. 2025a; Ren et al. 2026; Mescheder et al. 2025) has emerged as a promi-nent research direction. By predicting parameters in a single pass, FFR preserves rapid inference while circumventing te-dious per-scene optimization and dense multi-view captures, opening new possibilities for flexible 3D content creation. Mainstream feed-forward methods primarily adopt a pixel-aligned generation paradigm, binding Gaussian primitives to camera rays. Although this design offers a simple image-to-Gaussian interface, strictly binding Gaussian primitives to the 2D observation space severely restricts their spatial de-grees of freedom. Consequently, they are highly susceptible to depth errors and camera pose perturbations. Furthermore, multi-view pixel conflicts frequently accumulate into geo-metric shifts and ghosting artifacts, limiting the capacity to learn stable 3D structures. 
+
+> ∗
+
+These authors contributed equally. 
+
+> †
+
+Corresponding author. 
+
+To overcome these constraints, query-based methods like TokenGS (Ren et al. 2026) utilize learnable queries to de-code Gaussians in continuous space. This spatial decoupling unbinds the primitive count from input resolutions, elimi-nates structural redundancy, and enables flexible allocation to complex regions. However, two critical limitations per-sist. First, existing methods entangle all Gaussian attributes within a unified query representation, ignoring their distinct modeling requirements: geometric attributes rely on global spatial reasoning, whereas appearance attributes depend on local high-frequency textures. Forcing them together cre-ates a fundamental mismatch, where appearance variations disrupt geometric learning, causing over-smoothed render-ings. Second, relying solely on 2D photometric supervision to learn structures from scratch leaves these models without explicit 3D priors. Lacking a canonical coordinate system, they remain rigidly dependent on exact camera poses, hin-dering unposed, in-the-wild applicability. Based on these observations, we propose QuerySplat, an attribute-decoupled, high-fidelity FFR 3DGS framework. At its core is an attribute-aware dual-query decoder. The ge-ometry branch leverages dedicated queries to predict spa-tial attributes, while the appearance branch focuses solely on high-frequency details. This dual-branch decoupling in both feature and query spaces allows each attribute to inde-pendently aggregate essential information, achieving well-defined geometry alongside rich textures. To provide robust spatial support, we introduce a pre-trained Vision Geometric Model (VGM) as a universal prior. It injects stable 3D structural features and estab-lishes a canonical coordinate system, fundamentally enabling pose-free reconstruction. Additionally, we leverage VGM-predicted depth to formulate a transient early-stage regular-ization strategy. Combined with an opacity-floor constraint, this regularization stabilizes Gaussian initialization while preserving the queries’ flexibility to freely reorganize under later image-space supervision. Extensive experiments demonstrate that QuerySplat achieves state-of-the-art novel view synthesis performance on the large-scale and challenging DL3DV benchmark, con-sistently outperforming existing methods. The generated scenes exhibit superior geometric coherence, sharper object boundaries, and richer texture details, validating the effec-arXiv:2608.01186v1 [cs.CV] 2 Aug 2026 5 Views   
+
+> Input
+> AnySplat YoNoSplat SplatWeaver Ours
+
+QuerySplat   
+
+> feed -forward
+> pose -free
+> clean structure
+> high -fidelity
+> Uncalibrated In -the -wild Images
+> 1 View 6 Views
+> 4 Views 16 Views
+> 3DGS
+
+Figure 1: QuerySplat overview. Given uncalibrated images with varying view counts, QuerySplat reconstructs clean and high-fidelity 3D Gaussian scenes in a pose-free, feed-forward, and non-pixel-aligned manner. Compared with prior methods, it produces substantially more coherent scene structure while supporting in-the-wild inputs within seconds. tiveness of the attribute-decoupled query mechanism. The main contributions are summarized as follows: 
+
+• We propose QuerySplat , an attribute-aware dual-query framework. By designing dedicated query and feature pathways for different Gaussian attributes, it enables the harmonious joint modeling of well-defined 3D structures and high-frequency appearances. 
+
+• We introduce a VGM-guided geometry branch that lever-ages early-stage regularization to stabilize non-pixel-aligned 3DGS geometry prediction, reducing learning uncertainty and enabling pose-free scene reconstruction. 
+
+• Extensive experiments demonstrate that QuerySplat achieves consistent improvements in both visual fidelity and geometric organization, validating the effectiveness of the attribute-decoupled query paradigm for addressing the challenges of non-pixel-aligned feed-forward 3DGS. 
+
+# Related Work 
+
+## 3D Gaussian Splatting 
+
+3D Gaussian Splatting (3DGS) (Kerbl et al. 2023) of-fers high-fidelity real-time rendering but requires time-consuming per-scene optimization (Yu, Sattler, and Geiger 2024; Chen et al. 2024a). To address this, Feed-Forward Re-construction (FFR) methods (Szymanowicz, Rupprecht, and Vedaldi 2024; Charatan et al. 2024; Chen et al. 2024b; Li et al. 2026; Xu, Gao, and Shan 2024; Gupta et al. 2026; Moreau et al. 2025; Wang et al. 2026b) have been proposed to infer scenes directly from sparse views in a single pass. Recent advancements further improve generalizability us-ing explicit geometric priors (Xu et al. 2025; Jiang et al. 2025), pose-free formulations (Ye et al. 2025a; Huang and Mikolajczyk 2025), or adaptive primitive allocation (Wan et al. 2026). Despite these efficiency gains, mainstream FFR models strictly anchor Gaussian primitives to camera rays. This pixel-aligned paradigm fundamentally restricts spatial degrees of freedom, rendering models vulnerable to noisy camera poses and limiting their capacity to represent com-plex geometries. 
+
+## Query-based 3D Scene Representation 
+
+To overcome pixel-aligned constraints, query-based meth-ods utilize learnable tokens to aggregate spatial informa-tion. Originating in 2D vision (Carion et al. 2020), this paradigm has successfully extended to 3D perception (Wang et al. 2022; Schult et al. 2023) and scene reconstruction via voxel (Li et al. 2023) or triplane (Hong et al. 2024) represen-tations. Recently, TokenGS (Ren et al. 2026) introduced this mechanism to FFR 3DGS, completely breaking free from 2D pixel grids. However, while releasing spatial degrees of freedom, learning both complex geometry and fine-grained textures jointly from unified queries causes severe attribute entanglement. This optimization bottleneck degrades ren-dering quality—yielding over-smoothed, blurry results—and maintains a rigid dependency on exact camera poses. Vision Geometric Models 
+
+Vision Geometric Models (VGMs) pretrained on massive datasets have demonstrated strong multi-view spatial reason-ing capabilities. Pioneered by DUSt3R (Wang et al. 2024) and MASt3R (Leroy, Cabon, and Revaud 2024) for pose-free point-map regression, this paradigm recently advanced through highly performant architectures like VGGT (Wang et al. 2025a), Pi3 (Wang et al. 2025b), DA3 (Lin et al. 2025), and VGGT-Ω (Wang et al. 2026a). To scale these foundational models to large environments, methods like ZipMap (Jin et al. 2026) and Scal3R (Xie et al. 2026) integrate test-time training (TTT) for global consistency, whereas LingBot-Map (Chen et al. 2026) pursues a purely feed-forward streaming paradigm without post-optimization overhead. Despite these rapid architectural and system-level advancements, the integration of VGMs into downstream 3D generation pipelines remains relatively shallow. 
+
+# Method 
+
+Given a set of input images, our goal is to predict a renderable 3D Gaussian representation in a single feed-forward pass. The core of QuerySplat is an attribute-aware dual-branch, dual-query decoder that explicitly decouples geometry and appearance modeling. Building upon this design, we intro-duce a pretrained Vision Geometric Model (VGM) to provide geometry-aware features, camera estimates, and a consistent coordinate system. Formally, given input views Iin = {Ii}Ni=1 , the network predicts a Gaussian set 
+
+G = Fθ (Iin ) = {gk}Kk=1 , gk = ( rk, pk, sk, α k, ck), (1) where r, p, s, α, and c denote the rotation quaternion, cen-ter, anisotropic scale, opacity, and spherical-harmonic co-efficients, respectively. Instead of producing pixel-aligned primitives, the model employs learnable Gaussian queries as scene-level slots. Each query is decoded into a group of Gaus-sian primitives, which are supervised through differentiable rendering under VGM-predicted cameras. An overview of the framework is provided in Figure 2. 
+
+## Pretrained VGM Features 
+
+A VGM is a large-scale pretrained multi-view model that can infer geometry-aware features, camera poses, intrinsics, and optionally dense depth. For the concrete VGGT-Ω (Wang et al. 2026a) instantiation, each input view is represented by a camera token, register/scene tokens, and dense patch tokens. We use them to construct geometric features Fgeo , where patch tokens are extracted from four intermediate layers and fused with a lightweight learnable layer mixer (Cao et al. 2026), while the others are taken only from the final layer. The VGM is frozen throughout training. This is important because large-scale VGMs already encode strong multi-view geometry priors; jointly finetuning them with the Gaussian generator may damage their camera and geometry consis-tency. Freezing the VGM preserves this prior and cleanly sep-arates the roles of the two parts: the VGM performs generic geometric reasoning, while the trainable decoder learns to translate Fgeo into the geometry of Gaussian primitives. 
+
+## Self-Calibrated Coordinate System 
+
+By deriving cameras and scene coordinates from the VGM, our pipeline reduces reliance on external camera annotations and supports training on heterogeneous or RGB-only image collections. We first process only the input views to extract 
+
+Fgeo and define the coordinate frame for geometry decoding. For rendering supervision, we separately process the union of input and supervision views to estimate their cameras, without sharing features between the two passes. Crucially, we maintain strict isolation between these two passes with no feature exchange, explicitly preventing any target-view information leakage into the reconstruction pipeline. Since the resulting frames may differ by a similarity gauge, we align the all-view cameras to the input-only frame using a Sim(3) 
+
+transformation estimated from the shared input views. This places Fgeo , Plücker rays, Gaussian centers, and supervision cameras in a common coordinate system. 
+
+## Decoupled Queries 
+
+Our decoder separates the question of where Gaussians should be placed from the question of what they should look like. The motivation is simple. Geometry Features are strong at camera-consistent layout and scene-level structure, but they are not optimized to preserve all high-frequency in-formation. Appearance features retain local texture and ray information, but injecting them too early into the geome-try stream can let appearance gradients disturb stable Gaus-sian placement. Thus, we keep geometry decoding spatially driven and defer appearance modeling to a separate branch. 
+
+Geometry Queries. A set of learnable Geometry Queries 
+
+Qgeo attends to Fgeo through transformer decoder blocks. Each block contains cross-attention to Geometry Features, self-attention among queries, and an MLP update. The de-coded tokens are 
+
+Zgeo = Dgeo (Qgeo , Fgeo ), (2) which are mapped by a geometry head to Gaussian centers, scales, and rotations. Because the queries are not tied to pixels, each query behaves like a latent scene slot that can collect evidence from multiple views and feature locations before being expanded into Gaussian primitives. 
+
+Appearance Queries. For appearance, we construct Ap-pearance Features Fapp from RGB patch embeddings and Plücker ray embeddings. The rays are computed using the input cameras predicted by the input-only VGM pass, so the appearance stream remains in the same VGM-native frame as the geometry stream. The appearance decoder takes the geometry tokens Zgeo as its base query state, augments them with learnable Appearance Queries Qapp , and attends to 
+
+Fapp . The decoded tokens are 
+
+Zapp = Dapp (Zgeo , Qapp , Fapp ), (3) which are mapped to Gaussian opacities and SH colors. Fi-nally, we assemble both into the full Gaussian set G.Q
+
+> V
+> K
+> Q
+> V
+> K
+> ￿￿￿
+> Q
+> V
+> K
+> Q
+> V
+> K
+> ￿￿￿
+> Geometry Tokens
+> Appearance Tokens
+> Geometry Query
+> Appearance Query
+
+VGM 
+
+> Geometry
+> Features
+> Appearance
+> Features
+> Pl ücker
+> Input Images
+> 3D Gaussians
+
+Figure 2: Method Overview. A Vision Geometric Model (VGM) encodes geometry-aware memory and defines cameras. Geometry queries decode spatial Gaussian parameters from VGM features, while appearance queries read RGB/Plücker memory to predict the others. The resulting Gaussians are supervised by differentiable splatting in the VGM-defined coordinate system. 
+
+## Loss Functions 
+
+The predicted Gaussians are rendered by differentiable Gaus-sian splatting under the aligned supervision cameras. We train the model with 
+
+L = Lphoto + λvis Lvis + βcd (t)Lcd + βα(t)Lα, (4) where βcd (t) and βα(t) are stage-dependent schedules used only for early training regularization. 
+
+Photometric reconstruction. This is the main rendering signal. We combine pixel-level, structural, and perceptual reconstruction terms: 
+
+Lphoto = L1 + λssim Lssim + λlpips Llpips . (5) The L1 term enforces pixel accuracy, SSIM stabilizes local structure, and LPIPS improves perceptual texture quality. 
+
+Visibility regularization. Following TokenGS (Ren et al. 2026), we penalize Gaussian centers that fall outside all rel-evant camera frusta or behind cameras, preventing latent queries from producing floating Gaussians that receive lit-tle rendering gradient. In our setting, we evaluate it on the relevant VGM-predicted cameras, including input and super-vision views when available. 
+
+Early-stage regularization. At the beginning of base train-ing, we introduce two temporary regularizers to stabilize Gaussian initialization. First, the depth predicted by the input-only VGM pass is back-projected into a pseudo point cloud P, and the predicted Gaussian centers Gp are regular-ized by a bidirectional Chamfer distance: 
+
+Lcd = dCD (Gp, P). (6) Second, we use an opacity-floor regularizer to prevent Gaus-sians from becoming transparent too early: 
+
+Lα = Eα∈A [max (0 , log αmin − log(max( α, ϵ )))] , (7) where A denotes the predicted Gaussian opacities, αmin is the minimum opacity floor, and ϵ is a small constant for numerical stability. Both terms serve only as transient ini-tialization priors and are gradually removed. We find that en-forcing them throughout training destabilizes optimization, since the rendering-optimal Gaussian configuration gener-ally departs from the depth-derived point cloud and requires both positions and opacities to be freely reorganized under image-space supervision. 
+
+## Optional Test-Time Optimization 
+
+The main method is feed-forward, but it also supports lightweight test-time optimization (TTO). During TTO, we keep the learned queries, decoders, and output heads fixed, and optimize the extracted features with rendering losses on input views. This feature-space adaptation refines the scene representation while keeping it constrained by the pretrained query-to-Gaussian reconstruction model, providing a simple trade-off between runtime and reconstruction fidelity. 
+
+# Experiments 
+
+## Implementation Details 
+
+We use pretrained VGGT-Ω (Wang et al. 2026a) as the VGM encoder, with Ngeo = 12 and Napp = 6 . Each query to-ken predicts 64 Gaussian primitives. We train exclusively on DL3DV (Ling et al. 2024) using 512 × 512 center-cropped images. Training consists of a base and a progressive fine-tuning stage. Base training optimizes 1,024 queries across 4 random input views for 300K iterations with a learning rate of 10 −4. The Chamfer distance and opacity regulariz-ers are annealed to zero over the first 20K iterations. LPIPS is introduced after 100K iterations and gradually increased to λlpips = 0 .05 . During finetuning, we progressively dou-ble the number of queries to 8,192 (Newly added queries Method Pose-free 2 views 4 views 12 views PSNR ↑ SSIM ↑ LPIPS ↓ PSNR ↑ SSIM ↑ LPIPS ↓ PSNR ↑ SSIM ↑ LPIPS ↓                                                                                                                
+
+> DepthSplat (2025) ×20.5357 0.6721 0.2592 22.9079 0.7683 0.1853 21.6785 0.7549 0.2050 TokenGS (2026) ×20.4258 0.6736 0.3783 23.2704 0.7565 0.3026 21.8094 0.6960 0.3696 YoNoSplat (2025a) ×19.8356 0.6296 0.2909 22.8488 0.7469 0.1987 22.7326 0.7608 0.1958
+> AnySplat (2025) ✓14.0742 0.4447 0.4475 17.3938 0.5483 0.3418 19.6253 0.6334 0.2989 NoPoSplat (2025b) ✓19.0650 0.5997 0.3164 ––––––SPFSplat (2025) ✓19.1163 0.5874 0.3046 ––––––SplatWeaver (2026) ✓15.6953 0.4991 0.3666 19.2413 0.6294 0.2715 20.4047 0.6683 0.2515 YoNoSplat (2025a) ✓19.1675 0.5908 0.3081 21.9644 0.6983 0.2167 21.6323 0.6953 0.2184
+> Ours ✓21.3888 0.6990 0.2585 24.5765 0.8002 0.1843 23.7005 0.7685 0.2297
+> Ours + TTO-20 ✓22.0094 0.7168 0.2478 26.2524 0.8304 0.1591 27.0003 0.8472 0.1667
+> Ours + TTO-50 ✓21.9437 0.7149 0.2463 26.3779 0.8321 0.1537 27.7199 0.8615 0.1464
+
+Table 1: Interpolation results averaged over the large, medium, and small splits. Higher PSNR/SSIM and lower LPIPS are better. Bold and underlined values indicate the best and second-best results, respectively; TTO variants are excluded from this comparison. See Appendix A for complete results for each view setting and split. GT DepthSplat AnySplat YoNoSplat SplatWeaver TokenGS Ours 
+
+Figure 3: Qualitative comparison. QuerySplat preserves finer textures and sharper object boundaries, producing more faithful and visually detailed renderings than prior methods. Input AnySplat YoNoSplat SplatWeaver Ours 
+
+Figure 4: In-the-wild qualitative comparison. Each row compares 3DGS reconstructions from casually captured unposed images. QuerySplat yields cleaner geometry and sharper details than competing pose-free methods. are initialized from pretrained ones with small perturbations 
+
+qnew  
+
+> i
+
+= qold    
+
+> imod Nold
+
++ ξ), training each expansion for 30K iterations with a learning rate of 10 −5 and randomly sampled 2–12 input views. Both stages use the AdamW (Loshchilov and Hutter 2019) optimizer, a global batch size of 64, and a 5% linear warm-up followed by cosine decay. We set 
+
+λssim = 0 .2 and λvis = 1 .0. Training is conducted in BF16 on 64 NVIDIA A800 GPUs, with one sample per GPU. Complete training details and hyperparameter settings are provided in Appendix E. 
+
+## Comparisons 
+
+We compare QuerySplat with recent posed and pose-free feed-forward 3DGS methods, whose full list is provided in Table 1. For all baseline methods, we use the official im-plementations and released model weights. We construct evaluation cases from DL3DV-Evaluation (Ling et al. 2024) (independent of DL3DV-10K). For 2-, 4-, and 12-view set-tings, cases are divided into small, medium, and large splits according to the image interval, with 300 cases randomly sampled for each split. We evaluate on input, interpolation, Geo App               
+
+> 𝐀 ,𝐀 ,𝐀 𝐀 ,𝐀
+> (a) Dual-branch Query
+> Geo
+> 𝐀 ,𝐀 ,𝐀 ,𝐀 ,𝐀
+> (c) w/o Appearance
+> Geo App
+> (b) One-branch Query
+> 𝐀 ,𝐀 ,𝐀 ,𝐀 ,𝐀
+> Geometry Features Appearance Features
+
+Figure 5: Feature aggregation variants. Illustration of (a) our dual-branch design, (b) one-branch feature fusion, and (c) geometry-only prediction without appearance features. and extrapolation views using PSNR, SSIM, and LPIPS. For fair comparison, inputs are resized to a shorter side of 256 pixels while preserving the aspect ratio. Following inference at each method’s native resolution, the rendered outputs are resized back to the original resolution for metric compu-tation. To strictly prevent target-view leakage, all pose-free baselines use the all-view pass solely for camera estima-tion and Sim(3) alignment, whereas posed methods receive input poses. Table 1 reports interpolation results averaged over the three splits, with complete results provided in Ap-pendix A. We additionally report QuerySplat with 20 and 50 steps of test-time optimization to demonstrate the op-tional gains from feature-space adaptation; these variants are excluded from the comparison ranking. Without TTO, QuerySplat consistently outperforms existing methods and achieves the strongest overall performance across different input-view settings. Beyond the quantitative results, Figure 3 shows that QuerySplat preserves fine textures and object boundaries, achieving visual sharpness comparable to pixel-aligned methods while avoiding the blurry outputs of previous query-based approaches. Figure 4 also demonstrates cleaner struc-tures and sharper details than competing pose-free methods on casually captured inputs. More fundamentally, QueryS-plat advances prior query-based reconstruction by preserving its clean and flexible scene representation while substantially improving both geometric organization and texture fidelity. Geometry-aware decoding produces more coherent Gaus-sian structures, and the dedicated appearance branch recovers fine details that earlier query-based methods tend to smooth out. As a result, QuerySplat closes the quality gap between query-based and pixel-aligned paradigms, achieving com-parable visual sharpness without sacrificing the structural advantages of non-pixel-aligned reconstruction. 
+
+## Ablation Studies 
+
+Due to the prohibitive computational cost of fully training all model variants, ablation models are trained only in the base stage for 150K iterations and evaluated on 4-view interpola-tion averaged over the large, medium, and small splits. 
+
+Attribute-aware feature aggregation. Figure 5 illustrates the three variants evaluated in Table 2, with matched layer                  
+
+> Method PSNR ↑SSIM ↑LPIPS ↓
+> Ours 22.8963 0.7381 0.2682 Ours (One-branch Query) 20.9161 0.6593 0.3440
+> Ours (w/o Appearance) 18.6447 0.5782 0.4254
+
+Table 2: Feature aggregation ablation at 4-view interpolation, with early-stage regularization enabled. (a) Geometry Attention Maps (Layer 1 - 12) 
+
+> (b) Appearance Attention Maps (Layer 1 - 6)
+> (c) 64 Gaussians dec-
+> oded from the query
+
+Figure 6: Query attention visualization. Panels (a) and (b) show geometry and appearance attention for one query, while (c) shows its decoded Gaussians projected onto the image.                
+
+> Method Early Reg. PSNR ↑SSIM ↑LPIPS ↓
+> Ours ✓22.8963 0.7381 0.2682 Ours ×22.6090 0.7228 0.2877
+
+Table 3: Ablation of early-stage regularization at 4-view in-terpolation. and parameter counts. The results show that the benefit of our dual-branch design does not come from adding appearance features. Removing the appearance stream degrades recon-struction quality, while merging appearance features into the geometry stream performs worse. Instead, different Gaussian attributes should gather evidence suited to their prediction. Spatial parameters require broad cross-view context to estab-lish a coherent scene layout, whereas the others rely on local texture and viewing-direction cues. The attention patterns in Figure 6 support this behavior: geometry queries attend to broader structural regions, while the appearance branch fo-cuses on local evidence around the predicted Gaussians. Sep-arating these aggregation processes preserves stable scene organization while recovering finer appearance details. 
+
+Early-stage regularization. Table 3 shows that early-stage regularization improves reconstruction quality by guiding unconstrained queries toward a plausible spatial and opac-ity configuration at the beginning of training. Consistently, Figure 7 shows that the full model produces a cleaner Gaus-sian structure and a more balanced opacity profile than To-kenGS (Ren et al. 2026) and the variant without early-stage regularization. These results indicate that such transient guid-ance benefits both rendering quality and the geometric orga-nization of the reconstructed Gaussian scene. 
+
+VGM backbone. Table 4 examines whether the proposed decoder is tied to the particular geometric encoder used 1e-8 1e-7 1e-6 1e-5 1e-4 1e-3 1e-2 1e-1 1e0     
+
+> 10%
+> 20% TokenGS
+> Ours + w/o Early Reg.
+> Ours
+> TokenGS Ours + w/o Early Reg. Ours
+> Opacity (log scale)
+> Proportion
+
+Figure 7: Effect of early-stage regularization. Compared with TokenGS and our variant without early-stage regular-ization, our model produces a cleaner Gaussian structure and a healthier opacity distribution. Red boxes highlight regions with concentrations of redundant and ineffective Gaussians.               
+
+> Method PSNR ↑SSIM ↑LPIPS ↓
+> Ours (VGGT-Ω)22.8963 0.7381 0.2682 Ours (VGGT) 23.0723 0.7388 0.2749
+
+Table 4: VGM-backbone ablation at 4-view interpolation. VGGT -Ω Ours 
+
+Figure 8: Geometric comparison. Left: point cloud obtained by back-projecting the depth predicted by VGGT-Ω. Right: centers of the 3D Gaussians predicted by QuerySplat. in the main model. Replacing the default backbone with VGGT (Wang et al. 2025a) yields comparable quality with-out changing the decoder or training objective. This sug-gests that the effectiveness of QuerySplat primarily comes from how geometric priors are consumed, rather than from a model-specific feature representation. Beyond backbone compatibility, the learned query de-coder also mitigates geometric artifacts inherited from the VGM. As shown in Figure 8, although the point cloud back-projected from VGGT-Ω depth contains noticeable floaters and noisy structures, the Gaussian centers predicted by QuerySplat exhibit a cleaner and more coherent spatial or-ganization. This suggests that the decoder effectively reorga-nizes the VGM geometry prior under rendering supervision, rather than directly reproducing its raw predictions. 
+
+## Applications 
+
+In-the-Wild Reconstruction. QuerySplat supports casu-ally captured image sets with arbitrary view counts. As shown in Figure 1, it reconstructs clean and detailed 3D Gaussian scenes from one or multiple real-world images, enabling flex-Corrupted 3DGS 
+
+> a. Rendered Video
+> b. Restored Video
+> c. QuerySplat and Merging
+> Repaired 3DGS
+
+Figure 9: 3D scene repair. Left: the manually corrupted Gaussian scene. Right: the reconstruction produced by QuerySplat after rendering the corrupted scene to video and applying video restoration. Synthesized Images Output 3DGS 
+
+Figure 10: 3D reconstruction from T2V-generated views. 
+
+QuerySplat reconstructs a 3DGS scene from multi-view frames generated by a text-to-video model. The background is removed from the displayed 3DGS for visualization. ible everyday 3D capture. 
+
+3D Scene Repair. QuerySplat provides a rapid solution for 3D scene repair. We manually remove a region from an existing Gaussian scene and render the edited scene along a camera trajectory. Artifixer (De Lutio et al. 2026) repairs the missing content in the rendered video, after which QueryS-plat reconstructs the restored frames into a new renderable Gaussian scene. As shown in Figure 9, the geometric predic-tion capability of QuerySplat enables the repaired 2D content to be lifted back into 3D with coherent structure and fewer floating artifacts, providing a practical way to integrate video restoration into 3D scene editing. 
+
+3D Reconstruction from T2V-Generated Views. We fur-ther evaluate QuerySplat on multi-view frames generated by a text-to-video model. These frames are directly used as un-posed observations without any task-specific adaptation. As shown in Figure 10, QuerySplat reconstructs the generated visual content into a plausible and renderable 3D Gaussian scene. This result demonstrates that the proposed framework can operate not only on captured images, but also on synthetic multi-view content, providing a direct path from generative video outputs to explicit 3D scene representations. 
+
+# Conclusion 
+
+We presented QuerySplat, a pose-free feed-forward 3DGS framework built around a dual-branch query decoder that separates geometric organization from high-frequency ap-pearance modeling. The geometry branch establishes coher-ent scene structure, while the appearance branch restores fine visual details without sacrificing spatial flexibility. We instantiate the geometry branch with a VGM backbone to provide geometry-aware features and a self-consistent coor-dinate system, although the overall framework is not tied to a specific backbone. Progressive query scaling further in-creases representation capacity within the same reconstruc-tion formulation. Extensive experiments show that QueryS-plat produces cleaner Gaussian structures and sharper render-ings, achieving state-of-the-art overall performance against both posed and pose-free baselines. Its compatibility with different geometric backbones and diverse applications fur-ther demonstrates the generality of the proposed framework. 
+
+# References 
+
+Cao, Y.; Wu, F.; Dave Chen, Z.; Zhong, Y.; Hong, L.; and Xu, D. 2026. VGGT-Det: Mining VGGT Internal Priors for Sensor-Geometry-Free Multi-View Indoor 3D Object Detec-tion. In CVPR .Carion, N.; Massa, F.; Synnaeve, G.; Usunier, N.; Kirillov, A.; and Zagoruyko, S. 2020. End-to-end object detection with transformers. In European conference on computer vision , 213–229. Springer. Charatan, D.; Li, S. L.; Tagliasacchi, A.; and Sitzmann, V. 2024. pixelsplat: 3d gaussian splats from image pairs for scalable generalizable 3d reconstruction. In Proceedings of the IEEE/CVF conference on computer vision and pattern recognition , 19457–19467. Chen, D.; Li, H.; Ye, W.; Wang, Y.; Xie, W.; Zhai, S.; Wang, N.; Liu, H.; Bao, H.; and Zhang, G. 2024a. Pgsr: Planar-based gaussian splatting for efficient and high-fidelity sur-face reconstruction. IEEE Transactions on Visualization and Computer Graphics , 31(9): 6100–6111. Chen, L.-Z.; Gao, J.; Chen, Y.; Cheng, K. L.; Sun, Y.; Hu, L.; Xue, N.; Zhu, X.; Shen, Y.; Yao, Y.; and Xu, Y. 2026. Geometric Context Transformer for Streaming 3D Recon-struction. arXiv preprint arXiv:2604.14141 .Chen, Y.; Xu, H.; Zheng, C.; Zhuang, B.; Pollefeys, M.; Geiger, A.; Cham, T.-J.; and Cai, J. 2024b. MVSplat: Effi-cient 3d gaussian splatting from sparse multi-view images. In 
+
+European conference on computer vision , 370–386. Springer. De Lutio, R.; Fischer, T.; Chang, Y.-Y.; Zhang, Y.; Wu, Z.; Ren, X.; Shen, T.; Tóthová, K.; Gojcic, Z.; and Turki, H. 2026. ArtiFixer: Enhancing and Extending 3D Reconstruc-tion with Auto-Regressive Diffusion Models. In Proceedings of the Special Interest Group on Computer Graphics and In-teractive Techniques Conference , 1–12. Gupta, V.; Lin, C.-H.; Wang, S.; Bhattad, A.; and Huang, J.-B. 2026. Generalizable Sparse-View 3D Reconstruction from Unconstrained Images. arXiv preprint arXiv:2604.28193 .Hong, Y.; Zhang, K.; Gu, J.; Bi, S.; Zhou, Y.; Liu, D.; Liu, F.; Sunkavalli, K.; Bui, T.; and Tan, H. 2024. Lrm: Large recon-struction model for single image to 3d. In International Con-ference on Learning Representations , volume 2024, 50678– 50702. Huang, R.; and Mikolajczyk, K. 2025. No pose at all: Self-supervised pose-free 3d gaussian splatting from sparse views. In Proceedings of the IEEE/CVF International Conference on Computer Vision , 27947–27957. Jiang, L.; Mao, Y.; Xu, L.; Lu, T.; Ren, K.; Jin, Y.; Xu, X.; Yu, M.; Pang, J.; Zhao, F.; et al. 2025. Anysplat: Feed-forward 3d gaussian splatting from unconstrained views. ACM Trans-actions on Graphics (TOG) , 44(6): 1–16. Jin, H.; Wu, R.; Zhang, T.; Gao, R.; Barron, J. T.; Snavely, N.; and Holynski, A. 2026. Zipmap: Linear-time state-ful 3d reconstruction via test-time training. arXiv preprint arXiv:2603.04385 .Kerbl, B.; Kopanas, G.; Leimkühler, T.; Drettakis, G.; et al. 2023. 3d gaussian splatting for real-time radiance field ren-dering. ACM Trans. Graph. , 42(4): 139–1. Leroy, V.; Cabon, Y.; and Revaud, J. 2024. Grounding image matching in 3d with MAST3R. In European conference on computer vision , 71–91. Springer. Li, Y.; Lv, C.; Tang, Z.; Yang, H.; and Huang, D. 2026. Token-Splat: Token-aligned 3d gaussian splatting for feed-forward pose-free reconstruction. arXiv preprint arXiv:2603.00697 .Li, Y.; Yu, Z.; Choy, C.; Xiao, C.; Alvarez, J. M.; Fidler, S.; Feng, C.; and Anandkumar, A. 2023. Voxformer: Sparse voxel transformer for camera-based 3d semantic scene com-pletion. In Proceedings of the IEEE/CVF conference on computer vision and pattern recognition , 9087–9098. Lin, H.; Chen, S.; Liew, J.; Chen, D. Y.; Li, Z.; Shi, G.; Feng, J.; and Kang, B. 2025. Depth Anything 3: Recovering the vi-sual space from any views. arXiv preprint arXiv:2511.10647 .Ling, L.; Sheng, Y.; Tu, Z.; Zhao, W.; Xin, C.; Wan, K.; Yu, L.; Guo, Q.; Yu, Z.; Lu, Y.; et al. 2024. DL3DV-10k: A large-scale scene dataset for deep learning-based 3d vision. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition , 22160–22169. Loshchilov, I.; and Hutter, F. 2019. Decoupled Weight Decay Regularization. In International Conference on Learning Representations .Mescheder, L.; Dong, W.; Li, S.; Bai, X.; Santos, M.; Hu, P.; Lecouat, B.; Zhen, M.; Delaunoy, A.; Fang, T.; et al. 2025. Sharp monocular view synthesis in less than a second. arXiv preprint arXiv:2512.10685 .Moreau, A.; Shaw, R.; Nazarczuk, M.; Shin, J.; Tanay, T.; Zhang, Z.; Xu, S.; and Pérez-Pellitero, E. 2025. Off The Grid: Detection of Primitives for Feed-Forward 3D Gaussian Splatting. arXiv preprint arXiv:2512.15508 .Ren, J.; Tyszkiewicz, M. J.; Huang, J.; and Gojcic, Z. 2026. TokenGS: Decoupling 3d gaussian prediction from pixels with learnable tokens. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition ,15365–15375. Schult, J.; Engelmann, F.; Hermans, A.; Litany, O.; Tang, S.; and Leibe, B. 2023. Mask3D: Mask transformer for 3d semantic instance segmentation. In 2023 IEEE Inter-national Conference on Robotics and Automation (ICRA) ,8216–8223. IEEE. Szymanowicz, S.; Rupprecht, C.; and Vedaldi, A. 2024. Splatter image: Ultra-fast single-view 3d reconstruction. In 
+
+Proceedings of the IEEE/CVF conference on computer vision and pattern recognition , 10208–10217. Wan, Y.; Li, F.; Shao, M.; and Zuo, W. 2026. SplatWeaver: Learning to Allocate Gaussian Primitives for Generalizable Novel View Synthesis. arXiv preprint arXiv:2605.07287 .Wang, J.; Chen, M.; Karaev, N.; Vedaldi, A.; Rupprecht, C.; and Novotny, D. 2025a. VGGT: Visual geometry grounded transformer. In Proceedings of the Computer Vision and Pattern Recognition Conference , 5294–5306. Wang, J.; Chen, M.; Zhang, S.; Karaev, N.; Schönberger, J.; Labatut, P.; Bojanowski, P.; Novotny, D.; Vedaldi, A.; and Rupprecht, C. 2026a. VGGT-Ω. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR) .Wang, S.; Leroy, V.; Cabon, Y.; Chidlovskii, B.; and Revaud, J. 2024. DUST3R: Geometric 3d vision made easy. In 
+
+Proceedings of the IEEE/CVF conference on computer vision and pattern recognition , 20697–20709. Wang, W.; Li, Z.; Shi, J.; Zhang, Z.; Ye, B.; Pollefeys, M.; Chen, D. Y.; and Zhuang, B. 2026b. TriSplat: Simulation-ready feed-forward 3d scene reconstruction. arXiv preprint arXiv:2605.26115 .Wang, Y.; Guizilini, V. C.; Zhang, T.; Wang, Y.; Zhao, H.; and Solomon, J. 2022. Detr3d: 3d object detection from multi-view images via 3d-to-2d queries. In Conference on robot learning , 180–191. PMLR. Wang, Y.; Zhou, J.; Zhu, H.; Chang, W.; Zhou, Y.; Li, Z.; Chen, J.; Pang, J.; Shen, C.; and He, T. 2025b. π3:Permutation-Equivariant Visual Geometry Learning. arXiv preprint arXiv:2507.13347 .Xie, T.; Yang, P.; Jin, Y.; Cai, Y.; Yin, W.; Ren, W.; Zhang, Q.; Hua, W.; Peng, S.; Guo, X.; et al. 2026. Scal3r: Scalable test-time training for large-scale 3d reconstruction. arXiv preprint arXiv:2604.08542 .Xu, H.; Peng, S.; Wang, F.; Blum, H.; Barath, D.; Geiger, A.; and Pollefeys, M. 2025. Depthsplat: Connecting gaussian splatting and depth. In Proceedings of the Computer Vision and Pattern Recognition Conference , 16453–16463. Xu, J.; Gao, S.; and Shan, Y. 2024. FreeSplatter: Pose-free gaussian splatting for sparse-view 3d reconstruction. arXiv preprint arXiv:2412.09573 .Ye, B.; Chen, B.; Xu, H.; Barath, D.; and Pollefeys, M. 2025a. YoNoSplat: You Only Need One Model for Feedforward 3D Gaussian Splatting. arXiv preprint arXiv:2511.07321 .Ye, B.; Liu, S.; Xu, H.; Li, X.; Pollefeys, M.; Yang, M.-H.; and Peng, S. 2025b. No pose, no problem: Surprisingly simple 3d gaussian splats from sparse unposed images. In Inter-national Conference on Learning Representations , volume 2025, 54009–54033. Yu, Z.; Sattler, T.; and Geiger, A. 2024. Gaussian opacity fields: Efficient adaptive surface reconstruction in unbounded scenes. ACM Transactions on Graphics (ToG) , 43(6): 1–13. Appendix 
+
+# A Detailed Quantitative Comparisons 
+
+The main paper reports interpolation results averaged over the three sampling splits. Tables 5, 6, and 7 present the com-plete 2-view results; Tables 8, 9, and 10 report the corre-sponding 4-view results; and Tables 11, 12, and 13 pro-vide the 12-view evaluation. Each table includes input-view reconstruction, interpolation, and extrapolation. The large, medium, and small splits correspond to progressively nar-rower sampling intervals, allowing us to examine reconstruc-tion under different degrees of viewpoint change. Taken to-gether, these results reveal a consistent distinction between reproducing the observed images and recovering a scene rep-resentation that remains reliable beyond them. 
+
+Input and novel-view reconstruction. Pixel-aligned methods are naturally competitive on the input views because their Gaussian predictions retain a direct correspondence with observed pixels and camera rays. QuerySplat remains strong in this setting despite removing that constraint, show-ing that scene-level queries can preserve input fidelity with-out being anchored to individual observations. Its advantage becomes clearer on interpolation and extrapolation, where the rendering camera departs from the input views. Across different view counts and sampling intervals, QuerySplat ex-hibits substantially more stable novel-view performance than previous pose-free and query-based methods. This suggests that the predicted Gaussians form a coherent scene-level or-ganization rather than merely reproducing appearance along the observed rays. 
+
+Effect of the number of input views. With only two views, reconstruction is highly under-constrained, yet QuerySplat can still establish a plausible geometric layout and recover useful appearance information. As the number of views in-creases, the model benefits from broader scene coverage and stronger cross-view constraints. The improvement from 2 to 4 views is particularly evident, while the 12-view results show that the query decoder can continue integrating denser obser-vations without changing the overall formulation. QuerySplat also maintains its advantage across the three sampling splits, indicating that it generalizes to both nearby viewpoints and wider camera displacements. 
+
+Effect of test-time optimization. TTO adapts the extracted features using the available input images. Its largest gains appear on input-view reconstruction because supervision is applied directly at these views; importantly, the improvement also transfers to interpolation and extrapolation, indicating that TTO refines the underlying scene representation rather than simply memorizing the observations. The benefit gen-erally grows with the number of input views, as additional images provide denser geometric constraints and more com-plete appearance coverage. Most improvements are already obtained with a small optimization budget, while further steps provide more gradual refinement. TTO is therefore an optional accuracy–runtime trade-off and is excluded from the main feed-forward comparison. 
+
+Limitations and future directions. The current model uses a fixed query budget, which bounds the number of Gaussians available to represent each scene. Consequently, very large or highly complex environments may be under-represented. This limitation concerns physical scene extent and complexity, rather than the large/medium/small evalu-ation splits. A promising extension is to divide a large en-vironment into overlapping regions, reconstruct each region independently with QuerySplat, and then align and merge the resulting Gaussian sub-scenes, followed by optional global refinement. 
+
+# B More Qualitative Comparisons 
+
+Additional novel-view synthesis comparisons. Due to space limitations in the main paper, here, Figure 11 pro-vides additional qualitative comparisons with representative feed-forward 3DGS methods. Across diverse indoor and out-door scenes, QuerySplat preserves sharper object bound-aries, thin structures, and high-frequency textures while re-ducing blur and structural distortions. The enlarged regions further demonstrate that our method recovers finer local details and produces renderings more consistent with the ground truth. 
+
+In-the-wild comparison with a pose-required query model. In the main paper, we restrict the in-the-wild com-parison to pose-free methods. This distinction is important because pose-required methods do not define how camera parameters should be obtained from uncalibrated images. Supplying externally estimated cameras introduces an ad-ditional camera-prediction and calibration system, making the final reconstruction dependent on components outside the original method. Consequently, comparisons between na-tive pose-free methods and externally adapted pose-required methods are not strictly like-for-like. We therefore report the following comparison only as supplementary evidence rather than as part of the main in-the-wild evaluation. To nevertheless compare against the most closely related query-based baseline, we adapt the released DL3DV 4-view checkpoint of TokenGS (Ren et al. 2026) to uncalibrated im-ages using an externally calibrated VGGT-Ω (Wang et al. 2026a) camera pipeline. Each original image is indepen-dently center-cropped and resized to 512 × 512 for VGGT-
+
+Ω camera prediction and to 256 × 448 for TokenGS infer-ence, avoiding cascaded resizing between the two branches. VGGT-Ω predicts cameras under the OpenCV world-to-camera convention; we invert them to camera-to-world ma-trices and express all views relative to the first input camera, matching the relative camera convention used by TokenGS on DL3DV. To characterize the systematic discrepancy between the two camera distributions, we randomly sample 300 cases from DL3DV-Evaluation and process them using the same image preprocessing and view-sampling protocol. For each case, the predicted and ground-truth cameras are converted to the same convention and first-camera-relative frame, after which we compare their relative rotations and camera-center trajectories. The relative rotations are retained without addi-tional correction, while a dataset-level translation-scale co-efficient is robustly estimated from the ratio between the Method Pose-free input interp extrap PSNR ↑ SSIM ↑ LPIPS ↓ PSNR ↑ SSIM ↑ LPIPS ↓ PSNR ↑ SSIM ↑ LPIPS ↓
+
+DepthSplat (2025) × 24.1130 0.8729 0.1101 17.4135 0.5472 0.3651 18.7962 0.6150 0.3006 
+
+TokenGS (2026) × 26.2841 0.8457 0.2626 17.6985 0.5703 0.4828 18.9342 0.6123 0.4359 YoNoSplat (2025a) × 24.3481 0.8471 0.1291 16.8822 0.4994 0.4050 18.1934 0.5555 0.3476 AnySplat (2025) ✓ 28.2681 0.9186 0.1125 11.7463 0.3890 0.5317 12.7023 0.4229 0.4860 NoPoSplat (2025b) ✓ 19.6465 0.6290 0.2816 16.3361 0.4798 0.4398 17.0561 0.5063 0.4073 SPFSplat (2025) ✓ 22.4244 0.7106 0.1704 16.5557 0.4753 0.4200 17.4773 0.5173 0.3708 SplatWeaver (2026) ✓ 24.2824 0.8356 0.1674 13.0674 0.4087 0.4561 13.8261 0.4368 0.4187 YoNoSplat (2025a) ✓ 18.6309 0.5367 0.3204 16.0399 0.4531 0.4317 16.6372 0.4727 0.4064 
+
+Ours ✓ 26.2565 0.8251 0.1581 18.6272 0.5945 0.3594 19.5802 0.6269 0.3206 
+
+Ours + TTO20 ✓ 29.6810 0.8633 0.1091 18.9195 0.6124 0.3509 20.1278 0.6475 0.3036 
+
+Ours + TTO50 ✓ 30.2295 0.8681 0.0950 18.8219 0.6088 0.3497 20.0710 0.6449 0.3004 Table 5: Per-scale results for 2-view input on the large split. Higher PSNR/SSIM and lower LPIPS are better. Bold and underlined values indicate the best and second-best results, respectively; TTO variants are excluded from this comparison. Method Pose-free input interp extrap PSNR ↑ SSIM ↑ LPIPS ↓ PSNR ↑ SSIM ↑ LPIPS ↓ PSNR ↑ SSIM ↑ LPIPS ↓
+
+DepthSplat (2025) × 25.5474 0.8932 0.0940 20.5908 0.6802 0.2509 20.4691 0.6993 0.2360 
+
+TokenGS (2026) × 27.5959 0.8795 0.2222 20.3666 0.6761 0.3729 20.5332 0.6871 0.3623 YoNoSplat (2025a) × 25.9272 0.8738 0.1101 20.0542 0.6412 0.2796 20.1932 0.6649 0.2657 AnySplat (2025) ✓ 28.3469 0.9189 0.1060 14.1915 0.4464 0.4452 14.0380 0.4595 0.4272 NoPoSplat (2025b) ✓ 21.8738 0.7114 0.2020 19.2279 0.6047 0.3046 18.9084 0.6016 0.3103 SPFSplat (2025) ✓ 23.2262 0.7494 0.1460 19.3380 0.5931 0.2944 18.6967 0.5818 0.3035 SplatWeaver (2026) ✓ 24.6273 0.8375 0.1620 15.6790 0.4970 0.3644 15.2040 0.5005 0.3617 YoNoSplat (2025a) ✓ 21.9742 0.6774 0.1998 19.4209 0.6011 0.2952 19.0395 0.5880 0.3005 
+
+Ours ✓ 28.2766 0.8856 0.1098 21.4607 0.7069 0.2501 21.2292 0.7026 0.2526 
+
+Ours + TTO20 ✓ 32.4299 0.9184 0.0695 22.0407 0.7232 0.2398 21.9990 0.7264 0.2358 
+
+Ours + TTO50 ✓ 33.1205 0.9228 0.0599 21.9792 0.7215 0.2382 21.9669 0.7256 0.2336 Table 6: Per-scale results for 2-view input on the medium split. Higher PSNR/SSIM and lower LPIPS are better. Bold and underlined values indicate the best and second-best results, respectively; TTO variants are excluded from this comparison. Method Pose-free input interp extrap PSNR ↑ SSIM ↑ LPIPS ↓ PSNR ↑ SSIM ↑ LPIPS ↓ PSNR ↑ SSIM ↑ LPIPS ↓
+
+DepthSplat (2025) × 27.1695 0.9171 0.0759 23.6028 0.7890 0.1617 22.7682 0.7871 0.1683 
+
+TokenGS (2026) × 28.5841 0.9012 0.1918 23.2123 0.7744 0.2792 22.9806 0.7713 0.2849 YoNoSplat (2025a) × 27.1469 0.8997 0.0888 22.5705 0.7483 0.1882 22.2366 0.7554 0.1937 AnySplat (2025) ✓ 28.5431 0.9220 0.0958 16.2849 0.4986 0.3655 15.5915 0.4987 0.3663 NoPoSplat (2025b) ✓ 23.8145 0.7917 0.1393 21.6310 0.7145 0.2047 20.9450 0.6944 0.2247 SPFSplat (2025) ✓ 24.0475 0.7880 0.1183 21.4553 0.6937 0.1995 20.4444 0.6635 0.2264 SplatWeaver (2026) ✓ 25.3171 0.8459 0.1521 18.3395 0.5917 0.2794 17.3749 0.5840 0.2929 YoNoSplat (2025a) ✓ 24.3293 0.7801 0.1322 22.0417 0.7184 0.1976 21.2538 0.6952 0.2143 
+
+Ours ✓ 29.7749 0.9276 0.0774 24.0786 0.7956 0.1660 23.3463 0.7790 0.1831 
+
+Ours + TTO20 ✓ 34.5038 0.9590 0.0409 25.0680 0.8148 0.1527 24.6639 0.8090 0.1630 
+
+Ours + TTO50 ✓ 35.2782 0.9627 0.0337 25.0299 0.8144 0.1512 24.6862 0.8096 0.1601 Table 7: Per-scale results for 2-view input on the small split. Higher PSNR/SSIM and lower LPIPS are better. Bold and underlined values indicate the best and second-best results, respectively; TTO variants are excluded from this comparison. Method Pose-free input interp extrap PSNR ↑ SSIM ↑ LPIPS ↓ PSNR ↑ SSIM ↑ LPIPS ↓ PSNR ↑ SSIM ↑ LPIPS ↓
+
+DepthSplat (2025) × 23.9394 0.8564 0.1284 20.2901 0.6871 0.2503 18.2692 0.6175 0.3123 
+
+TokenGS (2026) × 25.0249 0.8090 0.2876 20.5588 0.6712 0.3830 18.6832 0.6076 0.4375 YoNoSplat (2025a) × 23.9833 0.8206 0.1561 20.3328 0.6550 0.2722 18.6229 0.5968 0.3329 AnySplat (2025) ✓ 25.2204 0.8636 0.1599 14.9064 0.4713 0.4283 13.2399 0.4421 0.4728 SplatWeaver (2026) ✓ 23.0137 0.7963 0.1874 16.5145 0.5306 0.3495 14.3430 0.4712 0.4055 YoNoSplat (2025a) ✓ 21.0418 0.6457 0.2282 19.3526 0.5926 0.2979 17.7817 0.5316 0.3583 
+
+Ours ✓ 26.0338 0.8337 0.1699 21.8724 0.7169 0.2593 19.6819 0.6432 0.3277 
+
+Ours + TTO20 ✓ 30.2927 0.8931 0.1100 23.0259 0.7501 0.2325 20.5441 0.6794 0.3026 
+
+Ours + TTO50 ✓ 31.3715 0.9045 0.0907 23.0427 0.7505 0.2262 20.5315 0.6798 0.2966 Table 8: Per-scale results for 4-view input on the large split. Higher PSNR/SSIM and lower LPIPS are better. Bold and underlined values indicate the best and second-best results, respectively; TTO variants are excluded from this comparison. Method Pose-free input interp extrap PSNR ↑ SSIM ↑ LPIPS ↓ PSNR ↑ SSIM ↑ LPIPS ↓ PSNR ↑ SSIM ↑ LPIPS ↓
+
+DepthSplat (2025) × 25.3594 0.8781 0.1082 22.7572 0.7687 0.1837 19.6293 0.6801 0.2589 
+
+TokenGS (2026) × 26.6703 0.8545 0.2355 23.2286 0.7589 0.2981 20.1766 0.6754 0.3753 YoNoSplat (2025a) × 25.8785 0.8683 0.1149 22.7899 0.7512 0.1944 19.8817 0.6614 0.2797 AnySplat (2025) ✓ 26.2466 0.8807 0.1343 17.4232 0.5484 0.3387 14.1144 0.4759 0.4210 SplatWeaver (2026) ✓ 24.2414 0.8227 0.1632 19.1637 0.6300 0.2675 15.1613 0.5185 0.3555 YoNoSplat (2025a) ✓ 23.5423 0.7532 0.1578 21.9269 0.7041 0.2112 19.1994 0.6099 0.2977 
+
+Ours ✓ 28.0864 0.8957 0.1146 24.6659 0.8084 0.1758 21.0778 0.7122 0.2673 
+
+Ours + TTO20 ✓ 32.8387 0.9406 0.0675 26.2940 0.8379 0.1516 22.1078 0.7477 0.2431 
+
+Ours + TTO50 ✓ 34.0826 0.9500 0.0535 26.4224 0.8399 0.1462 22.1743 0.7500 0.2371 Table 9: Per-scale results for 4-view input on the medium split. Higher PSNR/SSIM and lower LPIPS are better. Bold and underlined values indicate the best and second-best results, respectively; TTO variants are excluded from this comparison. Method Pose-free input interp extrap PSNR ↑ SSIM ↑ LPIPS ↓ PSNR ↑ SSIM ↑ LPIPS ↓ PSNR ↑ SSIM ↑ LPIPS ↓
+
+DepthSplat (2025) × 27.2767 0.9066 0.0846 25.6765 0.8491 0.1219 21.9588 0.7686 0.1888 
+
+TokenGS (2026) × 28.1302 0.8880 0.1959 26.0239 0.8395 0.2267 22.7399 0.7662 0.2930 YoNoSplat (2025a) × 27.3757 0.8971 0.0893 25.4238 0.8344 0.1297 21.9304 0.7491 0.2061 AnySplat (2025) ✓ 27.6666 0.9005 0.1126 19.8517 0.6253 0.2583 15.9692 0.5350 0.3505 SplatWeaver (2026) ✓ 25.8388 0.8562 0.1378 22.0457 0.7276 0.1975 17.5045 0.6112 0.2830 YoNoSplat (2025a) ✓ 25.6956 0.8274 0.1127 24.6138 0.7980 0.1410 21.3475 0.7114 0.2185 
+
+Ours ✓ 29.5741 0.9234 0.0867 27.1912 0.8754 0.1179 23.2606 0.7886 0.1942 
+
+Ours + TTO20 ✓ 34.5002 0.9602 0.0480 29.4373 0.9032 0.0933 24.7796 0.8243 0.1697 
+
+Ours + TTO50 ✓ 35.6475 0.9666 0.0384 29.6687 0.9059 0.0888 24.9192 0.8279 0.1643 Table 10: Per-scale results for 4-view input on the small split. Higher PSNR/SSIM and lower LPIPS are better. Bold and underlined values indicate the best and second-best results, respectively; TTO variants are excluded from this comparison. ground-truth and predicted trajectory spans across the sam-pled cases. During in-the-wild inference, the VGGT-Ω poses are first normalized to the reference camera, their relative rotations are kept unchanged, and their relative translations are rescaled by this precomputed coefficient to better match the DL3DV camera distribution seen during TokenGS train-ing. We further transform the predicted intrinsics analytically from the VGGT-Ω crop coordinates to the TokenGS crop co-ordinates before constructing the Plücker ray embeddings. The resulting RGB images, calibrated poses, intrinsics, and rays are then passed to the released TokenGS model without finetuning. Method Pose-free input interp extrap PSNR ↑ SSIM ↑ LPIPS ↓ PSNR ↑ SSIM ↑ LPIPS ↓ PSNR ↑ SSIM ↑ LPIPS ↓
+
+DepthSplat (2025) × 20.7272 0.7537 0.2147 20.0607 0.6960 0.2522 16.7422 0.5426 0.3870 
+
+TokenGS (2026) × 20.7762 0.6591 0.4168 19.8281 0.6213 0.4378 16.8357 0.5252 0.5175 YoNoSplat (2025a) × 21.5871 0.7396 0.2215 20.9436 0.6962 0.2474 17.2244 0.5390 0.3882 AnySplat (2025) ✓ 22.0788 0.7762 0.2323 17.9160 0.5682 0.3562 13.5825 0.4462 0.4965 SplatWeaver (2026) ✓ 20.7351 0.7116 0.2398 18.7349 0.5964 0.3014 14.3457 0.4453 0.4361 YoNoSplat (2025a) ✓ 20.1787 0.6341 0.2581 19.9175 0.6219 0.2735 16.7819 0.4957 0.4039 
+
+Ours ✓ 22.7212 0.7347 0.2677 21.8494 0.7024 0.2895 18.2572 0.5938 0.3917 
+
+Ours + TTO20 ✓ 27.0716 0.8473 0.1826 24.6674 0.7913 0.2214 19.1717 0.6435 0.3579 
+
+Ours + TTO50 ✓ 28.5342 0.8769 0.1475 25.2006 0.8063 0.1984 19.2486 0.6479 0.3473 Table 11: Per-scale results for 12-view input on the large split. Higher PSNR/SSIM and lower LPIPS are better. Bold and underlined values indicate the best and second-best results, respectively; TTO variants are excluded from this comparison. Method Pose-free input interp extrap PSNR ↑ SSIM ↑ LPIPS ↓ PSNR ↑ SSIM ↑ LPIPS ↓ PSNR ↑ SSIM ↑ LPIPS ↓
+
+DepthSplat (2025) × 21.8850 0.7884 0.1859 21.4410 0.7521 0.2092 16.5801 0.5507 0.3843 
+
+TokenGS (2026) × 22.0150 0.7065 0.3710 21.4151 0.6862 0.3812 16.9313 0.5381 0.5099 YoNoSplat (2025a) × 22.9007 0.7844 0.1858 22.3512 0.7550 0.2037 17.4104 0.5554 0.3856 AnySplat (2025) ✓ 22.7391 0.7900 0.2160 19.2000 0.6218 0.3124 13.1844 0.4489 0.4961 SplatWeaver (2026) ✓ 21.4336 0.7356 0.2212 19.9685 0.6543 0.2628 13.8483 0.4492 0.4378 YoNoSplat (2025a) ✓ 21.4287 0.6928 0.2173 21.1921 0.6850 0.2277 16.9888 0.5155 0.3988 
+
+Ours ✓ 23.7809 0.7732 0.2312 23.2820 0.7589 0.2404 18.1704 0.5906 0.3979 
+
+Ours + TTO20 ✓ 28.2484 0.8739 0.1517 26.4901 0.8413 0.1741 19.1523 0.6443 0.3629 
+
+Ours + TTO50 ✓ 29.7052 0.8988 0.1214 27.1794 0.8562 0.1527 19.2620 0.6499 0.3517 Table 12: Per-scale results for 12-view input on the medium split. Higher PSNR/SSIM and lower LPIPS are better. Bold and underlined values indicate the best and second-best results, respectively; TTO variants are excluded from this comparison. Method Pose-free input interp extrap PSNR ↑ SSIM ↑ LPIPS ↓ PSNR ↑ SSIM ↑ LPIPS ↓ PSNR ↑ SSIM ↑ LPIPS ↓
+
+DepthSplat (2025) × 23.6793 0.8307 0.1458 23.5338 0.8167 0.1535 18.1796 0.6259 0.3159 TokenGS (2026) × 24.4677 0.7886 0.2873 24.1851 0.7805 0.2898 18.8982 0.6230 0.4278 YoNoSplat (2025a) × 25.2678 0.8484 0.1275 24.9030 0.8313 0.1364 19.1503 0.6381 0.3110 
+
+AnySplat (2025) ✓ 24.4494 0.8276 0.1723 21.7598 0.7102 0.2282 14.3189 0.5034 0.4269 SplatWeaver (2026) ✓ 23.3236 0.7922 0.1740 22.5108 0.7541 0.1904 15.0812 0.5223 0.3682 YoNoSplat (2025a) ✓ 23.9189 0.7835 0.1489 23.7872 0.7791 0.1539 18.6901 0.6029 0.3227 
+
+Ours ✓ 26.1943 0.8488 0.1578 25.9700 0.8443 0.1591 19.9808 0.6705 0.3197 
+
+Ours + TTO20 ✓ 30.9625 0.9237 0.0949 29.8434 0.9090 0.1045 21.3198 0.7252 0.2827 
+
+Ours + TTO50 ✓ 32.4794 0.9413 0.0737 30.7796 0.9219 0.0882 21.5483 0.7338 0.2710 Table 13: Per-scale results for 12-view input on the small split. Higher PSNR/SSIM and lower LPIPS are better. Bold and underlined values indicate the best and second-best results, respectively; TTO variants are excluded from this comparison. As shown in Figure 12, QuerySplat produces substantially sharper and more coherent reconstructions across diverse casually captured scenes. TokenGS frequently loses high-frequency appearance and thin structures, resulting in blurred object boundaries and distorted local geometry. In contrast, QuerySplat more faithfully preserves the bicycle frame, in-dividual plant leaves, the shape of the camera body, and the detailed appearance of the toy. These results further demon-strate the advantage of combining geometry-aware decoding with an explicitly separated appearance pathway. GT DepthSplat AnySplat YoNoSplat SplatWeaver TokenGS Ours Figure 11: Additional qualitative comparisons. We compare QuerySplat with representative posed and pose-free feed-forward 3DGS methods on diverse scenes. The red and blue boxes highlight enlarged regions. QuerySplat preserves sharper boundaries, finer textures, and more coherent structures than competing methods. Ours 
+
+> TokenGS
+
+Figure 12: Additional in-the-wild comparison with To-kenGS. TokenGS is a pose-required method and therefore receives cameras from an external VGGT-Ω predictor, fol-lowed by calibration to the DL3DV camera distribution used during its training. QuerySplat instead estimates cameras and establishes its coordinate system as part of its native pose-free reconstruction pipeline. Under this carefully calibrated adap-tation, QuerySplat still preserves sharper object boundaries, finer appearance details, and more coherent structures. Be-cause the TokenGS camera pipeline is not part of its original method, this result is presented as a supplementary compar-ison rather than a strictly like-for-like pose-free evaluation. (Note that TokenGS requires rectangular input, so the scene sizes are not strictly consistent) 
+
+# C Inference Efficiency and Memory Usage 
+
+We benchmark the inference efficiency of QuerySplat on a single NVIDIA H200 GPU. Runtime is averaged over five CUDA-synchronized forward passes after one excluded warm-up pass. Peak GPU memory is mea-sured for one complete 8,192-query forward pass us-ing torch.cuda.max_memory_allocated() and reported in GiB. The VGGT-Ω (Wang et al. 2026a) time in-cludes feature aggregation, while the decoder time excludes the encoder. As shown in Table 14, QuerySplat reconstructs scenes from up to four input views in under one second and pro-cesses 12 views in 1.89 seconds with the 8,192-query model. Peak memory remains around 10 GiB for up to 12 views and grows to 22.59 and 40.77 GiB for 100 and 300 views, respec-tively. Increasing the query count primarily affects decoder runtime, whereas the VGGT-Ω aggregation path becomes the dominant cost for large numbers of input views. These results show that QuerySplat supports both fast sparse-view reconstruction and substantially larger input collections on a single accelerator. 
+
+# D Ablation Details 
+
+Training protocol. The main QuerySplat model is trained with a base stage followed by progressive finetuning with an increasing number of Gaussian queries. Fully repeating this training procedure for every ablation variant would in-cur prohibitive computational cost. Therefore, all ablation models are trained only in the base stage for 150K itera-tions, without progressive query expansion. Except for the component being ablated, all variants use the same training data, input-view sampling strategy, optimization settings. For the shortened 150K ablation runs, the scheduled loss transi-tions are correspondingly rescaled and kept identical across all variants. The quantitative ablations reported in the main # Views VGGT-Omega Aggregator Our Decoder (1024) Our Decoder (8192) Total Infer Time (8192) Total (8192) Peak Memory (GiB) 1 0.080 0.071 0.621 0.703 9.276 2 0.129 0.076 0.648 0.780 9.329 3 0.205 0.080 0.675 0.884 9.383 4 0.242 0.085 0.702 0.949 9.436 5 0.345 0.090 0.729 1.082 9.489 6 0.410 0.095 0.758 1.175 9.542 8 0.550 0.105 0.818 1.377 9.648 12 0.931 0.125 0.943 1.890 10.064 24 2.559 0.182 1.293 3.880 11.549 48 7.970 0.297 1.990 10.017 14.706 72 16.393 0.411 2.687 19.158 18.431 100 30.031 0.545 3.499 33.645 22.588 200 111.950 1.025 6.400 118.574 29.979 300 246.115 1.501 9.297 255.725 40.773 Table 14: QuerySplat inference time (s) and 8192-query peak allocated GPU memory (GiB). 
+
+Figure 13: Training-loss curves of the ablation variants. In the later training stage, the curves correspond from top to bottom to w/o Appearance , One-branch Query , w/o Early Reg. , and the full model. All variants exhibit similar convergence trends and maintain a stable relative ordering. The temporary increase in the middle is caused by the scheduled introduction of LPIPS, while the subsequent abrupt decrease results from a shared training-time filtering strategy. (Note that each global step contains 500 (0.5k) steps with totally 150k steps) paper are obtained from these base-stage checkpoints. 
+
+Convergence behavior. Figure 13 presents the training-loss curves of the four variants. In the later training stage, the curves correspond from top to bottom to w/o Appear-ance , One-branch Query , w/o Early Reg. , and the full model. All variants exhibit closely aligned optimization dynamics: they decrease rapidly during early training, undergo the same scheduled transitions, and subsequently continue to converge at comparable rates. More importantly, the relative ordering between the variants becomes stable well before the end of base training, with no indication that the inferior vari-ants are closing the performance gap. This suggests that ex-tending all variants through the substantially more expensive progressive-finetuning stage would be unlikely to reverse the conclusions of the ablation study. The 150K-iteration base training therefore provides a sufficient and computationally practical comparison of the proposed components. The temporary increase in loss observed in the middle of training is caused by the scheduled activation and gradual in-troduction of the LPIPS term. Because the plotted objective begins to include an additional perceptual loss component, its absolute value increases even though the underlying opti-mization remains stable. The later abrupt decrease is caused by a training-time filtering strategy shared by all variants. Since both changes occur consistently across the four mod-els, they reflect common training-schedule transitions rather than instability introduced by any particular architectural de-sign. 
+
+# E Parameter Details 
+
+Hardware and software environment. QuerySplat is trained on 64 NVIDIA A800 GPUs using distributed data parallelism. Each GPU processes one training sample, re-sulting in a global batch size of 64 without gradient accu-mulation. Training uses BF16 mixed precision, while the perceptual loss is evaluated in FP32 for improved numerical stability. Our implementation is based on Python 3.12 and PyTorch 2.11, with CUDA 12.8 and cuDNN 9.19, running on Ubuntu 24.04. 
+
+Model and training configuration. The input images are center-cropped and resized to 512 ×512 . We use a frozen pre-trained VGGT-Ω as the geometric encoder and fuse features extracted from its 4th, 11th, 17th, and 23rd intermediate lay-ers. The geometry and appearance decoders contain 12 and 6 Transformer blocks, respectively. Both use an embedding dimension of 2,048, 16 attention heads, and an MLP ex-pansion ratio of 4. The geometry decoder is initialized with 1,024 learnable queries, each of which predicts 64 Gaussian primitives. The predicted Gaussians use first-order spherical harmonics, and their activated scales are capped at 0.075 .Base training uses four input views and is performed for 300K iterations. We then progressively double the number of queries until reaching 8,192, training each expansion stage for 30K iterations with randomly sampled 2–12 input views. We use AdamW with an initial learning rate of 10 −4 during base training and 10 −5 during progressive finetuning. A lin-ear warm-up is followed by cosine learning-rate decay, and the global gradient norm is clipped to 1.0. An exponential moving average of the model parameters is maintained with a decay factor of 0.9995 .The reconstruction objective uses an ℓ1 photometric loss together with SSIM and LPIPS, whose weights are set to 0.2
+
+and 0.05 , respectively. LPIPS is introduced progressively after the initial photometric training stage. The visibility loss has a weight of 1.0. The bidirectional Chamfer-distance loss and opacity-floor regularization are assigned initial weights of 1.0 and 0.1, respectively, and are annealed to zero during early training. The opacity floor is set to 0.1. Cameras are normalized relative to the first input view, and the renderer uses near and far clipping planes of 0.025 and 125 .0. During late training, a loss-rank filtering strategy retains 95% of samples according to their historical reconstruction losses to reduce the influence of unstable training cases.

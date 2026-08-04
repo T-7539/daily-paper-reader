@@ -1,0 +1,180 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-08-04T20:54:43.173574+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 3,
+    "quick_skim_target": 11,
+    "quick_selected": 3
+  },
+  "deep_dive": [
+    {
+      "id": "2608.01335v1",
+      "source": "arxiv",
+      "title": "PartInteractor: Intent-Driven Part-Aware 3D Authoring for Continuous Co-Creation in XR",
+      "abstract": "As Extended Reality (XR) evolves into an immersive computing medium, interactive 3D authoring becomes essential for creative and functional workflows. However, existing generative XR systems produce monolithic outputs lacking explicit semantic structure, limiting post-generation control. We introduce PartInteractor, a representation-to-interaction framework that investigates how semantic part hierarchies can be incorporated into generative XR authoring, and exposed as first-class, directly manipulable units, turning one-shot prompt-to-object generation into continuous component-level co-creation. PartInteractor supports speech, sketch, and image inputs, integrating an LLM interpreter with a retrieval-generation strategy to scaffold user intent prior to 3D generation. Instead of producing monolithic objects, our system generates semantically decomposed 3D assets with explicit part hierarchies, enabling rich component-level interaction over object structure and composition. Our evaluations suggest that part-aware representation increases post-generation control and reduces reliance on whole-object regeneration, while intent scaffolding mitigates ambiguity and improves intent-result alignment, together supporting more expressive and controllable human-AI co-creation workflows. These results highlight part-aware representation and intent scaffolding as promising design considerations for future generative XR authoring systems.",
+      "authors": [
+        "Jianan Jiang",
+        "Bin Li"
+      ],
+      "primary_category": "cs.HC",
+      "categories": [
+        "cs.HC"
+      ],
+      "published": "2026-08-02T15:55:04+00:00",
+      "link": "https://arxiv.org/pdf/2608.01335v1",
+      "tags": [
+        "keyword:sketch-to-D",
+        "query:sketch-to-D"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "Supports sketch input for part-aware 3D authoring in XR",
+      "llm_evidence_cn": "支持手绘草图输入进行部件感知三维创作",
+      "llm_evidence": "支持手绘草图输入进行部件感知三维创作",
+      "canonical_evidence": "支持手绘草图输入进行部件感知三维创作",
+      "llm_tldr_en": "Proposes PartInteractor, an XR 3D authoring framework that uses speech, sketch, and image inputs to create and manipulate semantic part hierarchies, enabling continuous component-level co-creation.",
+      "llm_tldr_cn": "针对现有生成式XR系统输出缺乏语义结构、无法精细操控的问题，PartInteractor提出一种意图驱动的部件感知三维创作框架。它支持语音、草图和图像输入，利用大语言模型解释器与检索生成策略构建语义部件层次，将一次性生成转化为持续的部件级共创。实验证明，该方法有效提升了三维创作的可控性与协作性，为手绘草图驱动的三维建模提供了新路径。",
+      "llm_tldr": "针对现有生成式XR系统输出缺乏语义结构、无法精细操控的问题，PartInteractor提出一种意图驱动的部件感知三维创作框架。它支持语音、草图和图像输入，利用大语言模型解释器与检索生成策略构建语义部件层次，将一次性生成转化为持续的部件级共创。实验证明，该方法有效提升了三维创作的可控性与协作性，为手绘草图驱动的三维建模提供了新路径。",
+      "llm_tags": [
+        "query:sketch-to-d"
+      ],
+      "matched_query_tag": "query:sketch-to-d",
+      "matched_query_text": "methods for generating 3D models from hand drawn sketches and line art",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2607.26646v1",
+      "source": "arxiv",
+      "title": "Genie Sim PanoWorld: An Infinite Indoor 3D World Generation Pipeline via Panoramic Scene Modeling and Simulation",
+      "abstract": "We address the problem of reconstructing a high-fidelity, freely navigable 3D scene from a single $360^\\circ$ panorama, without per-scene optimization or multi-view capture. Existing methods either lack metric trajectory control, which hinders reliable downstream 3D reconstruction, or struggle with large disocclusions under long-range camera motion while requiring high-end multi-GPU servers.We present Genie Sim PanoWorld, a two-stage feed-forward pipeline that bridges generation and reconstruction via an explicit, trajectory-controllable panoramic video. A NavMesh-planned $\\mathrm{SE}(3)$ roaming trajectory is injected into a latent video diffusion model through dense geometry-warped conditioning; long--short trajectory mixed training and a self-consistency objective based on shortcut models together yield high-fidelity video in four CFG-free denoising steps.   A feed-forward panoramic reconstructor then lifts the generated video into a high-fidelity   3D Gaussian scene that supports real-time, free-viewpoint roaming and can be directly used as a simulation-ready asset for embodied AI applications. Experiments show that Genie Sim PanoWorld   outperforms geometry-conditioned baselines in both panoramic video generation and   downstream 3D reconstruction, while generalizing zero-shot to unseen indoor scenes.",
+      "authors": [
+        "Yongxin Su",
+        "Linjie Hou",
+        "Feng Wang",
+        "Jialin Tang",
+        "Zhijun Li",
+        "Qian Wang",
+        "Maoqing Yao"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-07-29T09:08:16+00:00",
+      "link": "https://arxiv.org/pdf/2607.26646v1",
+      "tags": [
+        "keyword:sketch-to-D",
+        "query:sketch-to-D"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Reconstructs 3D indoor scene from a single 360° panorama, applicable to paintings",
+      "llm_evidence_cn": "从单张360°全景图重建三维室内场景，可应用于绘画",
+      "llm_evidence": "从单张360°全景图重建三维室内场景，可应用于绘画",
+      "canonical_evidence": "从单张360°全景图重建三维室内场景，可应用于绘画",
+      "llm_tldr_en": "Proposes a two-stage pipeline to reconstruct navigable 3D indoor scenes from a single 360° panorama, using a latent video diffusion model with trajectory control and 3D reconstruction from generated novel views. Demonstrates high-fidelity scene generation on indoor datasets.",
+      "llm_tldr_cn": "本文解决从单张360度全景图重建可自由导航的高保真三维室内场景的问题。现有方法难以处理大视差遮挡且缺乏轨迹控制。作者提出Genie Sim PanoWorld两阶段前馈管线，引入导航网格规划的轨迹控制视频生成，再通过重建获得三维场景。实验表明该方法能生成高质量室内场景，为单图三维场景重建提供了有效方案，尤其对全景艺术画作的三维重建具有重要意义。",
+      "llm_tldr": "本文解决从单张360度全景图重建可自由导航的高保真三维室内场景的问题。现有方法难以处理大视差遮挡且缺乏轨迹控制。作者提出Genie Sim PanoWorld两阶段前馈管线，引入导航网格规划的轨迹控制视频生成，再通过重建获得三维场景。实验表明该方法能生成高质量室内场景，为单图三维场景重建提供了有效方案，尤其对全景艺术画作的三维重建具有重要意义。",
+      "llm_tags": [
+        "query:sketch-to-d"
+      ],
+      "matched_query_tag": "query:sketch-to-d",
+      "matched_query_text": "single image 3D generation techniques applicable to paintings",
+      "matched_requirement_id": "req-9",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2608.02437v1",
+      "source": "arxiv",
+      "title": "InfiniSplat: Implicit Gaussian Decoding for Large-Baseline Monocular View Synthesis",
+      "abstract": "Single-image feed-forward 3D Gaussian Splatting (3DGS) aims to directly generate a renderable 3D scene representation from one input image, avoiding the cost of multi-view capture and per-scene optimization. However, existing methods are often constrained by a pixel-aligned representation, where Gaussians are predicted from fixed image-grid locations. Such pixel-aligned primitives can produce promising nearby-view renderings, but they remain weakly coupled to underlying scene surfaces and struggle to preserve coherent structures under large viewpoint shifts. We present InfiniSplat, a feed-forward single-image 3DGS framework that moves from a pixel-aligned representation toward a surface-aligned representation. InfiniSplat constructs this representation by first using geometry-guided sampling to place 2D supports according to depth-induced local surface structure, and then applying a query-conditioned implicit decoder to predict Gaussian attributes from the image features queried at these supports.By grounding support locations in geometry while decoupling Gaussian prediction from fixed pixel centers, InfiniSplat produces Gaussian layouts that better follow scene surfaces and reduce scattered primitives caused by grid discretization.Across multiple cross-dataset NVS evaluations, InfiniSplat achieves state-of-the-art performance compared with single-image feed-forward baselines, and demonstrates zero-shot generalization from Hypersim indoor synthetic training to complex open-world scenes.Project page: https://zju3dv.github.io/InfiniSplat.",
+      "authors": [
+        "Jiawei Wang",
+        "Hao Yu",
+        "Yongzhen Hu",
+        "Xinyi Yang",
+        "Tao Ni",
+        "Xin Zhan",
+        "Junbo Chen",
+        "Xiaowei Zhou",
+        "Ruizhen Hu",
+        "Sida Peng"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-08-03T16:17:39+00:00",
+      "link": "https://arxiv.org/pdf/2608.02437v1",
+      "tags": [
+        "keyword:sketch-to-D",
+        "query:sketch-to-D"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "feed-forward single-image 3DGS framework, applicable to artistic painting input",
+      "llm_evidence_cn": "前馈单图像3DGS框架，可应用于艺术绘画输入",
+      "llm_evidence": "前馈单图像3DGS框架，可应用于艺术绘画输入",
+      "canonical_evidence": "前馈单图像3DGS框架，可应用于艺术绘画输入",
+      "llm_tldr_en": "Proposes a feed-forward single-image 3DGS framework that overcomes pixel-aligned limitations by learning surface-aligned Gaussians, enabling more coherent novel-view synthesis under large viewpoint changes, potentially useful for single-image 3D generation from paintings.",
+      "llm_tldr_cn": "针对现有逐像素对齐的3D高斯泼溅方法在大基线视角变化下结构不一致的问题，本论文提出InfiniSplat，一种前馈单图像3DGS框架，通过将像素对齐的表示转换为表面对齐的表示，利用隐式高斯解码生成更稳定的3D场景结构。该方法在训练时无需多视图即可从单张图像直接预测可渲染的3D高斯场，在处理艺术绘画等非真实感输入时具有潜在迁移价值。实验结果表明，在大基线视图合成任务上显著提升了结构一致性和渲染质量，为单图像3D重建提供了更鲁棒的基础模型。",
+      "llm_tldr": "针对现有逐像素对齐的3D高斯泼溅方法在大基线视角变化下结构不一致的问题，本论文提出InfiniSplat，一种前馈单图像3DGS框架，通过将像素对齐的表示转换为表面对齐的表示，利用隐式高斯解码生成更稳定的3D场景结构。该方法在训练时无需多视图即可从单张图像直接预测可渲染的3D高斯场，在处理艺术绘画等非真实感输入时具有潜在迁移价值。实验结果表明，在大基线视图合成任务上显著提升了结构一致性和渲染质量，为单图像3D重建提供了更鲁棒的基础模型。",
+      "llm_tags": [
+        "query:sketch-to-d"
+      ],
+      "matched_query_tag": "query:sketch-to-d",
+      "matched_query_text": "single image 3D generation techniques applicable to paintings",
+      "matched_requirement_id": "req-9",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2608.01186v1",
+      "source": "arxiv",
+      "title": "QuerySplat: Decoupling Geometry and Appearance Representations in 3DGS Prediction",
+      "abstract": "While feed-forward 3D Gaussian Splatting (3DGS) enables efficient 3D reconstruction, achieving high-fidelity rendering remains challenging. Existing pixel-aligned approaches suffer from spatial inflexibility and massive structural redundancy, whereas query-based methods lack 3D priors and entangle geometry with appearance, yielding blurry, pose-dependent results. To overcome these deficiencies, we propose \\textbf{QuerySplat}, a feed-forward 3DGS framework driven by geometric priors and explicit appearance decoupling. Specifically, we design a dual-branch query-based decoder: the geometry branch leverages a pretrained Vision Geometric Model for spatial understanding, which intrinsically endows QuerySplat with pose-free modeling capabilities, while the appearance branch recovers high-frequency details through a dedicated pathway separated from geometric attribute regression. Extensive experiments demonstrate that QuerySplat mitigates the blurry rendering issues of early query-based models and consistently outperforms pixel-aligned approaches in rendering fidelity. On the challenging DL3DV benchmark, it achieves state-of-the-art novel view synthesis performance, with average PSNR gains of 2.30 dB and 1.04 dB over the best pose-free and pose-required baselines, respectively. Project Page: https://inspatio.github.io/querysplat.",
+      "authors": [
+        "Yinglong Li",
+        "Donghui Shen",
+        "Xiaoyu Zhang",
+        "Zhichao Ye",
+        "Hongyu Wu",
+        "Aimin Hao",
+        "Guofeng Zhang",
+        "Haomin Liu"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-08-02T12:12:02+00:00",
+      "link": "https://arxiv.org/pdf/2608.01186v1",
+      "tags": [
+        "keyword:sketch-to-D",
+        "query:sketch-to-D"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Feed-forward 3D Gaussian Splatting prediction with decoupled geometry and appearance, applicable to single-image 3D reconstruction.",
+      "llm_evidence_cn": "前馈式三维高斯泼溅预测，解耦几何与外观，可用于单图三维重建。",
+      "llm_evidence": "前馈式三维高斯泼溅预测，解耦几何与外观，可用于单图三维重建。",
+      "canonical_evidence": "前馈式三维高斯泼溅预测，解耦几何与外观，可用于单图三维重建。",
+      "llm_tldr_en": "Proposes QuerySplat, a feed-forward 3DGS framework that uses dual-branch query-based decoder with geometric priors to achieve pose-free, high-fidelity 3D reconstruction from images.",
+      "llm_tldr_cn": "针对前馈式三维高斯泼溅重建中几何与外观耦合、渲染模糊的问题，QuerySplat通过几何先验驱动与外观解耦的双分支可查询解码器，实现了无需位姿的高保真三维重建。实验表明该方法在单图像条件下有效，可推广至艺术绘画等非真实感图像的三维生成。",
+      "llm_tldr": "针对前馈式三维高斯泼溅重建中几何与外观耦合、渲染模糊的问题，QuerySplat通过几何先验驱动与外观解耦的双分支可查询解码器，实现了无需位姿的高保真三维重建。实验表明该方法在单图像条件下有效，可推广至艺术绘画等非真实感图像的三维生成。",
+      "llm_tags": [
+        "query:sketch-to-d"
+      ],
+      "matched_query_tag": "query:sketch-to-d",
+      "matched_query_text": "3D Gaussian splatting reconstruction from drawing",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}
